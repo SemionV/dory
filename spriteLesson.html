@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sandbox</title>
+    <script src="js/lib/easeljs-0.8.0.combined.js"></script>
+    <script src="js/lib/jquery-1.11.2.min.js"></script>
+
+    <script src="js/spqr.js"></script>
+    <script src="js/resources.js"></script>
+
+    <script type="text/javascript">
+        var imgMonsterARun = new Image();
+        var imgFlag = new Image();
+        var imgCat = new Image();
+        var resources;
+        var stage;
+        var bmpAnimation;
+
+        function init() {
+            canvas = document.getElementById("testCanvas");
+
+            resources = new spqr.ResourceManager();
+            resources.loadImages({
+                        "monster": "img/MonsterARun.png",
+                        "flag": "img/flag1.png",
+                        "cat": "img/runningcat.png"
+                    }).then(run);
+        }
+
+        function handleImageError()
+        {
+            console.error("Image not loaded");
+        }
+
+        function run()
+        {
+            stage = new createjs.Stage("canvas")
+
+            var spriteSheet = new createjs.SpriteSheet({
+                images: [resources.images["monster"]],
+                frames: {width: 64, height: 64, regX: 32, regY: 32},
+                animations: {walk: [0, 9, "walk", 0.25]}
+            });
+
+            var bmpAnimation = new createjs.Sprite(spriteSheet, "walk");
+            bmpAnimation.gotoAndPlay("walk");
+            bmpAnimation.x = 32;
+            bmpAnimation.y = 32;
+            stage.addChild(bmpAnimation);
+
+            var spriteSheetFlag = new createjs.SpriteSheet({
+                images: [resources.images["flag"]],
+                frames: {width: 34, height: 27, regX: 0, regY: 0},
+                animations: {flag: [0, 9, "flag", 0.25]}
+            });
+
+            var flagAnimation = new createjs.Sprite(spriteSheetFlag, "flag");
+            flagAnimation.gotoAndPlay("flag");
+            flagAnimation.x = 100;
+            flagAnimation.y = 0;
+            stage.addChild(flagAnimation);
+
+            var spriteSheetCat = new createjs.SpriteSheet({
+                images: [resources.images["cat"]],
+                frames: {width: 512, height: 256, regX: 0, regY: 0},
+                animations: {run: [0, 7, "run", 0.2]}
+            });
+
+            var catAnimation = new createjs.Sprite(spriteSheetCat, "run");
+            catAnimation.gotoAndPlay("run");
+            catAnimation.x = 0;
+            catAnimation.y = 0;
+            //stage.addChild(catAnimation);
+
+            createjs.Ticker.addEventListener("tick", handleTick);
+            createjs.Ticker.useRAF = true;
+            createjs.Ticker.setFPS(40);
+            //createjs.Ticker.framerate = 40;
+        }
+
+        function handleTick() {
+            stage.update();
+        }
+    </script>
+</head>
+<body onload="init()">
+    <canvas id="canvas" width="512" height="512"></canvas>
+</body>
+</html>
