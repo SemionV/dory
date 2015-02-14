@@ -25,7 +25,7 @@
 
     Point3D.toIsometric = function(point)
     {
-        return new Point2D((point.x - point.y), (((point.x + point.y) / 2) - point.z));
+        return new Point2D((point.x - point.y), (((point.x + point.y) / 2) + point.z));
     };
 
     var ColorRgba = function(r, g, b, a)
@@ -82,7 +82,14 @@
         this.image = image;
         this.offsetX = offsetX;
         this.offsetY = offsetY;
-    }
+    };
+
+    var Box = function(width, height, altitude)
+    {
+        this.width = width;
+        this.height = height;
+        this.altitude = altitude;
+    };
 
     spqr.Basic = {};
     spqr.Basic.Point2D = Point2D;
@@ -91,4 +98,5 @@
     spqr.Basic.Polygon = Polygon;
     spqr.Basic.ColorRgba = ColorRgba;
     spqr.Basic.Texture = Texture;
+    spqr.Basic.Box = Box;
 })();

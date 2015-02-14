@@ -1,77 +1,70 @@
 (function()
 {
-    var SceneManager = function()
+    var SceneManager = function(renderer, resources)
     {
-        this.nodes = [];
+        this.renderer = renderer;
+        this.resources = resources;
+
+        this.terrains = {};
+        this.entities = {};
     };
+
+    SceneManager.method("addEntity", function(id, node)
+    {
+        this.entities[id] = node;
+    });
+
+    SceneManager.method("addTerrain", function(id, terrainData)
+    {
+        var terrain = new spqr.Scene.Terrain();
+        terrain.init(terrainData, this.resources);
+        this.terrains[id] = terrain;
+    });
+
+    SceneManager.method("draw", function()
+    {
+        for(var key in this.terrains)
+        {
+            var terrain = this.terrains[key];
+            terrain.draw(this.renderer);
+        }
+
+        for(var key in this.entities)
+        {
+            var entity = this.entities[key];
+            entity.draw(this.renderer);
+        }
+
+        this.renderer.render();
+    });
 
     var Node = function()
     {
     };
 
-    var Terrain = function()
-    {
+    Node.method("draw", function(renderer){});
 
+    var SpriteEntity = function(texture, boundingBox, translation)
+    {
+        this.translation = translation;
+
+        var polygon= this.polygon = new spqr.Basic.Polygon();
+        var tl = new spqr.Basic.Point3D(0, 0, 0);
+        var tr = new spqr.Basic.Point3D(tl.x + boundingBox.width, tl.y, 0);
+        var br = new spqr.Basic.Point3D(tl.x + boundingBox.width, tl.y + boundingBox.height, 0);
+        var bl = new spqr.Basic.Point3D(tl.x, tl.y + boundingBox.height, 0);
+
+        polygon.setTexture(texture);
     };
-    Terrain.inherits(Node);
+    SpriteEntity.inherits(Node);
 
-    Terrain.method("init", function(/*spqr.Basic.TerrainData*/terrainData, tileWidth, tileHeight, resources)
+    SpriteEntity.method("draw", function(renderer)
     {
-        this.data = terrainData;
-        this.tileWidth = tileWidth;
-        this.tileHeight = tileHeight;
-
-        this.polygons = [];
-
-        var tileTypes = terrainData.tileTypes;
-        var heightMap = terrainData.heightMap;
-        var map = terrainData.tiles;
-        if(map)
-        {
-            for(var i = 0, l = map.length; i < l; i++)
-            {
-                var row = map[i];
-                for(var j = row.length - 1; j >= 0; j--)
-                {
-                    var tileType = tileTypes[row[j].toString()];
-                    if(tileType)
-                    {
-                        var x = j * this.tileWidth;
-                        var y = i * this.tileHeight;
-
-                        var tl = new spqr.Basic.Point3D(x, y, heightMap ? heightMap[i][j] : 0);
-                        var tr = new spqr.Basic.Point3D(tl.x + tileWidth, tl.y, tl.z);
-                        var br = new spqr.Basic.Point3D(tl.x + tileWidth, tl.y + tileHeight, tl.z);
-                        var bl = new spqr.Basic.Point3D(tl.x, tl.y + tileHeight, tl.z);
-                        var polygon = new spqr.Basic.Polygon(tl, tr, br, bl);
-
-                        if(tileType.image)
-                        {
-                            var image = resources.images[tileType.image];
-                            polygon.setTexture(new spqr.Basic.Texture(image, tileType.offsetX, tileType.offsetY));
-                        }
-                        else
-                        {
-                            if(tileType.color)
-                                polygon.setColor.apply(polygon, tileType.color);
-                        }
-
-                        this.polygons.push(polygon);
-                    }
-                }
-            }
-        }
-    });
-
-    Terrain.method("draw", function(renderManager)
-    {
-        for(var i = 0, l = this.polygons.length; i < l; i++)
-        {
-            renderManager.addPolygon(this.polygons[i]);
-        }
+        renderer.addPolygon(this.polygon);
     });
 
     spqr.Scene = {};
     spqr.Scene.Manager = SceneManager;
-    spqr.Scene.Terrain = Terrain;
+    spqr.Scene.Node = Node;
+    spqr.Scene.SpriteEntity = SpriteEntity;
 })();

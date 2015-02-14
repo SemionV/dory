@@ -7,6 +7,7 @@
     <script src="js/spqr.js"></script>
     <script src="js/resources.js"></script>
     <script src="js/scene.js"></script>
+    <script src="js/terrain.js"></script>
     <script src="js/basicTypes.js"></script>
     <script src="js/render.js"></script>
 
@@ -16,25 +17,12 @@
         {
             var context = document.getElementById("canvas").getContext("2d");
             var resources = new spqr.ResourceManager();
-            var renderManager = new spqr.RenderManager(context);
-            resources.loadImages({
-                "terrain.grass": "img/1-grass-1.png",
-                "terrain.hole": "img/hole.png",
-                "terrain.chair": "img/2-chair1.png"
-            }).then(function()
-                    {
-                        run(context, resources, renderManager);
-                    });
-        }
-
-        function run(context, resources, renderManager)
-        {
-            var terrain = new spqr.Scene.Terrain();
+            var renderer = new spqr.RenderManager(context);
 
             var td = {
                 tiles:
                         [
-                            [4, 1, 1, 2, 1, 1, 1, 1],
+                            [1, 1, 1, 2, 1, 1, 1, 1],
                             [1, 1, 1, 1, 1, 1, 1, 1],
                             [1, 1, 1, 1, 1, 1, 1, 1],
                             [2, 1, 1, 2, 1, 1, 1, 1],
@@ -61,20 +49,50 @@
                     "3": {image: "terrain.chair"},
                     "4": {color: [0, 0, 255, 0]},
                     "5": {}
-                }
+                },
+                tileWidth: 50,
+                tileHeight: 50
             }
 
-            terrain.init(td, 50, 50, resources);
+            var td2 = {
+                tiles: [],
+                heightMap: td.heightMap,
+                tileTypes: td.tileTypes,
+                tileWidth: td.tileWidth,
+                tileHeight: td.tileHeight
+            };
 
-            context.save();
-            context.translate(400, 0);
-            terrain.draw(renderManager);
-            renderManager.render();
-            context.restore();
+            for(var i = 0, l = td; i < l; i++)
+            {
+                var row = td.tiles[i];
+                var rowCopy = [];
+                for(var j = 0, k = row.length; j < k; j++)
+                {
+                    rowCopy.push(4);
+                }
+                td2.tiles.push(rowCopy);
+            }
+
+            resources.loadImages({
+                "terrain.grass": "img/1-grass-1.png",
+                "terrain.hole": "img/hole.png",
+                "terrain.chair": "img/2-chair1.png"
+            }).then(function()
+                    {
+                        run(resources, renderer, td, td2);
+                    });
+        }
+
+        function run(resources, renderer, td, td2)
+        {
+            var scene = new spqr.Scene.Manager(renderer, resources);
+            scene.addTerrain("main", td);
+            scene.addTerrain("mesh", td2);
+            scene.draw();
         }
     </script>
 </head>
 <body onload="init()">
-    <canvas id="canvas" width="800" height="600"></canvas>
+    <canvas id="canvas" width="800" height="400"></canvas>
 </body>
 </html>

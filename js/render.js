@@ -4,6 +4,8 @@
     {
         this.context = context;
 
+        this.renderStack = [];
+
         this.polygonQueue = [];
     };
 
@@ -14,6 +16,9 @@
 
     RenderManager.method("render", function()
     {
+        this.context.save();
+        this.context.translate(400, 0);
+
         for(var i = 0, l = this.polygonQueue.length; i < l; i++)
         {
             var polygon = this.polygonQueue[i];
@@ -48,23 +53,44 @@
                     color = "rgba(200, 200, 200)";
                 }
 
-                this.context.fillStyle = color;
+                if(polygon.solid)
+                {
+                    this.context.fillStyle = color;
+                }
+                else
+                {
+                    this.context.strokeStyle = color;
+                }
 
                 this.context.beginPath();
-                var point = spqr.Basic.Point3D.toIsometric(polygon[0]);
-                this.context.moveTo(point.x, point.y);
+                var pointStart = spqr.Basic.Point3D.toIsometric(polygon[0]);
+                this.context.moveTo(pointStart.x, pointStart.y);
 
                 for(var j = 1, k = polygon.length; j < k; j++)
                 {
-                    point = spqr.Basic.Point3D.toIsometric(polygon[j]);
+                    var point = spqr.Basic.Point3D.toIsometric(polygon[j]);
                     this.context.lineTo(point.x, point.y);
                 }
+                this.context.lineTo(pointStart.x, pointStart.y);
 
-                this.context.fill();
+                if(polygon.solid)
+                {
+                    this.context.fill();
+                }
+                else
+                {
+                    this.context.stroke();
+                }
             }
         }
 
+        this.context.restore();
         this.polygonQueue = [];
+    });
+
+    RenderManager.method("sortPolygonQueue", function()
+    {
+
     });
 
     spqr.RenderManager = RenderManager;
