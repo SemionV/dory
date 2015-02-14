@@ -14,18 +14,21 @@
 
         for(var key in images)
         {
-            var imgDeferred = $.Deferred();
-            allDeferred.push(imgDeferred);
-
-            var image = self.images[key] = new Image();
-            image.onload = function()
+            (function()
             {
-                imgDeferred.resolve();
-            }
-            image.src = images[key];
+                var imgDeferred = new $.Deferred();
+                allDeferred.push(imgDeferred);
+
+                var image = self.images[key] = new Image();
+                image.onload = function(e)
+                {
+                    imgDeferred.resolve();
+                }
+                image.src = images[key];
+            })();
         }
 
-        $.when(allDeferred).then(function()
+        $.when.apply($, allDeferred).then(function()
         {
             d.resolve();
         });

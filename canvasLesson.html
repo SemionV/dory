@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script type="text/javascript">
+        function draw() {
+            var ctx = document.getElementById('canvas').getContext('2d');
+            var img = new Image();
+            img.onload = function(){
+                ctx.drawImage(img,0,0);
+                ctx.beginPath();
+                ctx.moveTo(30,96);
+                ctx.lineTo(70,66);
+                ctx.lineTo(103,76);
+                ctx.lineTo(170,15);
+                ctx.stroke();
+            };
+            img.src = 'img/1-grass-1.png';
+        }
+    </script>
+</head>
+<body onload="draw()">
+    <canvas id="canvas" width="512" height="512"></canvas>
+</body>
+</html>

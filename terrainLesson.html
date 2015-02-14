@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Terrain</title>
+    <script src="js/lib/jquery-1.11.2.min.js"></script>
+
+    <script src="js/spqr.js"></script>
+    <script src="js/resources.js"></script>
+    <script src="js/scene.js"></script>
+    <script src="js/basicTypes.js"></script>
+    <script src="js/render.js"></script>
+
+    <script type="text/javascript">
+
+        function init()
+        {
+            var context = document.getElementById("canvas").getContext("2d");
+            var resources = new spqr.ResourceManager();
+            var renderManager = new spqr.RenderManager(context);
+            resources.loadImages({
+                "terrain.grass": "img/1-grass-1.png",
+                "terrain.hole": "img/hole.png",
+                "terrain.chair": "img/2-chair1.png"
+            }).then(function()
+                    {
+                        run(context, resources, renderManager);
+                    });
+        }
+
+        function run(context, resources, renderManager)
+        {
+            var terrain = new spqr.Scene.Terrain();
+
+            var td = {
+                tiles:
+                        [
+                            [4, 1, 1, 2, 1, 1, 1, 1],
+                            [1, 1, 1, 1, 1, 1, 1, 1],
+                            [1, 1, 1, 1, 1, 1, 1, 1],
+                            [2, 1, 1, 2, 1, 1, 1, 1],
+                            [1, 1, 1, 1, 1, 1, 1, 1],
+                            [1, 1, 1, 1, 1, 1, 1, 1],
+                            [1, 1, 1, 1, 1, 1, 1, 1],
+                            [1, 1, 1, 1, 1, 1, 1, 1]
+                        ],
+                heightMap:
+                        [
+                            [0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0]
+                        ],
+                tileTypes:
+                {
+                    "1": {image: "terrain.grass", offsetX: 50, offsetY: 0},
+                    "2": {image: "terrain.hole", offsetX: 50, offsetY: 0},
+                    "3": {image: "terrain.chair"},
+                    "4": {color: [0, 0, 255, 0]},
+                    "5": {}
+                }
+            }
+
+            terrain.init(td, 50, 50, resources);
+
+            context.save();
+            context.translate(400, 0);
+            terrain.draw(renderManager);
+            renderManager.render();
+            context.restore();
+        }
+    </script>
+</head>
+<body onload="init()">
+    <canvas id="canvas" width="800" height="600"></canvas>
+</body>
+</html>
