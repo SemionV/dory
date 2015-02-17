@@ -76,7 +76,7 @@
             resources.loadImages({
                 "terrain.grass": "img/1-grass-1.png",
                 "terrain.hole": "img/hole.png",
-                "terrain.chair": "img/2-chair1.png"
+                "objects.chair": "img/2-chair1.png"
             }).then(function()
                     {
                         run(resources, renderer, td, td2);
@@ -88,6 +88,13 @@
             var scene = new spqr.Scene.Manager(renderer, resources);
             scene.addTerrain("main", td);
             scene.addTerrain("mesh", td2);
+
+            var sprite = new spqr.Scene.SpriteEntity(
+                    new spqr.Basic.Texture(resources.images["objects.chair"], 50, 50),
+                    new spqr.Basic.Box(50, 50, 50),
+                    new spqr.Basic.Point3D(100, 100, 0));
+            scene.addEntity("chair", sprite);
+
             scene.draw();
         }
     </script>

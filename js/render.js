@@ -4,14 +4,41 @@
     {
         this.context = context;
 
-        this.renderStack = [];
+        this.matrixStack = [];
 
         this.polygonQueue = [];
     };
 
     RenderManager.method("addPolygon", function(/*spqr.Basic.Polygon*/polygon)
     {
-        this.polygonQueue.push(polygon);
+        if(this.matrixStack.length)
+        {
+            var translation = this.matrixStack[0];
+            var transformedPolygon = new spqr.Basic.Polygon();
+
+            for(var i = 0, l = polygon.length; i < l; i++)
+            {
+                transformedPolygon.push(spqr.Basic.Point3D.translate(polygon[i], translation));
+            }
+
+            transformedPolygon.texture = polygon.texture;
+            transformedPolygon.solid = polygon.solid;
+            this.polygonQueue.push(transformedPolygon);
+        }
+        else
+        {
+            this.polygonQueue.push(polygon);
+        }
+    });
+
+    RenderManager.method("pushMatrix", function(translation)
+    {
+        this.matrixStack.unshift(translation);
+    });
+
+    RenderManager.method("popMatrix", function()
+    {
+        this.matrixStack.shift();
     });
 
     RenderManager.method("render", function()
@@ -31,6 +58,7 @@
             if(texture)
             {
                 var point = spqr.Basic.Point3D.toIsometric(polygon[0]);
+
                 if(texture.offsetX)
                 {
                     point.x -= texture.offsetX;
@@ -86,11 +114,6 @@
 
         this.context.restore();
         this.polygonQueue = [];
-    });
-
-    RenderManager.method("sortPolygonQueue", function()
-    {
-
     });
 
     spqr.RenderManager = RenderManager;

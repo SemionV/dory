@@ -32,7 +32,14 @@
         for(var key in this.entities)
         {
             var entity = this.entities[key];
+
+            if(entity.translation)
+                this.renderer.pushMatrix(entity.translation);
+
             entity.draw(this.renderer);
+
+            if(entity.translation)
+                this.renderer.popMatrix();
         }
 
         this.renderer.render();
@@ -48,11 +55,12 @@
     {
         this.translation = translation;
 
-        var polygon= this.polygon = new spqr.Basic.Polygon();
         var tl = new spqr.Basic.Point3D(0, 0, 0);
         var tr = new spqr.Basic.Point3D(tl.x + boundingBox.width, tl.y, 0);
         var br = new spqr.Basic.Point3D(tl.x + boundingBox.width, tl.y + boundingBox.height, 0);
         var bl = new spqr.Basic.Point3D(tl.x, tl.y + boundingBox.height, 0);
+
+        var polygon= this.polygon = new spqr.Basic.Polygon(tl, tr, br, bl);
 
         polygon.setTexture(texture);
     };

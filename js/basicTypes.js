@@ -28,6 +28,11 @@
         return new Point2D((point.x - point.y), (((point.x + point.y) / 2) + point.z));
     };
 
+    Point3D.translate = function(point, vector)
+    {
+        return new Point3D(point.x + vector.x, point.y + vector.y, point.z + vector.z);
+    }
+
     var ColorRgba = function(r, g, b, a)
     {
         this.r = r;
