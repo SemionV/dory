@@ -5,6 +5,7 @@
     <script src="js/lib/jquery-1.11.2.min.js"></script>
 
     <script src="js/spqr.js"></script>
+    <script src="js/engine.js"></script>
     <script src="js/resources.js"></script>
     <script src="js/scene.js"></script>
     <script src="js/terrain.js"></script>
@@ -95,7 +96,10 @@
                     new spqr.Basic.Point3D(100, 100, 0));
             scene.addEntity("chair", sprite);
 
-            scene.draw();
+            var engine = new spqr.Engine();
+            engine.setActiveScene(scene);
+
+            engine.run();
         }
     </script>
 </head>
