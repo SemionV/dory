@@ -5,20 +5,22 @@
     <script src="js/lib/jquery-1.11.2.min.js"></script>
 
     <script src="js/spqr.js"></script>
+    <script src="js/basicTypes.js"></script>
     <script src="js/engine.js"></script>
     <script src="js/resources.js"></script>
     <script src="js/scene.js"></script>
     <script src="js/terrain.js"></script>
-    <script src="js/basicTypes.js"></script>
     <script src="js/render.js"></script>
+    <script src="js/inputManager.js"></script>
 
     <script type="text/javascript">
 
         function init()
         {
-            var context = document.getElementById("canvas").getContext("2d");
+            var canvas = document.getElementById("canvas");
+            var context = canvas.getContext("2d");
             var resources = new spqr.ResourceManager();
-            var renderer = new spqr.RenderManager(context);
+            var renderer = new spqr.RenderManager(context, canvas.width, canvas.height);
 
             var td = {
                 tiles:
@@ -92,11 +94,33 @@
 
             var sprite = new spqr.Scene.SpriteEntity(
                     new spqr.Basic.Texture(resources.images["objects.chair"], 50, 50),
-                    new spqr.Basic.Box(50, 50, 50),
-                    new spqr.Basic.Point3D(100, 100, 0));
+                    new spqr.Basic.Box(50, 50, 50));
+            sprite.setTranslation(new spqr.Basic.Point3D(100, 100, 0));
             scene.addEntity("chair", sprite);
 
-            var engine = new spqr.Engine();
+            scene.setAction("keypress.up", function()
+            {
+                sprite.move(0, -50, 0);
+            });
+
+            scene.setAction("keypress.down", function()
+            {
+                sprite.move(0, 50, 0);
+            });
+
+            scene.setAction("keypress.left", function()
+            {
+                sprite.move(-50, 0, 0);
+            });
+
+            scene.setAction("keypress.right", function()
+            {
+                sprite.move(50, 0, 0);
+            });
+
+            var inputManager = new spqr.InputManager();
+            inputManager.subscribe();
+            var engine = new spqr.Engine(inputManager);
             engine.setActiveScene(scene);
 
             engine.run();

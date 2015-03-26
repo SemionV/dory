@@ -7,7 +7,18 @@
 
         this.terrains = {};
         this.entities = {};
+        this.actions = {};
     };
+
+    SceneManager.method("getAction", function(key)
+    {
+        return this.actions[key];
+    });
+
+    SceneManager.method("setAction", function(key, action)
+    {
+        this.actions[key] = action;
+    });
 
     SceneManager.method("addEntity", function(id, node)
     {
@@ -47,14 +58,23 @@
 
     var Node = function()
     {
+        this.translation = new spqr.Basic.Point3D(0, 0, 0);
     };
 
     Node.method("draw", function(renderer){});
-
-    var SpriteEntity = function(texture, boundingBox, translation)
+    Node.method("setTranslation", function(translation)
     {
         this.translation = translation;
+    });
+    Node.method("move", function(x, y, z)
+    {
+        this.translation.x += x;
+        this.translation.y += y;
+        this.translation.z += z;
+    });
 
+    var SpriteEntity = function(texture, boundingBox)
+    {
         var tl = new spqr.Basic.Point3D(0, 0, 0);
         var tr = new spqr.Basic.Point3D(tl.x + boundingBox.width, tl.y, 0);
         var br = new spqr.Basic.Point3D(tl.x + boundingBox.width, tl.y + boundingBox.height, 0);
