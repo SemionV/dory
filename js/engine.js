@@ -25,16 +25,24 @@
 
     Engine.method("run", function()
     {
-        this.heart = this.createHeart(this.fps);
-        this.heart(this.heartBeat);
+        var self = this;
+        var heart = this.createHeart(this.fps);
+
+        var heartBeat = function()
+        {
+            self.scene.draw();
+            heart.call(window, heartBeat);
+        }
+
+        heart.call(window, heartBeat);
     });
 
-    Engine.method("heartBeat", function()
+    /*Engine.method("heartBeat", function()
     {
         this.scene.draw();
 
-        this.heart(this.heartBeat);
-    });
+        this.heart.call(window, this.heartBeat);
+    });*/
 
     spqr.Engine = Engine;
 })()
