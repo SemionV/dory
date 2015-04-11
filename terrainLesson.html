@@ -12,6 +12,7 @@
     <script src="js/terrain.js"></script>
     <script src="js/render.js"></script>
     <script src="js/inputManager.js"></script>
+    <script src="js/eventsManager.js"></script>
 
     <script type="text/javascript">
 
@@ -55,7 +56,7 @@
                 },
                 tileWidth: 50,
                 tileHeight: 50
-            }
+            };
 
             var td2 = {
                 tiles: [],
@@ -65,7 +66,7 @@
                 tileHeight: td.tileHeight
             };
 
-            for(var i = 0, l = td; i < l; i++)
+            for(var i = 0, l = td.length; i < l; i++)
             {
                 var row = td.tiles[i];
                 var rowCopy = [];
@@ -120,7 +121,8 @@
 
             var inputManager = new spqr.InputManager();
             inputManager.subscribe();
-            var engine = new spqr.Engine(inputManager);
+            var eventsManager = new spqr.EventsManager();
+            var engine = new spqr.Engine(inputManager, eventsManager);
             engine.setActiveScene(scene);
 
             engine.run();

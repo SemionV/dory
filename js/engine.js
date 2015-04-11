@@ -1,14 +1,14 @@
 (function()
 {
-    var Engine = function(inputManager)
+    var Engine = function(inputManager, eventsManager)
     {
         this.inputManager = inputManager;
-        this.userInput = [];
+        this.eventsManager = eventsManager;
         this.isStop = false;
 
         /*settings*/
         this.fps = 60;
-    }
+    };
 
     Engine.method("createHeart", function(fps)
     {
@@ -17,7 +17,7 @@
             window.mozRequestAnimationFrame    ||
             window.oRequestAnimationFrame      ||
             window.msRequestAnimationFrame     ||
-            function(/* function */ callback, /* DOMElement */ element)
+            function(/* function */ callback)
             {
                 window.setTimeout(callback, 1000 / fps);
             };
@@ -37,7 +37,7 @@
 
         var heartBeat = function()
         {
-            self.processUserInput();
+            self.processEvents();
             self.draw();
 
             if(!this.isStop)
@@ -48,7 +48,7 @@
             {
                 this.isStop = false;
             }
-        }
+        };
 
         heart.call(window, heartBeat);
     });
@@ -61,24 +61,25 @@
 
     Engine.method("onInput", function(actionName)
     {
-        this.userInput.push(actionName);
+        var event = this.eventsManager.createEvent(actionName);
+        this.eventsManager.pushEvent(event);
     });
 
-    Engine.method("processUserInput", function()
+    Engine.method("processEvents", function()
     {
-        for(var i = 0, l = this.userInput.length; i < l; i++)
+        var events = this.eventsManager.swap();
+
+        for(var i = 0, l = events.length; i < l; i++)
         {
             if(this.scene)
             {
-                var action = this.scene.getAction(this.userInput[i]);
+                var action = this.scene.getAction(events[i]);
                 if(action)
                 {
                     action.call(this.scene);
                 }
             }
         }
-
-        this.userInput = [];
     });
 
     Engine.method("draw", function()
@@ -90,4 +91,4 @@
     });
 
     spqr.Engine = Engine;
-})()
+})();
