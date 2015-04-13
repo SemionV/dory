@@ -1,10 +1,7 @@
 (function()
 {
-    var SceneManager = function(renderer, resources)
+    var SceneManager = function()
     {
-        this.renderer = renderer;
-        this.resources = resources;
-
         this.terrains = {};
         this.entities = {};
         this.actions = {};
@@ -12,6 +9,25 @@
         /*settings*/
         this.drawBoundingBoxes = true;
     };
+
+    SceneManager.method("processEvents", function(events)
+    {
+        for(var i = 0, l = events.length; i < l; i++)
+        {
+            var event = events[i];
+            var action = this.getAction(event.name);
+            if(action)
+            {
+                action.call(this, event);
+            }
+        }
+
+        for(var id in this.entities)
+        {
+            var entity = this.entities[id];
+            entity.processEvents(events);
+        }
+    });
 
     SceneManager.method("getAction", function(key)
     {
@@ -28,19 +44,25 @@
         this.entities[id] = node;
     });
 
+    SceneManager.method("getEntity", function(id)
+    {
+        return this.entities[id];
+    });
+
     SceneManager.method("addTerrain", function(id, terrainData)
     {
         var terrain = new spqr.Scene.Terrain();
-        terrain.init(terrainData, this.resources);
+        terrain.init(terrainData);
         this.terrains[id] = terrain;
     });
 
     SceneManager.method("draw", function()
     {
+        var renderer = spqr.Context.renderer;
         for(var key in this.terrains)
         {
             var terrain = this.terrains[key];
-            terrain.draw(this.renderer);
+            terrain.draw(renderer);
         }
 
         for(var key in this.entities)
@@ -48,19 +70,19 @@
             var entity = this.entities[key];
 
             if(entity.translation)
-                this.renderer.pushMatrix(entity.translation);
+                renderer.pushMatrix(entity.translation);
 
-            entity.draw(this.renderer);
+            entity.draw(renderer);
             if(this.drawBoundingBoxes)
             {
-                entity.drawBoundingBox(this.renderer);
+                entity.drawBoundingBox(renderer);
             }
 
             if(entity.translation)
-                this.renderer.popMatrix();
+                renderer.popMatrix();
         }
 
-        this.renderer.render();
+        renderer.render();
     });
 
     var Node = function()
@@ -84,6 +106,18 @@
         this.translation.z += z;
     });
 
+
+    var Entity = function()
+    {
+        this.stateMachine = new spqr.States.StateMachine();
+    }
+    Entity.inherits(Node);
+
+    Entity.method("processEvents", function(events)
+    {
+        this.stateMachine.processEvents(events);
+    });
+
     var SpriteEntity = function(texture, boundingBox)
     {
         this.boundingBoxSize = boundingBox;
@@ -97,7 +131,7 @@
 
         polygon.setTexture(texture);
     };
-    SpriteEntity.inherits(Node);
+    SpriteEntity.inherits(Entity);
 
     SpriteEntity.method("draw", function(renderer)
     {

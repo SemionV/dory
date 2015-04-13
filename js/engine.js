@@ -1,18 +1,25 @@
 (function()
 {
-    var Engine = function(inputManager, eventsManager)
+    var Engine = function()
     {
-        this.inputManager = inputManager;
-        this.eventsManager = eventsManager;
         this.isStop = false;
+
+        this.eventsManager = new spqr.EventsManager();
+        this.inputManager = new spqr.InputManager();
 
         /*settings*/
         this.fps = 60;
     };
 
+    Engine.method("setHeart", function(heart)
+    {
+        this.heart = heart;
+    });
+
     Engine.method("createHeart", function(fps)
     {
-        return  window.requestAnimationFrame   ||
+        return this.heart ||
+            window.requestAnimationFrame   ||
             window.webkitRequestAnimationFrame ||
             window.mozRequestAnimationFrame    ||
             window.oRequestAnimationFrame      ||
@@ -32,6 +39,8 @@
     {
         var self = this;
         var heart = this.createHeart(this.fps);
+
+        this.inputManager.subscribe();
 
         this.inputManager.addListener({ctx: this, func: this.onInput});
 
@@ -56,6 +65,7 @@
     Engine.method("stop", function()
     {
         this.inputManager.removeListener(this.onInput);
+        this.inputManager.unsubscribe();
         this.isStop = true;
     });
 
@@ -68,17 +78,9 @@
     Engine.method("processEvents", function()
     {
         var events = this.eventsManager.swap();
-
-        for(var i = 0, l = events.length; i < l; i++)
+        if(this.scene)
         {
-            if(this.scene)
-            {
-                var action = this.scene.getAction(events[i]);
-                if(action)
-                {
-                    action.call(this.scene);
-                }
-            }
+            this.scene.processEvents(events);
         }
     });
 

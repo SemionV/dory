@@ -20,12 +20,10 @@
 
     EventsManager.method("swap", function()
     {
-        var result = this.events;
-
         this.events = this.backEvents;
         this.backEvents = [];
 
-        return result;
+        return this.events;
     });
 
     EventsManager.method("getEvents", function()

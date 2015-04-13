@@ -6,7 +6,7 @@
     };
     Terrain.inherits(spqr.Scene.Node);
 
-    Terrain.method("init", function(/*spqr.Basic.TerrainData*/terrainData, resources)
+    Terrain.method("init", function(/*spqr.Basic.TerrainData*/terrainData)
     {
         this.data = terrainData;
         this.tileWidth = terrainData.tileWidth;
@@ -38,7 +38,7 @@
 
                         if(tileType.image)
                         {
-                            var image = resources.images[tileType.image];
+                            var image = spqr.Context.resources.images[tileType.image];
                             polygon.setTexture(new spqr.Basic.Texture(image, tileType.offsetX, tileType.offsetY));
                         }
                         else

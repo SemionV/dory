@@ -5,7 +5,9 @@
     <script src="js/lib/jquery-1.11.2.min.js"></script>
 
     <script src="js/spqr.js"></script>
+    <script src="js/context.js"></script>
     <script src="js/basicTypes.js"></script>
+    <script src="js/state.js"></script>
     <script src="js/engine.js"></script>
     <script src="js/resources.js"></script>
     <script src="js/scene.js"></script>
@@ -13,6 +15,8 @@
     <script src="js/render.js"></script>
     <script src="js/inputManager.js"></script>
     <script src="js/eventsManager.js"></script>
+
+    <script src="js/terrainLesson.js"></script>
 
     <script type="text/javascript">
 
@@ -22,6 +26,11 @@
             var context = canvas.getContext("2d");
             var resources = new spqr.ResourceManager();
             var renderer = new spqr.RenderManager(context, canvas.width, canvas.height);
+            var engine = new spqr.Engine();
+
+            spqr.Context.resources = resources;
+            spqr.Context.renderer = renderer;
+            spqr.Context.engine = engine;
 
             var td = {
                 tiles:
@@ -83,49 +92,50 @@
                 "objects.chair": "img/2-chair1.png"
             }).then(function()
                     {
-                        run(resources, renderer, td, td2);
+                        run(td, td2);
                     });
         }
 
-        function run(resources, renderer, td, td2)
+        function customHeart(callback)
         {
-            var scene = new spqr.Scene.Manager(renderer, resources);
+            window.heartBeat = callback;
+        }
+
+        function run(td, td2)
+        {
+            var scene = new spqr.Scene.Manager();
             scene.addTerrain("main", td);
             scene.addTerrain("mesh", td2);
 
-            var sprite = new spqr.Scene.SpriteEntity(
-                    new spqr.Basic.Texture(resources.images["objects.chair"], 50, 50),
+            scene.setAction("state.push", function(e)
+            {
+                console.log("state.push: " + e.stateName);
+            });
+
+            scene.setAction("state.pop", function(e)
+            {
+                console.log("state.pop: " + e.stateName);
+                console.log("current state: " + spqr.Context.getScene().getEntity("chair").stateMachine.stacks["main"].states[0].name);
+            });
+
+            var chair = new spqr.Scene.SpriteEntity(
+                    new spqr.Basic.Texture(spqr.Context.resources.images["objects.chair"], 50, 50),
                     new spqr.Basic.Box(40, 40, 35));
-            sprite.setTranslation(new spqr.Basic.Point3D(100, 100, 0));
-            scene.addEntity("chair", sprite);
+            chair.setTranslation(new spqr.Basic.Point3D(100, 100, 0));
 
-            scene.setAction("keypress.up", function()
+            var stack = chair.stateMachine.registerStack("main");
+            stack.push(new spqr.TerrainLesson.IdleState());
+
+            scene.addEntity("chair", chair);
+
+            spqr.Context.engine.setActiveScene(scene);
+            //spqr.Context.engine.setHeart(customHeart);
+            spqr.Context.engine.run();
+
+            if(window.heartBeat)
             {
-                sprite.move(0, -50, 0);
-            });
-
-            scene.setAction("keypress.down", function()
-            {
-                sprite.move(0, 50, 0);
-            });
-
-            scene.setAction("keypress.left", function()
-            {
-                sprite.move(-50, 0, 0);
-            });
-
-            scene.setAction("keypress.right", function()
-            {
-                sprite.move(50, 0, 0);
-            });
-
-            var inputManager = new spqr.InputManager();
-            inputManager.subscribe();
-            var eventsManager = new spqr.EventsManager();
-            var engine = new spqr.Engine(inputManager, eventsManager);
-            engine.setActiveScene(scene);
-
-            engine.run();
+                window.heartBeat();
+            }
         }
     </script>
 </head>
