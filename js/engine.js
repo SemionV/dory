@@ -15,16 +15,31 @@
 
     Engine.method("createHeart", function(fps)
     {
-        return this.heart ||
-            window.requestAnimationFrame   ||
+        var raF = window.requestAnimationFrame   ||
             window.webkitRequestAnimationFrame ||
             window.mozRequestAnimationFrame    ||
             window.oRequestAnimationFrame      ||
-            window.msRequestAnimationFrame     ||
-            function(/* function */ callback)
-            {
-                window.setTimeout(callback, 1000 / fps);
-            };
+            window.msRequestAnimationFrame;
+
+        var timeout = function(callback)
+        {
+            window.setTimeout(callback, 1000 / fps);
+        };
+
+        if(this.heart)
+        {
+            return this.heart;
+        }
+        else if(fps)
+        {
+            return timeout;
+        }
+        else if(raF)
+        {
+            return raF;
+        }
+
+        return timeout;
     });
 
     Engine.method("setActiveScene", function(scene)
@@ -34,31 +49,36 @@
 
     Engine.method("run", function()
     {
+        this.inputManager.subscribe();
+        this.inputManager.addListener({ctx: this, func: this.onInput});
+
         var self = this;
         var heart = this.createHeart(spqr.Context.config.fps);
 
-        var fpsInterval = 1000 / spqr.Context.config.fps;
-        var prevFrameDate = Date.now();
+        var now = Date.now();
+        var last = now;
+        var passed = 0;
+        var accumulator = 0;
+        var dt = spqr.Context.config.updateDeltaTime;
         var frameCount = 0;
-        var frameCountStartDate = Date.now();
-
-        this.inputManager.subscribe();
-        this.inputManager.addListener({ctx: this, func: this.onInput});
+        var frameCountStartDate = now;
 
         var heartBeat = function()
         {
             frameCount++;
 
-            var now = Date.now();
-            var elapsed = now - prevFrameDate;
+            now = Date.now();
+            passed = now - last;
+            last = now;
+            accumulator += passed;
 
-            if (elapsed > fpsInterval)
+            while(accumulator >= dt)
             {
-                prevFrameDate = now - (elapsed % fpsInterval);
-
                 self.processEvents();
-                self.draw();
+                accumulator -= dt;
             }
+
+            self.draw();
 
             if((now - frameCountStartDate) >= 1000)
             {
@@ -70,13 +90,13 @@
                 self.eventsManager.pushEvent(event);
             }
 
-            if(!this.isStop)
+            if(!self.isStop)
             {
                 heart.call(window, heartBeat);
             }
             else
             {
-                this.isStop = false;
+                self.isStop = false;
             }
         };
 

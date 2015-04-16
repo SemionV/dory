@@ -14,7 +14,7 @@
 
     MoveLeftState.method("processEvents", function(events)
     {
-        this.chair.translation.x--;
+        this.chair.translation.x -= 2;
 
         if(this.chair.translation.x == this.endX)
         {

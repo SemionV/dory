@@ -4,7 +4,8 @@
     {
         this.config =
         {
-            fps: 60,
+            //fps: 30,
+            updateDeltaTime: 1000 / 60,
             drawBoundingBoxes: true
         };
     }
