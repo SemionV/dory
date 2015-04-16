@@ -6,9 +6,6 @@
 
         this.eventsManager = new spqr.EventsManager();
         this.inputManager = new spqr.InputManager();
-
-        /*settings*/
-        this.fps = 60;
     };
 
     Engine.method("setHeart", function(heart)
@@ -38,16 +35,40 @@
     Engine.method("run", function()
     {
         var self = this;
-        var heart = this.createHeart(this.fps);
+        var heart = this.createHeart(spqr.Context.config.fps);
+
+        var fpsInterval = 1000 / spqr.Context.config.fps;
+        var prevFrameDate = Date.now();
+        var frameCount = 0;
+        var frameCountStartDate = Date.now();
 
         this.inputManager.subscribe();
-
         this.inputManager.addListener({ctx: this, func: this.onInput});
 
         var heartBeat = function()
         {
-            self.processEvents();
-            self.draw();
+            frameCount++;
+
+            var now = Date.now();
+            var elapsed = now - prevFrameDate;
+
+            if (elapsed > fpsInterval)
+            {
+                prevFrameDate = now - (elapsed % fpsInterval);
+
+                self.processEvents();
+                self.draw();
+            }
+
+            if((now - frameCountStartDate) >= 1000)
+            {
+                frameCountStartDate = now;
+                self.currentFPS = frameCount;
+                frameCount = 0;
+
+                var event = self.eventsManager.createEvent("fps.updated");
+                self.eventsManager.pushEvent(event);
+            }
 
             if(!this.isStop)
             {

@@ -2,6 +2,11 @@
 {
     var Context = function()
     {
+        this.config =
+        {
+            fps: 60,
+            drawBoundingBoxes: true
+        };
     }
 
     Context.method("getScene", function()

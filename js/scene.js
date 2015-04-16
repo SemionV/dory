@@ -5,9 +5,6 @@
         this.terrains = {};
         this.entities = {};
         this.actions = {};
-
-        /*settings*/
-        this.drawBoundingBoxes = true;
     };
 
     SceneManager.method("processEvents", function(events)
@@ -73,7 +70,7 @@
                 renderer.pushMatrix(entity.translation);
 
             entity.draw(renderer);
-            if(this.drawBoundingBoxes)
+            if(spqr.Context.config.drawBoundingBoxes)
             {
                 entity.drawBoundingBox(renderer);
             }

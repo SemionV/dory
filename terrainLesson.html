@@ -109,37 +109,42 @@
 
             scene.setAction("state.push", function(e)
             {
+                window.startDate = Date.now();
                 console.log("state.push: " + e.stateName);
             });
 
             scene.setAction("state.pop", function(e)
             {
-                console.log("state.pop: " + e.stateName);
+                console.log("state.pop: " + e.stateName + " " + (Date.now() - window.startDate));
                 console.log("current state: " + spqr.Context.getScene().getEntity("chair").stateMachine.stacks["main"].states[0].name);
             });
 
-            var chair = new spqr.Scene.SpriteEntity(
-                    new spqr.Basic.Texture(spqr.Context.resources.images["objects.chair"], 50, 50),
-                    new spqr.Basic.Box(40, 40, 35));
-            chair.setTranslation(new spqr.Basic.Point3D(100, 100, 0));
+            var fpsNode = document.getElementById("FPS");
+            scene.setAction("fps.updated", function()
+            {
+                fpsNode.innerText = "FPS: " + spqr.Context.engine.currentFPS;
+            });
 
-            var stack = chair.stateMachine.registerStack("main");
-            stack.push(new spqr.TerrainLesson.IdleState());
+            {
+                var chair = new spqr.Scene.SpriteEntity(
+                        new spqr.Basic.Texture(spqr.Context.resources.images["objects.chair"], 50, 50),
+                        new spqr.Basic.Box(40, 40, 35));
+                chair.setTranslation(new spqr.Basic.Point3D(100, 100, 0));
 
-            scene.addEntity("chair", chair);
+                var stack = chair.stateMachine.registerStack("main");
+                stack.push(new spqr.TerrainLesson.IdleState());
+
+                scene.addEntity("chair", chair);
+            }
 
             spqr.Context.engine.setActiveScene(scene);
-            //spqr.Context.engine.setHeart(customHeart);
+            spqr.Context.engine.setHeart(customHeart);
             spqr.Context.engine.run();
-
-            if(window.heartBeat)
-            {
-                window.heartBeat();
-            }
         }
     </script>
 </head>
 <body onload="init()">
     <canvas id="canvas" width="800" height="400"></canvas>
+    <div id="FPS"></div>
 </body>
 </html>
