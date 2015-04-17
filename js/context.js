@@ -6,7 +6,7 @@
         {
             //fps: 30,
             updateDeltaTime: 1000 / 60,
-            drawBoundingBoxes: true
+            drawBoundingBoxes: false
         };
     }
 
