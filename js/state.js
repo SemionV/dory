@@ -7,52 +7,70 @@
 
     StateStack.method("push", function(state)
     {
+        if(this.states.length > 0)
+        {
+            var prevState = this.states[0];
+            prevState.deactivate();
+        }
+
+        state.activate();
         this.states.unshift(state)
+
+        this.pushStateChangeEvent("state.push", state.name);
     });
 
     StateStack.method("pop", function()
     {
+        if(this.states.length > 0)
+        {
+            var prevState = this.states[0];
+            prevState.deactivate();
+
+            this.pushStateChangeEvent("state.pop", prevState.name);
+        }
+
         this.states.shift();
+
+        if(this.states.length > 0)
+        {
+            var state = this.states[0];
+            state.activate();
+        }
     });
 
-    StateStack.method("processEvents", function(events)
+    StateStack.method("update", function(events)
     {
         if(this.states.length > 0)
         {
             var state = this.states[0];
+            this.updateState(state, events);
+        }
+    });
 
-            var result = state.processEvents(events);
+    StateStack.method("updateState", function(state, events)
+    {
+        var result = state.update(events);
 
-            if(result)
+        if(result)
+        {
+            if(state !== result)
             {
-                if(state !== result)
-                {
-                    var eventsManager = spqr.Context.engine.eventsManager;
-                    var event = eventsManager.createEvent("state.push");
-                    event.stateName = result.name;
-                    eventsManager.pushEvent(event);
-
-                    this.push(result);
-                    result.activate();
-                    state.deactivate();
-                }
-            }
-            else
-            {
-                var eventsManager = spqr.Context.engine.eventsManager;
-                var event = eventsManager.createEvent("state.pop");
-                event.stateName = state.name;
-                eventsManager.pushEvent(event);
-
-                this.pop();
-                state.deactivate();
-
-                if(this.states.length > 0)
-                {
-                    this.states[0].activate();
-                }
+                this.push(result);
+                this.updateState(result);
             }
         }
+        else
+        {
+            this.pop();
+        }
+    });
+
+    StateStack.method("pushStateChangeEvent", function(eventName, stateName)
+    {
+        var eventsManager = spqr.Context.engine.eventsManager;
+        var event = eventsManager.createEvent(eventName);
+        event.stateName = stateName;
+        eventsManager.pushEvent(event);
     });
 
     var StateMachine = function()
@@ -68,12 +86,12 @@
         return stack;
     });
 
-    StateMachine.method("processEvents", function(events)
+    StateMachine.method("update", function(events)
     {
         for(var key in this.stacks)
         {
             var stack = this.stacks[key];
-            stack.processEvents(events);
+            stack.update(events);
         }
     });
 
@@ -81,7 +99,7 @@
     {
     }
 
-    State.method("processEvents", function(events)
+    State.method("update", function(events)
     {
 
     });

@@ -74,7 +74,7 @@
 
             while(accumulator >= dt)
             {
-                self.processEvents();
+                self.update();
                 accumulator -= dt;
             }
 
@@ -86,8 +86,7 @@
                 self.currentFPS = frameCount;
                 frameCount = 0;
 
-                var event = self.eventsManager.createEvent("fps.updated");
-                self.eventsManager.pushEvent(event);
+                self.eventsManager.pushSimpleEvent("fps.updated");
             }
 
             if(!self.isStop)
@@ -112,16 +111,15 @@
 
     Engine.method("onInput", function(actionName)
     {
-        var event = this.eventsManager.createEvent(actionName);
-        this.eventsManager.pushEvent(event);
+        this.eventsManager.pushSimpleEvent(actionName);
     });
 
-    Engine.method("processEvents", function()
+    Engine.method("update", function()
     {
         var events = this.eventsManager.swap();
         if(this.scene)
         {
-            this.scene.processEvents(events);
+            this.scene.update(events);
         }
     });
 

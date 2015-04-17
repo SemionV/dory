@@ -1,22 +1,122 @@
 (function()
 {
-    var MoveLeftState = function()
+    var EntityPath = function(entity, path, speed)
     {
-        this.name = "MoveLeft";
+        this.name = "EntityPath";
 
-        this.dx = 0;
+        this.pathStates = [];
+        var tileWidth = spqr.Context.tileWidth;
+        var tileHeight = spqr.Context.tileHeight;
+        var tileAltitude = spqr.Context.tileAltitude;
+        var pos = entity.translation;
 
-        this.chair = spqr.Context.getScene().getEntity("chair");
-        this.startX = this.chair.translation.x;
-        this.endX = this.startX - 50;
+        for(var i = 0, l = path.length; i < l; i++)
+        {
+            var direction = path[i];
+
+            var x = direction.x ? pos.x + (direction.x * tileWidth) : pos.x;
+            var y = direction.y ? pos.y + (direction.y * tileHeight) : pos.y;
+            var z = direction.z ? pos.z + (direction.z * tileAltitude) : pos.z;
+
+            var lastPoint = new spqr.Basic.Point3D(x, y, z);
+            this.pathStates.push(new MoveEntity(entity, pos, lastPoint, speed));
+
+            pos = lastPoint;
+        }
     };
-    MoveLeftState.inherits(spqr.States.State);
+    EntityPath.inherits(spqr.States.State);
 
-    MoveLeftState.method("processEvents", function(events)
+    EntityPath.method("update", function(events)
     {
-        this.chair.translation.x -= 2;
+        var nextState = this.pathStates.length > 0 ? this.pathStates[0] : null;
+        if(nextState)
+        {
+            this.pathStates.shift();
+        }
 
-        if(this.chair.translation.x == this.endX)
+        return nextState;
+    });
+
+    var MoveEntity = function(entity, startPoint, targetPoint, speed)
+    {
+        this.name = "MoveEntity";
+
+        this.entity = entity;
+        this.point = targetPoint;
+        var dt = spqr.Context.config.updateDeltaTime;
+        var dS = (speed / 1000) * dt;
+
+        var currentPosition = this.position = startPoint;
+        if(currentPosition.x != targetPoint.x)
+        {
+            var moveX = targetPoint.x - currentPosition.x;
+            this.dx = moveX < 0 ? dS * (-1) : dS;
+        }
+
+        if(currentPosition.y != targetPoint.y)
+        {
+            var moveY = targetPoint.y - currentPosition.y;
+            this.dy = moveY < 0 ? dS * (-1) : dS;
+        }
+
+        if(currentPosition.z != targetPoint.z)
+        {
+            var moveZ = targetPoint.z - currentPosition.z;
+            this.dz = moveZ < 0 ? dS * (-1) : dS;
+        }
+    };
+    MoveEntity.inherits(spqr.States.State);
+
+    MoveEntity.method("getDelta", function(delta, currentPos, targetPos)
+    {
+        var dPos = 0;
+
+        if(delta > 0)
+        {
+            if(currentPos < targetPos)
+            {
+                var result = currentPos + delta;
+                if(result > targetPos)
+                {
+                    dPos = targetPos - currentPos;
+                }
+                else
+                {
+                    dPos = delta;
+                }
+            }
+        }
+        else if(delta < 0)
+        {
+            if(currentPos > targetPos)
+            {
+                var result = currentPos + delta;
+                if(result < targetPos)
+                {
+                    dPos = targetPos - currentPos;
+                }
+                else
+                {
+                    dPos = delta;
+                }
+            }
+        }
+
+        return dPos;
+    });
+
+    MoveEntity.method("update", function(events)
+    {
+        var position = this.position;
+        var point = this.point;
+
+        position.x += this.getDelta(this.dx, position.x, point.x);
+        position.y += this.getDelta(this.dy, position.y, point.y);
+        position.z += this.getDelta(this.dz, position.z, point.z);
+
+        this.entity.translation = position;
+
+        if(position.x == point.x && position.y == point.y && position.z == point.z)
         {
             return null;
         }
@@ -24,85 +124,27 @@
         return this;
     });
 
-    var MoveRightState = function()
-    {
-        this.name = "MoveRight";
-
-        this.dx = 0;
-
-        this.chair = spqr.Context.getScene().getEntity("chair");
-        this.startX = this.chair.translation.x;
-        this.endX = this.startX + 50;
-    };
-    MoveRightState.inherits(spqr.States.State);
-
-    MoveRightState.method("processEvents", function(events)
-    {
-        this.chair.translation.x++;
-
-        if(this.chair.translation.x == this.endX)
-        {
-            return null;
-        }
-
-        return this;
-    });
-
-    var MoveUpState = function()
-    {
-        this.name = "MoveUp";
-
-        this.dx = 0;
-
-        this.chair = spqr.Context.getScene().getEntity("chair");
-        this.startY = this.chair.translation.y;
-        this.endY = this.startY - 50;
-    };
-    MoveUpState.inherits(spqr.States.State);
-
-    MoveUpState.method("processEvents", function(events)
-    {
-        this.chair.translation.y--;
-
-        if(this.chair.translation.y == this.endY)
-        {
-            return null;
-        }
-
-        return this;
-    });
-
-    var MoveDownState = function()
-    {
-        this.name = "MoveDown";
-
-        this.dx = 0;
-
-        this.chair = spqr.Context.getScene().getEntity("chair");
-        this.startY = this.chair.translation.y;
-        this.endY = this.startY + 50;
-    };
-    MoveDownState.inherits(spqr.States.State);
-
-    MoveDownState.method("processEvents", function(events)
-    {
-        this.chair.translation.y++;
-
-        if(this.chair.translation.y == this.endY)
-        {
-            return null;
-        }
-
-        return this;
-    });
-
-    var IdleState = function()
+    var IdleState = function(entity)
     {
         this.name = "Idle";
+        this.entity = entity;
     };
     IdleState.inherits(spqr.States.State);
 
-    IdleState.method("processEvents", function(events)
+    IdleState.method("getMoveEntityState", function(direction, speed)
+    {
+        var pos = this.entity.translation;
+        var tileWidth = spqr.Context.tileWidth;
+        var tileHeight = spqr.Context.tileHeight;
+        var tileAltitude = spqr.Context.tileAltitude;
+        var x = direction.x ? pos.x + (direction.x * tileWidth) : pos.x;
+        var y = direction.y ? pos.y + (direction.y * tileHeight) : pos.y;
+        var z = direction.z ? pos.z + (direction.z * tileAltitude) : pos.z;
+
+        return new MoveEntity(this.entity, pos, new spqr.Basic.Point3D(x, y, z), speed);
+    });
+
+    IdleState.method("update", function(events)
     {
         for(var i = 0, l = events.length; i < l; i++)
         {
@@ -110,19 +152,23 @@
 
             if(event.name == "keypress.left")
             {
-                return new MoveLeftState();
+                return this.getMoveEntityState(new spqr.Basic.Point3D(-1, 0, 0), spqr.Context.tileWidth * 2);
             }
             if(event.name == "keypress.right")
             {
-                return new MoveRightState();
+                return this.getMoveEntityState(new spqr.Basic.Point3D(1, 0, 0), spqr.Context.tileWidth * 2);
             }
             if(event.name == "keypress.up")
             {
-                return new MoveUpState();
+                return this.getMoveEntityState(new spqr.Basic.Point3D(0, -1, 0), spqr.Context.tileHeight * 2);
             }
             if(event.name == "keypress.down")
             {
-                return new MoveDownState();
+                return this.getMoveEntityState(new spqr.Basic.Point3D(0, 1, 0), spqr.Context.tileHeight * 2);
+            }
+            if(event.name == "player.path")
+            {
+                return new EntityPath(this.entity, event.path, spqr.Context.tileHeight * 2);
             }
         }
 
@@ -131,4 +177,5 @@
 
     spqr.TerrainLesson = {};
     spqr.TerrainLesson.IdleState = IdleState;
+    spqr.TerrainLesson.EntityPath = EntityPath;
 })();

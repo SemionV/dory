@@ -20,7 +20,7 @@
     {
         this.x = x;
         this.y = y;
-        this.z = z;
+        this.z = z ? z : 0;
     };
 
     Point3D.toIsometric = function(point)

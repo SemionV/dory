@@ -7,7 +7,7 @@
         this.actions = {};
     };
 
-    SceneManager.method("processEvents", function(events)
+    SceneManager.method("update", function(events)
     {
         for(var i = 0, l = events.length; i < l; i++)
         {
@@ -22,7 +22,7 @@
         for(var id in this.entities)
         {
             var entity = this.entities[id];
-            entity.processEvents(events);
+            entity.update(events);
         }
     });
 
@@ -110,9 +110,9 @@
     }
     Entity.inherits(Node);
 
-    Entity.method("processEvents", function(events)
+    Entity.method("update", function(events)
     {
-        this.stateMachine.processEvents(events);
+        this.stateMachine.update(events);
     });
 
     var SpriteEntity = function(texture, boundingBox)
