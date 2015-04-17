@@ -106,7 +106,6 @@
 
     var Entity = function()
     {
-        this.stateMachine = new spqr.States.StateMachine();
     }
     Entity.inherits(Node);
 
@@ -117,6 +116,8 @@
 
     var SpriteEntity = function(texture, boundingBox)
     {
+        this.stateMachine = new spqr.States.StateMachine();
+
         this.boundingBoxSize = boundingBox;
 
         var tl = new spqr.Basic.Point3D(0, 0, 0);
