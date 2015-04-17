@@ -1,5 +1,46 @@
 (function()
 {
+    var Loop = function(states, repeatCount, infinite)
+    {
+        this.name = "Loop";
+
+        this.states = states;
+        this.index = 0;
+        this.count = 0;
+        this.repeatCount = repeatCount;
+        this.infinite = infinite;
+    }
+    Loop.inherits(spqr.States.State);
+
+    Loop.method("update", function(events)
+    {
+        if(!this.infinite)
+        {
+            if(this.count >= this.repeatCount)
+            {
+                return null;
+            }
+        }
+
+        var length = this.states.length;
+        if(length > 0 && this.index < length)
+        {
+            var state = this.states[this.index];
+
+            this.index++;
+
+            if(this.index >= length)
+            {
+                this.index = 0;
+                this.count++;
+            }
+
+            return state;
+        }
+
+        return null;
+    });
+
     var EntityPath = function(entity, path, speed)
     {
         this.name = "EntityPath";
@@ -42,30 +83,35 @@
         this.name = "MoveEntity";
 
         this.entity = entity;
-        this.point = targetPoint;
+        this.startPoint = new spqr.Basic.Point3D(startPoint.x, startPoint.y, startPoint.z)
+        this.targetPoint = targetPoint;
         var dt = spqr.Context.config.updateDeltaTime;
         var dS = (speed / 1000) * dt;
 
-        var currentPosition = this.position = startPoint;
-        if(currentPosition.x != targetPoint.x)
+        if(startPoint.x != targetPoint.x)
         {
-            var moveX = targetPoint.x - currentPosition.x;
+            var moveX = targetPoint.x - startPoint.x;
             this.dx = moveX < 0 ? dS * (-1) : dS;
         }
 
-        if(currentPosition.y != targetPoint.y)
+        if(startPoint.y != targetPoint.y)
         {
-            var moveY = targetPoint.y - currentPosition.y;
+            var moveY = targetPoint.y - startPoint.y;
             this.dy = moveY < 0 ? dS * (-1) : dS;
         }
 
-        if(currentPosition.z != targetPoint.z)
+        if(startPoint.z != targetPoint.z)
         {
-            var moveZ = targetPoint.z - currentPosition.z;
+            var moveZ = targetPoint.z - startPoint.z;
             this.dz = moveZ < 0 ? dS * (-1) : dS;
         }
     };
     MoveEntity.inherits(spqr.States.State);
+
+    MoveEntity.method("activate", function()
+    {
+        this.currentPoint = new spqr.Basic.Point3D(this.startPoint.x, this.startPoint.y, this.startPoint.z);
+    });
 
     MoveEntity.method("getDelta", function(delta, currentPos, targetPos)
     {
@@ -107,16 +153,16 @@
 
     MoveEntity.method("update", function(events)
     {
-        var position = this.position;
-        var point = this.point;
+        var currentPoint = this.currentPoint;
+        var targetPoint = this.targetPoint;
 
-        position.x += this.getDelta(this.dx, position.x, point.x);
-        position.y += this.getDelta(this.dy, position.y, point.y);
-        position.z += this.getDelta(this.dz, position.z, point.z);
+        currentPoint.x += this.getDelta(this.dx, currentPoint.x, targetPoint.x);
+        currentPoint.y += this.getDelta(this.dy, currentPoint.y, targetPoint.y);
+        currentPoint.z += this.getDelta(this.dz, currentPoint.z, targetPoint.z);
 
-        this.entity.translation = position;
+        this.entity.translation = currentPoint;
 
-        if(position.x == point.x && position.y == point.y && position.z == point.z)
+        if(currentPoint.x == targetPoint.x && currentPoint.y == targetPoint.y && currentPoint.z == targetPoint.z)
         {
             return null;
         }
@@ -170,6 +216,31 @@
             {
                 return new EntityPath(this.entity, event.path, spqr.Context.tileHeight * 2);
             }
+            if(event.name == "player.loop")
+            {
+                var path = [{x: 0, y: 1, z: 0}, {x: 0, y: 1, z: 0}, {x: 1, y: 0, z: 0}, {x: 1, y: 0, z: 0}, {x: 0, y: -1, z: 0}, {x: 0, y: -1, z: 0}, {x: -1, y: 0, z: 0}, {x: -1, y: 0, z: 0}];
+                var pathStates = [];
+                var tileWidth = spqr.Context.tileWidth;
+                var tileHeight = spqr.Context.tileHeight;
+                var tileAltitude = spqr.Context.tileAltitude;
+                var pos = this.entity.translation;
+
+                for(var i = 0, l = path.length; i < l; i++)
+                {
+                    var direction = path[i];
+
+                    var x = direction.x ? pos.x + (direction.x * tileWidth) : pos.x;
+                    var y = direction.y ? pos.y + (direction.y * tileHeight) : pos.y;
+                    var z = direction.z ? pos.z + (direction.z * tileAltitude) : pos.z;
+
+                    var lastPoint = new spqr.Basic.Point3D(x, y, z);
+                    pathStates.push(new spqr.TerrainLesson.MoveEntity(this.entity, pos, lastPoint, spqr.Context.tileHeight * 2));
+
+                    pos = lastPoint;
+                }
+
+                return new spqr.TerrainLesson.Loop(pathStates, 5, false)
+            }
         }
 
         return this;
@@ -177,5 +248,7 @@
 
     spqr.TerrainLesson = {};
     spqr.TerrainLesson.IdleState = IdleState;
+    spqr.TerrainLesson.Loop = Loop;
     spqr.TerrainLesson.EntityPath = EntityPath;
+    spqr.TerrainLesson.MoveEntity = MoveEntity;
 })();
