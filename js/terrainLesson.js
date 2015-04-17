@@ -234,12 +234,12 @@
                     var z = direction.z ? pos.z + (direction.z * tileAltitude) : pos.z;
 
                     var lastPoint = new spqr.Basic.Point3D(x, y, z);
-                    pathStates.push(new spqr.TerrainLesson.MoveEntity(this.entity, pos, lastPoint, spqr.Context.tileHeight * 2));
+                    pathStates.push(new MoveEntity(this.entity, pos, lastPoint, spqr.Context.tileHeight * 2));
 
                     pos = lastPoint;
                 }
 
-                return new spqr.TerrainLesson.Loop(pathStates, 5, false)
+                return new Loop(pathStates, 5, false)
             }
         }
 
@@ -248,7 +248,4 @@
 
     spqr.TerrainLesson = {};
     spqr.TerrainLesson.IdleState = IdleState;
-    spqr.TerrainLesson.Loop = Loop;
-    spqr.TerrainLesson.EntityPath = EntityPath;
-    spqr.TerrainLesson.MoveEntity = MoveEntity;
 })();

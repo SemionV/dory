@@ -92,7 +92,8 @@
             resources.loadImages({
                 "terrain.grass": "img/1-grass-1.png",
                 "terrain.hole": "img/hole.png",
-                "objects.chair": "img/2-chair1.png"
+                "objects.chair": "img/2-chair1.png",
+                "actor.warrior": "img/warrior/looking se0000.png"
             }).then(function()
                     {
                         run(td, td2);
@@ -138,6 +139,18 @@
                 stack.push(new spqr.TerrainLesson.IdleState(chair));
 
                 scene.addEntity("chair", chair);
+            }
+
+            {
+                var unit1 = new spqr.Scene.SpriteEntity(
+                        new spqr.Basic.Texture(spqr.Context.resources.images["actor.warrior"], spqr.Context.tileWidth, spqr.Context.tileHeight),
+                        new spqr.Basic.Box(spqr.Context.tileWidth, spqr.Context.tileHeight, spqr.Context.tileAltitude));
+                unit1.setTranslation(new spqr.Basic.Point3D(200, 200, 0));
+
+                var stack = unit1.stateMachine.registerStack("main");
+                stack.push(new spqr.TerrainLesson.IdleState(unit1));
+
+                scene.addEntity("unit1", unit1);
             }
 
             spqr.Context.engine.setActiveScene(scene);
