@@ -2,11 +2,13 @@
 {
     var Context = function()
     {
+        var deltaTime = 1000 / 60;
         this.config =
         {
             //fps: 30,
-            updateDeltaTime: 1000 / 60,
-            drawBoundingBoxes: false
+            updateDeltaTime: deltaTime,
+            drawBoundingBoxes: false,
+            maxDeltaTime: deltaTime * 2
         };
     }
 

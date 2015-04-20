@@ -69,6 +69,10 @@
 
             now = Date.now();
             passed = now - last;
+            if(passed > spqr.Context.config.maxDeltaTime)
+            {
+                passed = spqr.Context.config.maxDeltaTime;
+            }
             last = now;
             accumulator += passed;
 
