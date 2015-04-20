@@ -86,7 +86,7 @@
         this.startPoint = new spqr.Basic.Point3D(startPoint.x, startPoint.y, startPoint.z)
         this.targetPoint = targetPoint;
         var dt = spqr.Context.config.updateDeltaTime;
-        var dS = (speed / 1000) * dt;
+        var dS = parseFloat(((speed / 1000) * dt).toFixed(1));
 
         if(startPoint.x != targetPoint.x)
         {
@@ -156,9 +156,14 @@
         var currentPoint = this.currentPoint;
         var targetPoint = this.targetPoint;
 
-        currentPoint.x += this.getDelta(this.dx, currentPoint.x, targetPoint.x);
-        currentPoint.y += this.getDelta(this.dy, currentPoint.y, targetPoint.y);
-        currentPoint.z += this.getDelta(this.dz, currentPoint.z, targetPoint.z);
+        var dx = this.getDelta(this.dx, currentPoint.x, targetPoint.x);
+        currentPoint.x += dx;
+        var dy = this.getDelta(this.dy, currentPoint.y, targetPoint.y);
+        currentPoint.y += dy;
+        var dz = this.getDelta(this.dz, currentPoint.z, targetPoint.z);
+        currentPoint.z += dz;
+
+        //console.log(this.entity.name +  " - dx:" + dx + "(" + currentPoint.x + ")" + " dy:" + dy + "(" + currentPoint.y + ")" + " dz:" + dz + "(" + currentPoint.z + ")");
 
         this.entity.translation = currentPoint;
 
@@ -239,7 +244,7 @@
                     pos = lastPoint;
                 }
 
-                return new Loop(pathStates, 5, false)
+                return new Loop(pathStates, 5, true);
             }
         }
 
