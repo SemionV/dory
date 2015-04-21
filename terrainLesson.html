@@ -114,13 +114,13 @@
             scene.setAction("state.push", function(e)
             {
                 window.startDate = Date.now();
-                //console.log("state.push: " + e.stateName);
+                console.log("state.push: " + e.stateName);
             });
 
             scene.setAction("state.pop", function(e)
             {
-                //console.log("state.pop: " + e.stateName + " " + (Date.now() - window.startDate));
-                //console.log("current state: " + spqr.Context.getScene().getEntity("chair").stateMachine.stacks["main"].states[0].name);
+                console.log("state.pop: " + e.stateName + " " + (Date.now() - window.startDate));
+                console.log("current state: " + spqr.Context.getScene().getEntity("chair").stateMachine.stacks["main"].states[0].name);
             });
 
             var fpsNode = document.getElementById("FPS");
