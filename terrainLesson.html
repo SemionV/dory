@@ -133,7 +133,8 @@
                 var chair = new spqr.Scene.SpriteEntity(
                         new spqr.Basic.Texture(spqr.Context.resources.images["objects.chair"], spqr.Context.tileWidth, spqr.Context.tileHeight),
                         new spqr.Basic.Box(40, 40, 35));
-                chair.setTranslation(new spqr.Basic.Point3D(100, 100, 0));
+                chair.setTranslation(new spqr.Basic.Point3D(0, 0, 0));
+                chair.name = "chair";
 
                 var stack = chair.stateMachine.registerStack("main");
                 stack.push(new spqr.TerrainLesson.IdleState(chair));
@@ -145,7 +146,8 @@
                 var unit1 = new spqr.Scene.SpriteEntity(
                         new spqr.Basic.Texture(spqr.Context.resources.images["actor.warrior"], spqr.Context.tileWidth, spqr.Context.tileHeight),
                         new spqr.Basic.Box(spqr.Context.tileWidth, spqr.Context.tileHeight, spqr.Context.tileAltitude));
-                unit1.setTranslation(new spqr.Basic.Point3D(200, 200, 0));
+                unit1.setTranslation(new spqr.Basic.Point3D(250, 250, 0));
+                unit1.name = "hero";
 
                 var stack = unit1.stateMachine.registerStack("main");
                 stack.push(new spqr.TerrainLesson.IdleState(unit1));

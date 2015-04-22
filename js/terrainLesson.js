@@ -160,6 +160,8 @@
         currentPoint.y = ((currentPoint.y * 10) + (this.getDelta(this.dy, currentPoint.y, targetPoint.y)) * 10) / 10;
         currentPoint.z = ((currentPoint.z * 10) + (this.getDelta(this.dz, currentPoint.z, targetPoint.z)) * 10) / 10;
 
+        //console.log(this.entity.name +  " - dx:" + dx + "(" + currentPoint.x + ")" + " dy:" + dy + "(" + currentPoint.y + ")" + " dz:" + dz + "(" + currentPoint.z + ")");
+
         this.entity.translation = currentPoint;
 
         if(currentPoint.x == targetPoint.x && currentPoint.y == targetPoint.y && currentPoint.z == targetPoint.z)
@@ -239,7 +241,7 @@
                     pos = lastPoint;
                 }
 
-                return new Loop(pathStates, 5, false)
+                return new Loop(pathStates, 5, true);
             }
         }
 
