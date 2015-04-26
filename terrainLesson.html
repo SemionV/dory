@@ -93,7 +93,9 @@
                 "terrain.grass": "img/1-grass-1.png",
                 "terrain.hole": "img/hole.png",
                 "objects.chair": "img/2-chair1.png",
-                "actor.warrior": "img/warrior/looking se0000.png"
+                "actor.warrior": "img/warrior/looking se0000.png",
+                "warrior_spritesheet1": "img/warrior/warrior_spritesheet1.png",
+                "warrior_spritesheet2": "img/warrior/warrior_spritesheet2.png"
             }).then(function()
                     {
                         run(td, td2);
@@ -130,23 +132,20 @@
             });
 
             {
-                var chair = new spqr.Scene.SpriteEntity(
-                        new spqr.Basic.Texture(spqr.Context.resources.images["objects.chair"], spqr.Context.tileWidth, spqr.Context.tileHeight),
-                        new spqr.Basic.Box(40, 40, 35));
-                chair.setTranslation(new spqr.Basic.Point3D(0, 0, 0));
+                var chair = new spqr.Scene.SpriteEntity(new spqr.Basic.Box(40, 40, 35));
+                chair.setSprite(new spqr.Basic.Texture(spqr.Context.resources.images["objects.chair"], spqr.Context.tileWidth, spqr.Context.tileHeight));
+                chair.setTranslation(new spqr.Basic.Point3D(50, 50, 0));
                 chair.name = "chair";
 
-                var stack = chair.stateMachine.registerStack("main");
-                stack.push(new spqr.TerrainLesson.IdleState(chair));
+                /*var stack = chair.stateMachine.registerStack("main");
+                stack.push(new spqr.TerrainLesson.IdleState(chair));*/
 
                 scene.addEntity("chair", chair);
             }
 
             {
-                var unit1 = new spqr.Scene.SpriteEntity(
-                        new spqr.Basic.Texture(spqr.Context.resources.images["actor.warrior"], spqr.Context.tileWidth, spqr.Context.tileHeight),
-                        new spqr.Basic.Box(spqr.Context.tileWidth, spqr.Context.tileHeight, spqr.Context.tileAltitude));
-                unit1.setTranslation(new spqr.Basic.Point3D(250, 250, 0));
+                var unit1 = new spqr.Scene.SpriteEntity(new spqr.Basic.Box(spqr.Context.tileWidth, spqr.Context.tileHeight, spqr.Context.tileAltitude));
+                unit1.setTranslation(new spqr.Basic.Point3D(50, 100, 0));
                 unit1.name = "hero";
 
                 var stack = unit1.stateMachine.registerStack("main");

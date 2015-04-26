@@ -36,38 +36,83 @@
         return d.promise();
     });
 
-    var c =
+    var SpriteSheet = function(image, frameWidth, frameHeight, frameOffsetX, frameOffsetY)
     {
-        image: "image.key",
-        frame: {width: 64, height: 64},
-        animations:
-        {
-            walk: {startFrame: 0, endFrame: 10, fps: 24},
-            run: {startFrame: 11, endFrame: 20, fps: 24}
-        }
-    }
-
-    var SpriteSheet = function(definition)
-    {
-        this.definition = definition;
-
-        this.image = spqr.Context.resources.images[definition.image];
-        if(this.image)
-        {
-            this.framesPerRow = this.images.width / definition.frame.width;
-            this.rowsCount = this.image.height / definition.frame.height;
-        }
+        this.image = image;
+        this.frameWidth = frameWidth;
+        this.frameHeight = frameHeight;
+        this.frameOffsetX = frameOffsetX;
+        this.frameOffsetY = frameOffsetY;
+        this.framesPerRow = this.image.width / frameWidth;
+        this.rowsCount = this.image.height / frameHeight;
     };
 
-    SpriteSheet.method("setAnimation", function(key)
+    SpriteSheet.method("getFrame", function(index)
     {
-        this.animation = this.definition.animations[key];
-    });
-    
-    SpriteSheet.method("getFrame", function()
-    {
-        
+        var rowIndex = Math.floor(index / this.framesPerRow);
+        var colIndex = index % this.framesPerRow;
+        var y = this.frameHeight * rowIndex;
+        var x = this.frameWidth * colIndex;
+
+        return new Sprite(this.image, x, y, this.frameWidth, this.frameHeight, this.frameOffsetX, this.frameOffsetY);
     });
 
+    var Sprite = function(image, clipX, clipY, clipWidth, clipHeight, offsetX, offsetY)
+    {
+        this.clipX = clipX;
+        this.clipY = clipY;
+        this.offsetX = offsetX;
+        this.offsetY = offsetY;
+        this.clipWidth = clipWidth;
+        this.clipHeight = clipHeight;
+        this.image = image;
+    };
+
+    var Animation = function(spriteSheet, startFrame, endFrame, fps)
+    {
+        this.spriteSheet = spriteSheet;
+        this.startFrame = startFrame;
+        this.endFrame = endFrame;
+        this.fps = fps;
+        this.frameCount = (endFrame - startFrame) + 1;
+        this.dt = spqr.Context.config.updateDeltaTime;
+        this.oneFrameTime = 1000 / fps;
+        this.currentFrame = 0;
+        this.frameTimePassed = 0;
+    };
+
+    Animation.method("reset", function()
+    {
+        this.currentFrame = 0;
+        this.frameTimePassed = 0;
+    });
+
+    Animation.method("update", function(events)
+    {
+        this.frameTimePassed += this.dt;
+        if(this.frameTimePassed >= this.oneFrameTime)
+        {
+            this.frameTimePassed = this.frameTimePassed - this.oneFrameTime;
+
+            if(this.currentFrame < (this.frameCount - 1))
+            {
+                this.currentFrame++;
+            }
+            else
+            {
+                this.currentFrame = 0;
+            }
+        }
+    });
+
+    Animation.method("getCurrentFrame", function()
+    {
+        return this.spriteSheet.getFrame((this.currentFrame + this.startFrame));
+    });
+
+    spqr.Resources = {};
     spqr.ResourceManager = ResourceManager;
+    spqr.Resources.SpriteSheet = SpriteSheet;
+    spqr.Resources.Animation = Animation;
+    spqr.Resources.Sprite = Sprite;
 })();

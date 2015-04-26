@@ -2,21 +2,28 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/basicTypes.js" afterPath="$PROJECT_DIR$/js/basicTypes.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/render.js" afterPath="$PROJECT_DIR$/js/render.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/resources.js" afterPath="$PROJECT_DIR$/js/resources.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/scene.js" afterPath="$PROJECT_DIR$/js/scene.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/terrainLesson.html" afterPath="$PROJECT_DIR$/terrainLesson.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/terrainLesson.js" afterPath="$PROJECT_DIR$/js/terrainLesson.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Sandbox.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" time="1429288706435" ignored="false" />
+    <file path="/Dummy.txt" changelist="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" time="1429975063392" ignored="false" />
     <file path="/engine.js" changelist="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" time="1429261896867" ignored="false" />
-    <file path="/terrainLesson.js" changelist="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" time="1429282583740" ignored="false" />
+    <file path="/terrainLesson.js" changelist="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" time="1430052740464" ignored="false" />
     <file path="/context.js" changelist="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" time="1429289004497" ignored="false" />
     <file path="/a.dummy" changelist="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" time="1429261857603" ignored="false" />
     <file path="/eventsManager.js" changelist="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" time="1429262207665" ignored="false" />
     <file path="/state.js" changelist="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" time="1429279783144" ignored="false" />
-    <file path="/basicTypes.js" changelist="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" time="1429272490516" ignored="false" />
-    <file path="/terrainLesson.html" changelist="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" time="1429301024206" ignored="false" />
-    <file path="/scene.js" changelist="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" time="1429300981087" ignored="false" />
+    <file path="/basicTypes.js" changelist="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" time="1430047752564" ignored="false" />
+    <file path="/terrainLesson.html" changelist="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" time="1430044710858" ignored="false" />
+    <file path="/scene.js" changelist="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" time="1430046137230" ignored="false" />
+    <file path="/resources.js" changelist="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" time="1430046354126" ignored="false" />
+    <file path="/render.js" changelist="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" time="1430043916239" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +46,7 @@
       <file leaf-file-name="terrainLesson.html" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/terrainLesson.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="156" column="14" selection-start="6003" selection-end="6003" vertical-scroll-proportion="0.6964286">
+            <state line="147" column="66" selection-start="5740" selection-end="5740" vertical-scroll-proportion="0.6357143">
               <folding />
             </state>
           </provider>
@@ -48,7 +55,7 @@
       <file leaf-file-name="terrainLesson.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/terrainLesson.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="216" column="32" selection-start="6331" selection-end="6331" vertical-scroll-proportion="0.0">
+            <state line="339" column="20" selection-start="11283" selection-end="11283" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -57,7 +64,16 @@
       <file leaf-file-name="basicTypes.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/basicTypes.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="23" column="6" selection-start="488" selection-end="488" vertical-scroll-proportion="0.0">
+            <state line="48" column="38" selection-start="1091" selection-end="1091" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="resources.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/resources.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="86" column="33" selection-start="2478" selection-end="2478" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -66,7 +82,7 @@
       <file leaf-file-name="render.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/render.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+            <state line="76" column="182" selection-start="2177" selection-end="2177" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -75,16 +91,16 @@
       <file leaf-file-name="scene.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/scene.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="114" column="7" selection-start="2600" selection-end="2600" vertical-scroll-proportion="0.0">
+            <state line="118" column="52" selection-start="2705" selection-end="2705" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="engine.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/js/engine.js">
+      <file leaf-file-name="spqr.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/spqr.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="101" column="38" selection-start="2367" selection-end="2367" vertical-scroll-proportion="0.0">
+            <state line="3" column="44" selection-start="66" selection-end="118" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -93,7 +109,7 @@
       <file leaf-file-name="context.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/context.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="36" selection-start="180" selection-end="180" vertical-scroll-proportion="0.0">
+            <state line="10" column="36" selection-start="253" selection-end="253" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -103,15 +119,6 @@
         <entry file="file://$PROJECT_DIR$/js/inputManager.js">
           <provider selected="true" editor-type-id="text-editor">
             <state line="21" column="24" selection-start="420" selection-end="420" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="eventsManager.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/js/eventsManager.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="20" column="41" selection-start="412" selection-end="427" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -146,11 +153,13 @@
       <list>
         <option value="$PROJECT_DIR$/js/engine.js" />
         <option value="$PROJECT_DIR$/js/eventsManager.js" />
-        <option value="$PROJECT_DIR$/js/basicTypes.js" />
         <option value="$PROJECT_DIR$/js/state.js" />
-        <option value="$PROJECT_DIR$/js/terrainLesson.js" />
         <option value="$PROJECT_DIR$/js/context.js" />
+        <option value="$PROJECT_DIR$/js/render.js" />
+        <option value="$PROJECT_DIR$/js/resources.js" />
+        <option value="$PROJECT_DIR$/js/basicTypes.js" />
         <option value="$PROJECT_DIR$/js/scene.js" />
+        <option value="$PROJECT_DIR$/js/terrainLesson.js" />
         <option value="$PROJECT_DIR$/terrainLesson.html" />
       </list>
     </option>
@@ -191,6 +200,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -223,9 +233,26 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Sandbox" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Sandbox" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lib" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Scratches" />
     </panes>
   </component>
@@ -237,8 +264,9 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../TheGame" />
     <property name="FullScreen" value="false" />
     <property name="DefaultHtmlFileTemplate" value="Html5" />
-    <property name="options.searchVisible" value="true" />
+    <property name="GoToClass.includeJavaFiles" value="false" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RunManager">
     <configuration default="true" type="DartUnitRunConfigurationType" factoryName="DartUnit">
@@ -251,7 +279,7 @@
     </configuration>
     <configuration default="true" type="JavascriptDebugSession" factoryName="Local" singleton="true">
       <JSDebuggerConfigurationSettings>
-        <option name="engineId" />
+        <option name="engineId" value="embedded" />
         <option name="fileUrl" />
       </JSDebuggerConfigurationSettings>
       <method />
@@ -314,7 +342,7 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32907662" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17261904" sideWeight="0.67092335" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.15059523" sideWeight="0.67092335" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.15" sideWeight="0.67092335" order="1" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295964" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
@@ -406,49 +434,9 @@
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/spqr.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/resources.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/terrain.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/lib/easeljs-0.8.0.combined.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/render.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/engine.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="101" column="38" selection-start="2367" selection-end="2367" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/inputManager.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="24" selection-start="420" selection-end="420" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -460,23 +448,46 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/js/engine.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="118" column="7" selection-start="2818" selection-end="2818" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/js/context.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="36" selection-start="180" selection-end="180" vertical-scroll-proportion="0.0">
+        <state line="10" column="36" selection-start="253" selection-end="253" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/terrainLesson.js">
+    <entry file="file://$PROJECT_DIR$/js/inputManager.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="216" column="32" selection-start="6331" selection-end="6331" vertical-scroll-proportion="0.0">
+        <state line="21" column="24" selection-start="420" selection-end="420" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/basicTypes.js">
+    <entry file="file://$PROJECT_DIR$/js/spqr.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="6" selection-start="488" selection-end="488" vertical-scroll-proportion="0.0">
+        <state line="3" column="44" selection-start="66" selection-end="118" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/lib/easeljs-0.8.0.combined.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8599" column="54" selection-start="297023" selection-end="297032" vertical-scroll-proportion="-19.2">
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/render.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="76" column="182" selection-start="2177" selection-end="2177" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -488,16 +499,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/js/resources.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="86" column="33" selection-start="2478" selection-end="2478" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/basicTypes.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="48" column="38" selection-start="1091" selection-end="1091" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/js/scene.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="114" column="7" selection-start="2600" selection-end="2600" vertical-scroll-proportion="0.0">
+        <state line="118" column="52" selection-start="2705" selection-end="2705" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/terrainLesson.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="339" column="20" selection-start="11283" selection-end="11283" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/terrainLesson.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="156" column="14" selection-start="6003" selection-end="6003" vertical-scroll-proportion="0.6964286">
+        <state line="147" column="66" selection-start="5740" selection-end="5740" vertical-scroll-proportion="0.6357143">
           <folding />
         </state>
       </provider>

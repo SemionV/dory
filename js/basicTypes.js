@@ -16,6 +16,82 @@
         return new Point2D(((2 * point.y + point.x) / 2), ((2 * point.y - point.x) / 2));
     };
 
+    Point2D.getDirection = function(point)
+    {
+        if(point.x == 0 && point.y == -1)
+        {
+            return "N";
+        }
+        else if(point.x == 1 && point.y == -1)
+        {
+            return "NE";
+        }
+        else if(point.x == 1 && point.y == 0)
+        {
+            return "E";
+        }
+        else if(point.x == 1 && point.y == 1)
+        {
+            return "SE";
+        }
+        else if(point.x == 0 && point.y == 1)
+        {
+            return "S";
+        }
+        else if(point.x == -1 && point.y == 1)
+        {
+            return "SW";
+        }
+        else if(point.x == -1 && point.y == 0)
+        {
+            return "W";
+        }
+        else if(point.x == -1 && point.y == -1)
+        {
+            return "NW";
+        }
+
+        return "E";
+    };
+
+    Point2D.directionToPoint3D = function(direction)
+    {
+        if(direction == "N")
+        {
+            return new Point3D(0, -1, 0);
+        }
+        else if(direction == "NE")
+        {
+            return new Point3D(1, -1, 0);
+        }
+        else if(direction == "E")
+        {
+            return new Point3D(1, 0, 0);
+        }
+        else if(direction == "SE")
+        {
+            return new Point3D(1, 1, 0);
+        }
+        else if(direction == "S")
+        {
+            return new Point3D(0, 1, 0);
+        }
+        else if(direction == "SW")
+        {
+            return new Point3D(-1, 1, 0);
+        }
+        else if(direction == "W")
+        {
+            return new Point3D(-1, 0, 0);
+        }
+        else if(direction == "NW")
+        {
+            return new Point3D(-1, -1, 0);
+        }
+
+        return new new Point3D(1, 0, 0);
+    };
+
     var Point3D = function(x, y, z)
     {
         this.x = x;

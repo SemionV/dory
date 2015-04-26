@@ -114,8 +114,9 @@
         this.stateMachine.update(events);
     });
 
-    var SpriteEntity = function(texture, boundingBox)
+    var SpriteEntity = function(boundingBox)
     {
+        this.direction = new spqr.Basic.Point3D(1, 0, 0);
         this.stateMachine = new spqr.States.StateMachine();
 
         this.boundingBoxSize = boundingBox;
@@ -125,15 +126,36 @@
         var br = new spqr.Basic.Point3D(tl.x + boundingBox.width, tl.y + boundingBox.height, 0);
         var bl = new spqr.Basic.Point3D(tl.x, tl.y + boundingBox.height, 0);
 
-        var polygon = this.polygon = new spqr.Basic.Polygon(tl, tr, br, bl);
-
-        polygon.setTexture(texture);
+        this.polygon = new spqr.Basic.Polygon(tl, tr, br, bl);
     };
     SpriteEntity.inherits(Entity);
 
     SpriteEntity.method("draw", function(renderer)
     {
         renderer.addPolygon(this.polygon);
+    });
+
+    SpriteEntity.method("setAnimation", function(animation)
+    {
+        this.animation = animation;
+        var sprite = animation.getCurrentFrame();
+        this.polygon.setTexture(sprite);
+    });
+
+    SpriteEntity.method("setSprite", function(sprite)
+    {
+        this.polygon.setTexture(sprite);
+    });
+
+    SpriteEntity.method("update", function(events)
+    {
+        if(this.animation)
+        {
+            this.animation.update(events);
+            var sprite = this.animation.getCurrentFrame();
+            this.polygon.setTexture(sprite);
+        }
+        this.uber('update', events);
     });
 
     Node.method("drawBoundingBox", function(renderer)

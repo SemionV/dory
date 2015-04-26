@@ -60,7 +60,7 @@
             var z = direction.z ? pos.z + (direction.z * tileAltitude) : pos.z;
 
             var lastPoint = new spqr.Basic.Point3D(x, y, z);
-            this.pathStates.push(new MoveEntity(entity, pos, lastPoint, speed));
+            this.pathStates.push(new MoveHero(entity, pos, lastPoint, speed));
 
             pos = lastPoint;
         }
@@ -176,6 +176,17 @@
     {
         this.name = "Idle";
         this.entity = entity;
+
+        var spriteSheet = new spqr.Resources.SpriteSheet(spqr.Context.resources.images["warrior_spritesheet1"], 96, 96, spqr.Context.tileWidth, spqr.Context.tileHeight);
+
+        this.animationLookingNE = new spqr.Resources.Animation(spriteSheet, 00, 12, 8);
+        this.animationLookingNW = new spqr.Resources.Animation(spriteSheet, 13, 25, 8);
+        this.animationLookingN = new spqr.Resources.Animation(spriteSheet, 26, 38, 8);
+        this.animationLookingW = new spqr.Resources.Animation(spriteSheet, 39, 51, 8);
+        this.animationLookingSE = new spqr.Resources.Animation(spriteSheet, 52, 64, 8);
+        this.animationLookingE = new spqr.Resources.Animation(spriteSheet, 65, 77, 8);
+        this.animationLookingS = new spqr.Resources.Animation(spriteSheet, 78, 90, 8);
+        this.animationLookingSW = new spqr.Resources.Animation(spriteSheet, 91, 103, 8);
     };
     IdleState.inherits(spqr.States.State);
 
@@ -189,7 +200,49 @@
         var y = direction.y ? pos.y + (direction.y * tileHeight) : pos.y;
         var z = direction.z ? pos.z + (direction.z * tileAltitude) : pos.z;
 
-        return new MoveEntity(this.entity, pos, new spqr.Basic.Point3D(x, y, z), speed);
+        return new MoveHero(this.entity, pos, new spqr.Basic.Point3D(x, y, z), speed);
+    });
+
+    IdleState.method("activate", function()
+    {
+        var direction = spqr.Basic.Point2D.getDirection(this.entity.direction);
+        if(direction == "N")
+        {
+            this.entity.setAnimation(this.animationLookingN);
+        }
+        else if(direction == "NE")
+        {
+            this.entity.setAnimation(this.animationLookingNE);
+        }
+        else if(direction == "E")
+        {
+            this.entity.setAnimation(this.animationLookingE);
+        }
+        else if(direction == "SE")
+        {
+            this.entity.setAnimation(this.animationLookingSE);
+        }
+        else if(direction == "S")
+        {
+            this.entity.setAnimation(this.animationLookingS);
+        }
+        else if(direction == "SW")
+        {
+            this.entity.setAnimation(this.animationLookingSW);
+        }
+        else if(direction == "W")
+        {
+            this.entity.setAnimation(this.animationLookingW);
+        }
+        else if(direction == "NW")
+        {
+            this.entity.setAnimation(this.animationLookingNW);
+        }
+    });
+
+    IdleState.method("deactivate", function()
+    {
+        this.entity.animation.reset();
     });
 
     IdleState.method("update", function(events)
@@ -200,19 +253,19 @@
 
             if(event.name == "keypress.left")
             {
-                return this.getMoveEntityState(new spqr.Basic.Point3D(-1, 0, 0), spqr.Context.tileWidth * 2);
+                return this.getMoveEntityState(spqr.Basic.Point2D.directionToPoint3D("W"), spqr.Context.tileWidth * 2);
             }
             if(event.name == "keypress.right")
             {
-                return this.getMoveEntityState(new spqr.Basic.Point3D(1, 0, 0), spqr.Context.tileWidth * 2);
+                return this.getMoveEntityState(spqr.Basic.Point2D.directionToPoint3D("E"), spqr.Context.tileWidth * 2);
             }
             if(event.name == "keypress.up")
             {
-                return this.getMoveEntityState(new spqr.Basic.Point3D(0, -1, 0), spqr.Context.tileHeight * 2);
+                return this.getMoveEntityState(spqr.Basic.Point2D.directionToPoint3D("N"), spqr.Context.tileHeight * 2);
             }
             if(event.name == "keypress.down")
             {
-                return this.getMoveEntityState(new spqr.Basic.Point3D(0, 1, 0), spqr.Context.tileHeight * 2);
+                return this.getMoveEntityState(spqr.Basic.Point2D.directionToPoint3D("S"), spqr.Context.tileHeight * 2);
             }
             if(event.name == "player.path")
             {
@@ -236,7 +289,7 @@
                     var z = direction.z ? pos.z + (direction.z * tileAltitude) : pos.z;
 
                     var lastPoint = new spqr.Basic.Point3D(x, y, z);
-                    pathStates.push(new MoveEntity(this.entity, pos, lastPoint, spqr.Context.tileHeight * 2));
+                    pathStates.push(new MoveHero(this.entity, pos, lastPoint, spqr.Context.tileHeight * 2));
 
                     pos = lastPoint;
                 }
@@ -248,6 +301,89 @@
         return this;
     });
 
+    var MoveHero = function(entity, startPoint, targetPoint, speed)
+    {
+        this.moveEntity = new MoveEntity(entity, startPoint, targetPoint, speed);
+
+        this.entity = entity;
+        this.startPoint = startPoint;
+        this.targetPoint = targetPoint;
+    };
+    MoveHero.inherits(spqr.States.State);
+
+    MoveHero.method("update", function(events)
+    {
+        var result = this.moveEntity.update(events);
+        return result ? this : null;
+    });
+
+    MoveHero.method("deactivate", function()
+    {
+        this.moveEntity.deactivate();
+    });
+
+    MoveHero.method("activate", function()
+    {
+        this.moveEntity.activate();
+
+        var dx = this.targetPoint.x - this.startPoint.x;
+        var x = dx != 0 ? dx / Math.abs(dx) : 0;
+        var dy = this.targetPoint.y - this.startPoint.y;
+        var y = dy != 0 ? dy / Math.abs(dy) : 0;
+
+        this.entity.direction = new spqr.Basic.Point3D(x, y, 0);
+
+        /*10, 20 OR 10, 14*/
+        var spriteSheet = new spqr.Resources.SpriteSheet(spqr.Context.resources.images["warrior_spritesheet2"], 128, 128, spqr.Context.tileWidth + 10, spqr.Context.tileHeight + 14);
+        var direction = spqr.Basic.Point2D.getDirection(this.entity.direction);
+
+        var fps = 14;
+
+        if(direction == "NE")
+        {
+            this.entity.setAnimation(new spqr.Resources.Animation(spriteSheet, 64, 71, fps));
+        }
+        else if(direction == "NW")
+        {
+            this.entity.setAnimation(new spqr.Resources.Animation(spriteSheet, 72, 79, fps));
+        }
+        else if(direction == "N")
+        {
+            this.entity.setAnimation(new spqr.Resources.Animation(spriteSheet, 80, 87, fps));
+        }
+        else if(direction == "W")
+        {
+            this.entity.setAnimation(new spqr.Resources.Animation(spriteSheet, 88, 95, fps));
+        }
+        else if(direction == "SE")
+        {
+            this.entity.setAnimation(new spqr.Resources.Animation(spriteSheet, 96, 103, fps));
+        }
+        else if(direction == "E")
+        {
+            this.entity.setAnimation(new spqr.Resources.Animation(spriteSheet, 104, 111, fps));
+        }
+        else if(direction == "S")
+        {
+            this.entity.setAnimation(new spqr.Resources.Animation(spriteSheet, 112, 119, fps));
+        }
+        else if(direction == "SW")
+        {
+            this.entity.setAnimation(new spqr.Resources.Animation(spriteSheet, 120, 127, fps));
+        }
+    });
+
     spqr.TerrainLesson = {};
     spqr.TerrainLesson.IdleState = IdleState;
 })();
+
+/*
+N -> NE
+NE -> E
+E -> SE
+SE -> S
+S -> SW
+SW -> W
+W -> NW
+NW -> N
+*/

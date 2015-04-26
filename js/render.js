@@ -71,7 +71,15 @@
                 {
                     point.y -= texture.offsetY;
                 }
-                this.context.drawImage(texture.image, point.x, point.y);
+
+                if(texture.clipWidth)
+                {
+                    this.context.drawImage(texture.image, texture.clipX, texture.clipY, texture.clipWidth, texture.clipHeight, point.x, point.y, texture.clipWidth, texture.clipHeight);
+                }
+                else
+                {
+                    this.context.drawImage(texture.image, point.x, point.y);
+                }
             }
             else
             {
