@@ -177,16 +177,31 @@
         this.name = "Idle";
         this.entity = entity;
 
-        var spriteSheet = new spqr.Resources.SpriteSheet(spqr.Context.resources.images["warrior_spritesheet1"], 96, 96, spqr.Context.tileWidth, spqr.Context.tileHeight);
+        var spriteSheet = new spqr.Resources.SpriteSheet(spqr.Context.resources.images["warrior_spritesheet1"], 96, 96);
 
-        this.animationLookingNE = new spqr.Resources.Animation(spriteSheet, 00, 12, 8);
+        this.animationLookingNE = new spqr.Resources.Animation(spriteSheet, 0, 12, 8);
+        spriteSheet.setFramesOffset(0, 12, spqr.Context.tileWidth, spqr.Context.tileHeight);
+
         this.animationLookingNW = new spqr.Resources.Animation(spriteSheet, 13, 25, 8);
+        spriteSheet.setFramesOffset(13, 25, spqr.Context.tileWidth, spqr.Context.tileHeight);
+
         this.animationLookingN = new spqr.Resources.Animation(spriteSheet, 26, 38, 8);
+        spriteSheet.setFramesOffset(26, 38, spqr.Context.tileWidth, spqr.Context.tileHeight);
+
         this.animationLookingW = new spqr.Resources.Animation(spriteSheet, 39, 51, 8);
+        spriteSheet.setFramesOffset(39, 51, spqr.Context.tileWidth, spqr.Context.tileHeight);
+
         this.animationLookingSE = new spqr.Resources.Animation(spriteSheet, 52, 64, 8);
+        spriteSheet.setFramesOffset(52, 64, spqr.Context.tileWidth, spqr.Context.tileHeight);
+
         this.animationLookingE = new spqr.Resources.Animation(spriteSheet, 65, 77, 8);
+        spriteSheet.setFramesOffset(65, 77, spqr.Context.tileWidth, spqr.Context.tileHeight);
+
         this.animationLookingS = new spqr.Resources.Animation(spriteSheet, 78, 90, 8);
+        spriteSheet.setFramesOffset(78, 90, spqr.Context.tileWidth, spqr.Context.tileHeight);
+
         this.animationLookingSW = new spqr.Resources.Animation(spriteSheet, 91, 103, 8);
+        spriteSheet.setFramesOffset(91, 103, spqr.Context.tileWidth, spqr.Context.tileHeight);
     };
     IdleState.inherits(spqr.States.State);
 
@@ -334,7 +349,19 @@
         this.entity.direction = new spqr.Basic.Point3D(x, y, 0);
 
         /*10, 20 OR 10, 14*/
-        var spriteSheet = new spqr.Resources.SpriteSheet(spqr.Context.resources.images["warrior_spritesheet2"], 128, 128, spqr.Context.tileWidth + 10, spqr.Context.tileHeight + 14);
+        var tileWidth = spqr.Context.tileWidth;
+        var tileHeight = spqr.Context.tileHeight;
+        var spriteSheet = new spqr.Resources.SpriteSheet(spqr.Context.resources.images["warrior_spritesheet2"], 128, 128);
+
+        spriteSheet.setFramesOffset(64, 71, tileWidth, tileHeight);
+        spriteSheet.setFramesOffset(72, 79, tileWidth, tileHeight);
+        spriteSheet.setFramesOffset(80, 87, tileWidth + 10, tileHeight + 20);
+        spriteSheet.setFramesOffset(88, 95, tileWidth + 16, tileHeight + 14);
+        spriteSheet.setFramesOffset(96, 103, tileWidth, tileHeight);
+        spriteSheet.setFramesOffset(104, 111, tileWidth + 16, tileHeight + 14);//E
+        spriteSheet.setFramesOffset(112, 119, tileWidth + 10, tileHeight + 20);
+        spriteSheet.setFramesOffset(120, 127, tileWidth, tileHeight);
+
         var direction = spqr.Basic.Point2D.getDirection(this.entity.direction);
 
         var fps = 14;

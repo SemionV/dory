@@ -36,16 +36,24 @@
         return d.promise();
     });
 
-    var SpriteSheet = function(image, frameWidth, frameHeight, frameOffsetX, frameOffsetY)
+    var SpriteSheet = function(image, frameWidth, frameHeight)
     {
         this.image = image;
         this.frameWidth = frameWidth;
         this.frameHeight = frameHeight;
-        this.frameOffsetX = frameOffsetX;
-        this.frameOffsetY = frameOffsetY;
         this.framesPerRow = this.image.width / frameWidth;
         this.rowsCount = this.image.height / frameHeight;
+        this.offsets = new Array(this.framesPerRow * this.rowsCount);
     };
+
+    SpriteSheet.method("setFramesOffset", function(startFrame, endFrame, x, y)
+    {
+        var offset = {x: x, y: y};
+        for(var i = startFrame; i <= endFrame; i++)
+        {
+            this.offsets[i] = offset;
+        }
+    });
 
     SpriteSheet.method("getFrame", function(index)
     {
@@ -53,8 +61,9 @@
         var colIndex = index % this.framesPerRow;
         var y = this.frameHeight * rowIndex;
         var x = this.frameWidth * colIndex;
+        var offset = this.offsets[index];
 
-        return new Sprite(this.image, x, y, this.frameWidth, this.frameHeight, this.frameOffsetX, this.frameOffsetY);
+        return new Sprite(this.image, x, y, this.frameWidth, this.frameHeight, offset ? offset.x : 0, offset ? offset.y : 0);
     });
 
     var Sprite = function(image, clipX, clipY, clipWidth, clipHeight, offsetX, offsetY)

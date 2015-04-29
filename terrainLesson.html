@@ -154,6 +154,23 @@
                 scene.addEntity("unit1", unit1);
             }
 
+            {
+                var spriteSheet1 = new spqr.Resources.SpriteSheet(spqr.Context.resources.images["warrior_spritesheet1"], 96, 96);
+                var spriteSheet2 = new spqr.Resources.SpriteSheet(spqr.Context.resources.images["warrior_spritesheet2"], 128, 128);
+
+                var s1 = new spqr.Scene.SpriteEntity(new spqr.Basic.Box(spqr.Context.tileWidth, spqr.Context.tileHeight, spqr.Context.tileAltitude));
+                s1.setTranslation(new spqr.Basic.Point3D(200, 200, 0));
+                spriteSheet1.setFramesOffset(65, 65, spqr.Context.tileWidth, spqr.Context.tileHeight);
+                s1.setSprite(spriteSheet1.getFrame(65));
+                scene.addEntity("s1", s1);
+
+                var s2 = new spqr.Scene.SpriteEntity(new spqr.Basic.Box(spqr.Context.tileWidth, spqr.Context.tileHeight, spqr.Context.tileAltitude));
+                s2.setTranslation(new spqr.Basic.Point3D(200, 200, 0));
+                spriteSheet2.setFramesOffset(104, 104, spqr.Context.tileWidth + 16, spqr.Context.tileHeight + 14);
+                s2.setSprite(spriteSheet2.getFrame(104));
+                scene.addEntity("s2", s2);
+            }
+
             spqr.Context.engine.setActiveScene(scene);
             //spqr.Context.engine.setHeart(customHeart);
             spqr.Context.engine.run();
