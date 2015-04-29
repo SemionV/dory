@@ -355,11 +355,11 @@
 
         spriteSheet.setFramesOffset(64, 71, tileWidth, tileHeight);
         spriteSheet.setFramesOffset(72, 79, tileWidth, tileHeight);
-        spriteSheet.setFramesOffset(80, 87, tileWidth + 10, tileHeight + 20);
-        spriteSheet.setFramesOffset(88, 95, tileWidth + 16, tileHeight + 14);
+        spriteSheet.setFramesOffset(80, 87, tileWidth + 16, tileHeight + 16);//N
+        spriteSheet.setFramesOffset(88, 95, tileWidth + 16, tileHeight + 14);//W
         spriteSheet.setFramesOffset(96, 103, tileWidth, tileHeight);
         spriteSheet.setFramesOffset(104, 111, tileWidth + 16, tileHeight + 14);//E
-        spriteSheet.setFramesOffset(112, 119, tileWidth + 10, tileHeight + 20);
+        spriteSheet.setFramesOffset(112, 119, tileWidth + 12, tileHeight + 18);//S
         spriteSheet.setFramesOffset(120, 127, tileWidth, tileHeight);
 
         var direction = spqr.Basic.Point2D.getDirection(this.entity.direction);
