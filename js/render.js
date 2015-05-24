@@ -13,24 +13,8 @@
 
     RenderManager.method("addPolygon", function(/*spqr.Basic.Polygon*/polygon)
     {
-        if(this.matrixStack.length)
-        {
-            var translation = this.matrixStack[0];
-            var transformedPolygon = new spqr.Basic.Polygon();
-
-            for(var i = 0, l = polygon.length; i < l; i++)
-            {
-                transformedPolygon.push(spqr.Basic.Point3D.translate(polygon[i], translation));
-            }
-
-            transformedPolygon.texture = polygon.texture;
-            transformedPolygon.solid = polygon.solid;
-            this.polygonQueue.push(transformedPolygon);
-        }
-        else
-        {
-            this.polygonQueue.push(polygon);
-        }
+        var matrix = this.matrixStack.length ? this.matrixStack[0] : null;
+        this.polygonQueue.push({matrix: matrix, polygon: polygon});
     });
 
     RenderManager.method("pushMatrix", function(translation)
@@ -48,11 +32,13 @@
         this.context.clearRect(0, 0, this.width, this.height);
 
         this.context.save();
-        this.context.translate(400, 0);
+        //this.context.translate(400, 0);
 
         for(var i = 0, l = this.polygonQueue.length; i < l; i++)
         {
-            var polygon = this.polygonQueue[i];
+            var item = this.polygonQueue[i];
+            var polygon = item.polygon;
+            var matrix = item.matrix;
 
             if(!polygon.length)
                 continue;
@@ -61,7 +47,7 @@
             var texture = polygon.texture;
             if(texture)
             {
-                var point = spqr.Basic.Point3D.toIsometric(polygon[0]);
+                var point = spqr.Basic.Point3D.toIsometric(spqr.Basic.Point3D.translate(polygon[0], matrix));
 
                 if(texture.offsetX)
                 {
@@ -103,12 +89,12 @@
                 }
 
                 this.context.beginPath();
-                var pointStart = spqr.Basic.Point3D.toIsometric(polygon[0]);
+                var pointStart = spqr.Basic.Point3D.toIsometric(spqr.Basic.Point3D.translate(polygon[0], matrix));
                 this.context.moveTo(pointStart.x, pointStart.y);
 
                 for(var j = 1, k = polygon.length; j < k; j++)
                 {
-                    var point = spqr.Basic.Point3D.toIsometric(polygon[j]);
+                    var point = spqr.Basic.Point3D.toIsometric(spqr.Basic.Point3D.translate(polygon[j], matrix));
                     this.context.lineTo(point.x, point.y);
                 }
                 this.context.lineTo(pointStart.x, pointStart.y);

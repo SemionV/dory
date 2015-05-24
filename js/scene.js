@@ -53,6 +53,11 @@
         this.terrains[id] = terrain;
     });
 
+    SceneManager.method("setActiveCamera", function(camera)
+    {
+        this.camera = camera;
+    });
+
     SceneManager.method("draw", function()
     {
         var renderer = spqr.Context.renderer;
@@ -77,6 +82,11 @@
 
             if(entity.translation)
                 renderer.popMatrix();
+        }
+
+        if(this.camera)
+        {
+            this.camera.draw(renderer);
         }
 
         renderer.render();
@@ -208,8 +218,29 @@
         renderer.addPolygon(new spqr.Basic.Polygon(tl, tr, br, bl));
     });
 
+    var Camera = function(width, height)
+    {
+        this.viewPort = new spqr.Basic.Rectangle(0, 0, width, height);
+
+        var tl = spqr.Basic.Point2D.to2D(new spqr.Basic.Point2D(0, 0));
+        var tr = spqr.Basic.Point2D.to2D(new spqr.Basic.Point2D(width, 0));
+        var br = spqr.Basic.Point2D.to2D(new spqr.Basic.Point2D(width, height));
+        var bl = spqr.Basic.Point2D.to2D(new spqr.Basic.Point2D(0, height));
+
+        this.polygon = new spqr.Basic.Polygon(tl, tr, br, bl);
+        this.polygon.id = "camera";
+        this.polygon.setColor(200, 0, 0, 0);
+    };
+    Camera.inherits(Node);
+
+    Camera.method("draw", function(renderer)
+    {
+        renderer.addPolygon(this.polygon);
+    });
+
     spqr.Scene = {};
     spqr.Scene.Manager = SceneManager;
     spqr.Scene.Node = Node;
     spqr.Scene.SpriteEntity = SpriteEntity;
+    spqr.Scene.Camera = Camera;
 })();

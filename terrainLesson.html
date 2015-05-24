@@ -171,6 +171,11 @@
                 scene.addEntity("s2", s2);
             }
 
+            {
+                var camera = new spqr.Scene.Camera(200, 200);
+                scene.setActiveCamera(camera);
+            }
+
             spqr.Context.engine.setActiveScene(scene);
             //spqr.Context.engine.setHeart(customHeart);
             spqr.Context.engine.run();
@@ -178,7 +183,7 @@
     </script>
 </head>
 <body onload="init()">
-    <canvas id="canvas" width="800" height="400"></canvas>
+    <canvas id="canvas" width="800" height="400" style="border: solid 1px gray"></canvas>
     <div id="FPS"></div>
 </body>
 </html>

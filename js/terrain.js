@@ -56,9 +56,20 @@
 
     Terrain.method("draw", function(renderManager)
     {
+        var halfWidth = this.tileWidth / 2;
+        var halfHeight = this.tileHeight / 2;
+        var cameraMatrix = spqr.context.engine.scene.camera;
+
         for(var i = 0, l = this.polygons.length; i < l; i++)
         {
-            renderManager.addPolygon(this.polygons[i]);
+            var polygon = this.polygons[i];
+
+            var tl = polygon[0];
+            var polygonCenter = new spqr.Basic.Point3D(br.x + halfWidth, br.y + halfHeight, tl.z);
+
+            spqr.Basic.Point3D.translate(polygon, cameraMatrix);
+
+            renderManager.addPolygon(polygon);
         }
     });
 

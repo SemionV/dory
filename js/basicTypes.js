@@ -101,12 +101,17 @@
 
     Point3D.toIsometric = function(point)
     {
-        return new Point2D((point.x - point.y), (((point.x + point.y) / 2) + point.z));
+        return new Point2D((point.x - point.y), (((point.x + point.y) / 2) + (point.z ? point.z : 0)));
     };
 
     Point3D.translate = function(point, vector)
     {
-        return new Point3D(point.x + vector.x, point.y + vector.y, point.z + vector.z);
+        if(vector)
+        {
+            return new Point3D(point.x + vector.x, point.y + vector.y, point.z + vector.z);
+        }
+
+        return new Point3D(point.x, point.y, point.z);
     }
 
     var ColorRgba = function(r, g, b, a)
@@ -172,6 +177,14 @@
         this.altitude = altitude;
     };
 
+    var Rectangle = function(x, y, width, height)
+    {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    };
+
     spqr.Basic = {};
     spqr.Basic.Point2D = Point2D;
     spqr.Basic.Point3D = Point3D;
@@ -180,4 +193,5 @@
     spqr.Basic.ColorRgba = ColorRgba;
     spqr.Basic.Texture = Texture;
     spqr.Basic.Box = Box;
+    spqr.Basic.Rectangle = Rectangle;
 })();
