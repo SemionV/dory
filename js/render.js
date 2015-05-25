@@ -32,7 +32,7 @@
         this.context.clearRect(0, 0, this.width, this.height);
 
         this.context.save();
-        //this.context.translate(400, 0);
+        this.context.translate(400, 0);
 
         for(var i = 0, l = this.polygonQueue.length; i < l; i++)
         {

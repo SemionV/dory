@@ -58,18 +58,26 @@
     {
         var halfWidth = this.tileWidth / 2;
         var halfHeight = this.tileHeight / 2;
-        var cameraMatrix = spqr.context.engine.scene.camera;
+        var cameraMatrix = spqr.Context.engine.scene.camera.translation;
+        var viewPort = spqr.Context.engine.scene.camera.viewPort;
 
         for(var i = 0, l = this.polygons.length; i < l; i++)
         {
             var polygon = this.polygons[i];
 
-            var tl = polygon[0];
-            var polygonCenter = new spqr.Basic.Point3D(br.x + halfWidth, br.y + halfHeight, tl.z);
-
-            spqr.Basic.Point3D.translate(polygon, cameraMatrix);
-
             renderManager.addPolygon(polygon);
+
+            var tl = polygon[0];
+            var polygonCenter = new spqr.Basic.Point3D(tl.x + halfWidth, tl.y + halfHeight, tl.z);
+
+            var isoCenter = spqr.Basic.Point3D.toIsometric(spqr.Basic.Point3D.translate(polygonCenter, cameraMatrix));
+
+            if(isoCenter.x >= viewPort.x && isoCenter.x <= (viewPort.x + viewPort.width)
+                && isoCenter.y >= viewPort.y && isoCenter.y <= (viewPort.y + viewPort.width))
+            {
+                var newPolygon = new spqr.Basic.Polygon(polygon[0], polygon[1], polygon[2], polygon[3]);
+                renderManager.addPolygon(newPolygon);
+            }
         }
     });
 
