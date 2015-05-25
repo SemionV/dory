@@ -185,6 +185,15 @@
         this.height = height;
     };
 
+    var Text = function(text, color)
+    {
+        this.text = text;
+        this.color = color;
+        this.solid = true;
+        this.offsetX = 0;
+        this.offsetY = 0;
+    };
+
     spqr.Basic = {};
     spqr.Basic.Point2D = Point2D;
     spqr.Basic.Point3D = Point3D;
@@ -194,4 +203,5 @@
     spqr.Basic.Texture = Texture;
     spqr.Basic.Box = Box;
     spqr.Basic.Rectangle = Rectangle;
+    spqr.Basic.Text = Text;
 })();

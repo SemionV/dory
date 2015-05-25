@@ -61,6 +61,8 @@
     SceneManager.method("draw", function()
     {
         var renderer = spqr.Context.renderer;
+        renderer.pushMatrix(this.camera.translation);
+
         for(var key in this.terrains)
         {
             var terrain = this.terrains[key];
@@ -83,6 +85,8 @@
             if(entity.translation)
                 renderer.popMatrix();
         }
+
+        renderer.popMatrix(this.camera.translation);
 
         if(this.camera)
         {
@@ -236,6 +240,21 @@
     Camera.method("draw", function(renderer)
     {
         renderer.addPolygon(this.polygon);
+    });
+
+    var Label = function(text)
+    {
+        this.text = text;
+    };
+    Label.inherits(Node);
+
+    Label.method("draw", function(renderer)
+    {
+        if(this.translation)
+            renderer.pushMatrix(this.translation);
+        renderer.addLabel(this.text);
+        if(this.translation)
+            renderer.popMatrix(this.translation);
     });
 
     spqr.Scene = {};

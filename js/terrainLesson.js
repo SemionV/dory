@@ -329,6 +329,10 @@
     MoveHero.method("update", function(events)
     {
         var result = this.moveEntity.update(events);
+        var translation = this.entity.translation;
+        var viewPort = spqr.Context.engine.scene.camera.viewPort;
+        spqr.Context.engine.scene.camera.setTranslation(new spqr.Basic.Point3D(-(translation.x - (viewPort.width)), -(translation.y - (viewPort.height / 2)), 0));
+
         return result ? this : null;
     });
 

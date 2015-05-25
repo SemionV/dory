@@ -35,6 +35,8 @@
                         var br = new spqr.Basic.Point3D(tl.x + this.tileWidth, tl.y + this.tileHeight, tl.z);
                         var bl = new spqr.Basic.Point3D(tl.x, tl.y + this.tileHeight, tl.z);
                         var polygon = new spqr.Basic.Polygon(tl, tr, br, bl);
+                        polygon.col = j;
+                        polygon.row = i;
 
                         if(tileType.image)
                         {
@@ -61,11 +63,11 @@
         var cameraMatrix = spqr.Context.engine.scene.camera.translation;
         var viewPort = spqr.Context.engine.scene.camera.viewPort;
 
+        var visiblePolygons = [];
+
         for(var i = 0, l = this.polygons.length; i < l; i++)
         {
             var polygon = this.polygons[i];
-
-            renderManager.addPolygon(polygon);
 
             var tl = polygon[0];
             var polygonCenter = new spqr.Basic.Point3D(tl.x + halfWidth, tl.y + halfHeight, tl.z);
@@ -76,8 +78,17 @@
                 && isoCenter.y >= viewPort.y && isoCenter.y <= (viewPort.y + viewPort.width))
             {
                 var newPolygon = new spqr.Basic.Polygon(polygon[0], polygon[1], polygon[2], polygon[3]);
-                renderManager.addPolygon(newPolygon);
+                newPolygon.label = new spqr.Basic.Text(polygon.col + ":" + polygon.row, new spqr.Basic.ColorRgba(255, 255, 255, 0));
+                newPolygon.label.offsetY = 4;
+
+                visiblePolygons.push(newPolygon);
+                renderManager.addPolygon(polygon);
             }
+        }
+
+        for(var i = 0, l = visiblePolygons.length; i < l; i++)
+        {
+            renderManager.addPolygon(visiblePolygons[i]);
         }
     });
 

@@ -132,6 +132,11 @@
             });
 
             {
+                var camera = new spqr.Scene.Camera(200, 200);
+                scene.setActiveCamera(camera);
+            }
+
+            {
                 var chair = new spqr.Scene.SpriteEntity(new spqr.Basic.Box(40, 40, 35));
                 chair.setSprite(new spqr.Basic.Texture(spqr.Context.resources.images["objects.chair"], spqr.Context.tileWidth, spqr.Context.tileHeight));
                 chair.setTranslation(new spqr.Basic.Point3D(50, 50, 0));
@@ -171,12 +176,14 @@
                 scene.addEntity("s2", s2);
             }
 
+            spqr.Context.engine.setActiveScene(scene);
+
             {
-                var camera = new spqr.Scene.Camera(200, 200);
-                scene.setActiveCamera(camera);
+                var translation = unit1.translation;
+                var viewPort = spqr.Context.engine.scene.camera.viewPort;
+                spqr.Context.engine.scene.camera.setTranslation(new spqr.Basic.Point3D(-(translation.x - (viewPort.width)), -(translation.y - (viewPort.height / 2)), 0));
             }
 
-            spqr.Context.engine.setActiveScene(scene);
             //spqr.Context.engine.setHeart(customHeart);
             spqr.Context.engine.run();
         }
