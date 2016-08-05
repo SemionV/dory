@@ -40,9 +40,9 @@
 
     StateStack.method("update", function(events)
     {
-        if(this.states.length > 0)
+        var state = this.getState();
+        if(state)
         {
-            var state = this.states[0];
             this.updateState(state, events);
         }
     });
@@ -56,7 +56,7 @@
             if(state !== result)
             {
                 this.push(result);
-                this.updateState(result);
+                this.updateState(result, events);
             }
         }
         else
@@ -71,6 +71,16 @@
         var event = eventsManager.createEvent(eventName);
         event.stateName = stateName;
         eventsManager.pushEvent(event);
+    });
+
+    StateStack.method("getState", function()
+    {
+        if(this.states.length > 0)
+        {
+            return this.states[0];
+        }
+
+        return null;
     });
 
     var StateMachine = function()
@@ -116,6 +126,7 @@
 
     spqr.States = {};
     spqr.States.State = State;
+    spqr.States.StateStack = StateStack;
     spqr.States.StateMachine = StateMachine
 }
 )();

@@ -54,6 +54,14 @@
                 self.notify("keypress." + code);
             }
         });
+        document.body.addEventListener("keyup", function(e)
+        {
+            var code = self.keyboardMap[e.keyCode];
+            if(code)
+            {
+                self.notify("keyup." + code);
+            }
+        });
     });
 
     InputManager.method("unsubscribe", function()

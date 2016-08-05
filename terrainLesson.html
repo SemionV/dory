@@ -17,6 +17,7 @@
     <script src="js/eventsManager.js"></script>
 
     <script src="js/terrainLesson.js"></script>
+    <script src="js/aragorn.js"></script>
 
     <script type="text/javascript">
 
@@ -143,10 +144,15 @@
                 unit1.setTranslation(new spqr.Basic.Point3D(50, 100, 0));
                 unit1.name = "hero";
 
+                var spriteSheet1 = new spqr.Resources.SpriteSheet(spqr.Context.resources.images["warrior_spritesheet1"], 96, 96);
+                spriteSheet1.setFramesOffset(26, 38, spqr.Context.tileWidth, spqr.Context.tileHeight);
+                unit1.setSprite(spriteSheet1.getFrame(26));
+
+                unit1.addComponent(new spqr.Aragorn.UnitMovementComponent());
                 unit1.addComponent(new spqr.TerrainLesson.OutOfMapComponent());
 
-                var stack = unit1.stateMachine.registerStack("main");
-                stack.push(new spqr.TerrainLesson.IdleState(unit1));
+                /*var stack = unit1.stateMachine.registerStack("main");
+                stack.push(new spqr.TerrainLesson.IdleState(unit1));*/
 
                 scene.addEntity("unit1", unit1);
             }

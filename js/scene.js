@@ -127,7 +127,6 @@
 
     var Entity = function()
     {
-        this.components = [];
     }
     Entity.inherits(Node);
 
@@ -148,10 +147,11 @@
 
     Entity.method("addComponent", function(component)
     {
-        if(this.components)
+        if(!this.components)
         {
-            this.components.push(component);
+            this.components = [];
         }
+        this.components.push(component);
     });
 
     var SpriteEntity = function(boundingBox)
