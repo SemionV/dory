@@ -70,25 +70,6 @@
                 tileHeight: spqr.Context.tileHeight
             };
 
-            var td2 = {
-                tiles: [],
-                heightMap: td.heightMap,
-                tileTypes: td.tileTypes,
-                tileWidth: td.tileWidth,
-                tileHeight: td.tileHeight
-            };
-
-            for(var i = 0, l = td.length; i < l; i++)
-            {
-                var row = td.tiles[i];
-                var rowCopy = [];
-                for(var j = 0, k = row.length; j < k; j++)
-                {
-                    rowCopy.push(4);
-                }
-                td2.tiles.push(rowCopy);
-            }
-
             resources.loadImages({
                 "terrain.grass": "img/1-grass-1.png",
                 "terrain.hole": "img/hole.png",
@@ -98,7 +79,7 @@
                 "warrior_spritesheet2": "img/warrior/warrior_spritesheet2.png"
             }).then(function()
                     {
-                        run(td, td2);
+                        run(td);
                     });
         }
 
@@ -107,11 +88,10 @@
             window.heartBeat = callback;
         }
 
-        function run(td, td2)
+        function run(td)
         {
             var scene = new spqr.Scene.Manager();
             scene.addTerrain("main", td);
-            scene.addTerrain("mesh", td2);
 
             scene.setAction("state.push", function(e)
             {

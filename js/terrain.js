@@ -82,8 +82,9 @@
                 newPolygon.label.offsetY = 4;
 
                 visiblePolygons.push(newPolygon);
-                renderManager.addPolygon(polygon);
             }
+
+            renderManager.addPolygon(polygon);
         }
 
         for(var i = 0, l = visiblePolygons.length; i < l; i++)
