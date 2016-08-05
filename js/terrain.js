@@ -19,6 +19,12 @@
         var map = terrainData.tiles;
         if(map)
         {
+            this.tilesCountY = map.length ? map.length - 1 : 0;
+            this.tilesCountX = this.tilesCountY ? (map[0].length - 1) : 0;
+
+            this.height = this.tileHeight * this.tilesCountY;
+            this.width = this.tileWidth * this.tilesCountX;
+
             for(var i = 0, l = map.length; i < l; i++)
             {
                 var row = map[i];
@@ -63,12 +69,13 @@
         var cameraMatrix = spqr.Context.engine.scene.camera.translation;
         var viewPort = spqr.Context.engine.scene.camera.viewPort;
 
-        var visiblePolygons = [];
-
         for(var i = 0, l = this.polygons.length; i < l; i++)
         {
             var polygon = this.polygons[i];
 
+            renderManager.addPolygon(polygon);
+
+            //Primitive visibility check
             var tl = polygon[0];
             var polygonCenter = new spqr.Basic.Point3D(tl.x + halfWidth, tl.y + halfHeight, tl.z);
 
@@ -77,19 +84,13 @@
             if(isoCenter.x >= viewPort.x && isoCenter.x <= (viewPort.x + viewPort.width)
                 && isoCenter.y >= viewPort.y && isoCenter.y <= (viewPort.y + viewPort.width))
             {
-                var newPolygon = new spqr.Basic.Polygon(polygon[0], polygon[1], polygon[2], polygon[3]);
-                newPolygon.label = new spqr.Basic.Text(polygon.col + ":" + polygon.row, new spqr.Basic.ColorRgba(255, 255, 255, 0));
-                newPolygon.label.offsetY = 4;
+                var visiblePolygon = new spqr.Basic.Polygon(polygon[0], polygon[1], polygon[2], polygon[3]);
+                visiblePolygon.label = new spqr.Basic.Text(polygon.col + ":" + polygon.row, new spqr.Basic.ColorRgba(255, 255, 255, 0));
+                visiblePolygon.label.offsetY = 4;
+                visiblePolygon.color = new spqr.Basic.ColorRgba(255, 255, 255);
 
-                visiblePolygons.push(newPolygon);
+                renderManager.addPolygon(visiblePolygon);
             }
-
-            renderManager.addPolygon(polygon);
-        }
-
-        for(var i = 0, l = visiblePolygons.length; i < l; i++)
-        {
-            renderManager.addPolygon(visiblePolygons[i]);
         }
     });
 

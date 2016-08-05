@@ -96,6 +96,14 @@
         renderer.render();
     });
 
+    var EntityComponent = function()
+    {
+    };
+
+    EntityComponent.method("update", function(entity, events)
+    {
+    });
+
     var Node = function()
     {
         this.translation = new spqr.Basic.Point3D(0, 0, 0);
@@ -117,15 +125,33 @@
         this.translation.z += z;
     });
 
-
     var Entity = function()
     {
+        this.components = [];
     }
     Entity.inherits(Node);
 
     Entity.method("update", function(events)
     {
+        if(this.components)
+        {
+            for(var i = 0, l = this.components.length; i < l; i++)
+            {
+                var component = this.components[i];
+
+                component.update(this, events);
+            }
+        }
+
         this.stateMachine.update(events);
+    });
+
+    Entity.method("addComponent", function(component)
+    {
+        if(this.components)
+        {
+            this.components.push(component);
+        }
     });
 
     var SpriteEntity = function(boundingBox)
@@ -262,4 +288,5 @@
     spqr.Scene.Node = Node;
     spqr.Scene.SpriteEntity = SpriteEntity;
     spqr.Scene.Camera = Camera;
+    spqr.Scene.EntityComponent = EntityComponent;
 })();
