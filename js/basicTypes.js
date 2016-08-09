@@ -114,6 +114,21 @@
         return new Point3D(point.x, point.y, point.z);
     }
 
+    Point3D.AreEqual = function(point1, point2)
+    {
+        if(point1 && point2)
+        {
+            return point1.x == point2.x && point1.y == point2.y && point1.z == point2.z;
+        }
+        else if(point1 && !point2 || !point1 && point2)
+        {
+            return false;
+        }
+
+        /*both are null*/
+        return true;
+    }
+
     var ColorRgba = function(r, g, b, a)
     {
         this.r = r;

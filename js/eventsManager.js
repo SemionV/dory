@@ -21,7 +21,7 @@
     EventsManager.method("pushSimpleEvent", function(eventName)
     {
         var event = this.createEvent(eventName);
-        this.backEvents.push(event);
+        this.pushEvent(event);
     });
 
     EventsManager.method("swap", function()

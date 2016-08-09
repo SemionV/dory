@@ -134,10 +134,9 @@
     {
         if(this.components)
         {
-            for(var i = 0, l = this.components.length; i < l; i++)
+            for(var id in this.components)
             {
-                var component = this.components[i];
-
+                var component = this.components[id];
                 component.update(this, events);
             }
         }
@@ -145,13 +144,21 @@
         this.stateMachine.update(events);
     });
 
-    Entity.method("addComponent", function(component)
+    Entity.method("addComponent", function(id, component)
     {
         if(!this.components)
         {
-            this.components = [];
+            this.components = {};
         }
-        this.components.push(component);
+        this.components[id] = component;
+    });
+    
+    Entity.method("getComponent", function(id)
+    {
+        if(this.components)
+        {
+            return this.components[id];
+        }
     });
 
     var SpriteEntity = function(boundingBox)
@@ -172,7 +179,18 @@
 
     SpriteEntity.method("draw", function(renderer)
     {
+        if(this.drawPosition)
+        {
+            renderer.addPoint(this.polygon[0], new spqr.Basic.ColorRgba(255, 255, 0), true)
+        }
         renderer.addPolygon(this.polygon);
+
+        /*var visiblePolygon = new spqr.Basic.Polygon(polygon[0], polygon[1], polygon[2], polygon[3]);
+        visiblePolygon.label = new spqr.Basic.Text(polygon.col + ":" + polygon.row, new spqr.Basic.ColorRgba(255, 255, 255, 0));
+        visiblePolygon.label.offsetY = 4;
+        visiblePolygon.color = new spqr.Basic.ColorRgba(255, 255, 255);
+
+        renderManager.addPolygon(visiblePolygon);*/
     });
 
     SpriteEntity.method("setAnimation", function(animation)
@@ -189,13 +207,21 @@
 
     SpriteEntity.method("update", function(events)
     {
+        this.uber('update', events);
+
+        var animationComponent = this.getComponent("spriteAnimation");
+        if(animationComponent && animationComponent.animation)
+        {
+            var sprite = animationComponent.animation.getCurrentFrame();
+            this.polygon.setTexture(sprite);
+        }
+
         if(this.animation)
         {
             this.animation.update(events);
             var sprite = this.animation.getCurrentFrame();
             this.polygon.setTexture(sprite);
         }
-        this.uber('update', events);
     });
 
     Node.method("drawBoundingBox", function(renderer)

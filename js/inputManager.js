@@ -4,6 +4,14 @@
     {
         this.listeners = [];
 
+        this.keyboardState =
+        {
+            "left": false,
+            "up": false,
+            "right": false,
+            "down": false
+        };
+
         this.keyboardMap =
         {
             37: "left",
@@ -34,12 +42,12 @@
         this.listeners.push(listener);
     });
 
-    InputManager.method("notify", function(eventName)
+    InputManager.method("notify", function(eventName, key)
     {
         for(var i = 0, l = this.listeners.length; i < l; i++)
         {
             var listener = this.listeners[i];
-            listener.func.call(listener.ctx, eventName);
+            listener.func.call(listener.ctx, eventName, key);
         }
     });
 
@@ -51,7 +59,11 @@
             var code = self.keyboardMap[e.keyCode];
             if(code)
             {
-                self.notify("keypress." + code);
+                if(!self.keyboardState[code])
+                {
+                    self.keyboardState[code] = true;
+                    self.notify("keydown", code);
+                }
             }
         });
         document.body.addEventListener("keyup", function(e)
@@ -59,9 +71,18 @@
             var code = self.keyboardMap[e.keyCode];
             if(code)
             {
-                self.notify("keyup." + code);
+                if(self.keyboardState[code])
+                {
+                    self.keyboardState[code] = false;
+                    self.notify("keyup", code);
+                }
             }
         });
+    });
+
+    InputManager.method("getKeyState", function(key)
+    {
+        return this.keyboardState[key];
     });
 
     InputManager.method("unsubscribe", function()

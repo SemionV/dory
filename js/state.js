@@ -7,10 +7,10 @@
 
     StateStack.method("push", function(state)
     {
-        if(this.states.length > 0)
+        var topState = this.getState();
+        if(topState)
         {
-            var prevState = this.states[0];
-            prevState.deactivate();
+            topState.deactivate();
         }
 
         state.activate();
@@ -31,9 +31,9 @@
 
         this.states.shift();
 
-        if(this.states.length > 0)
+        var state = this.getState();
+        if(state)
         {
-            var state = this.states[0];
             state.activate();
         }
     });
@@ -62,6 +62,11 @@
         else
         {
             this.pop();
+            var topState = this.getState();
+            if(topState)
+            {
+                this.updateState(topState, events);
+            }
         }
     });
 

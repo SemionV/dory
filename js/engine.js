@@ -113,9 +113,11 @@
         this.isStop = true;
     });
 
-    Engine.method("onInput", function(actionName)
+    Engine.method("onInput", function(actionName, key)
     {
-        this.eventsManager.pushSimpleEvent(actionName);
+        var event = this.eventsManager.createEvent(actionName);
+        event.key = key;
+        this.eventsManager.pushEvent(event);
     });
 
     Engine.method("update", function()

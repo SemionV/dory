@@ -136,30 +136,41 @@
                 /*var stack = chair.stateMachine.registerStack("main");
                 stack.push(new spqr.TerrainLesson.IdleState(chair));*/
 
-                scene.addEntity("chair", chair);
+                //scene.addEntity("chair", chair);
             }
 
             {
                 var unit1 = new spqr.Scene.SpriteEntity(new spqr.Basic.Box(spqr.Context.tileWidth, spqr.Context.tileHeight, spqr.Context.tileAltitude));
                 unit1.setTranslation(new spqr.Basic.Point3D(50, 100, 0));
                 unit1.name = "hero";
+                unit1.drawPosition = true;
 
-                var spriteSheet1 = new spqr.Resources.SpriteSheet(spqr.Context.resources.images["warrior_spritesheet1"], 96, 96);
-                spriteSheet1.setFramesOffset(26, 38, spqr.Context.tileWidth, spqr.Context.tileHeight);
-                unit1.setSprite(spriteSheet1.getFrame(26));
+                unit1.addComponent("state", new spqr.Aragorn.UnitStateComponent(new spqr.Aragorn.IdleState()));
+                unit1.addComponent("direction", new spqr.Aragorn.EntityDirectionComponent(spqr.Basic.Point2D.directionToPoint3D("SE")));
+                unit1.addComponent("movement", new spqr.Aragorn.UnitMovementComponent());
+                unit1.addComponent("outofthemap", new spqr.TerrainLesson.OutOfMapComponent());
+                unit1.addComponent("spriteAnimation", new spqr.Aragorn.SpriteAnimationComponent());
+                unit1.addComponent("animationSet", new spqr.Aragorn.AnimationSetComponent());
 
-                unit1.addComponent(new spqr.Aragorn.UnitMovementComponent());
-                unit1.addComponent(new spqr.TerrainLesson.OutOfMapComponent());
-
-                /*var stack = unit1.stateMachine.registerStack("main");
-                stack.push(new spqr.TerrainLesson.IdleState(unit1));*/
-
-                scene.addEntity("unit1", unit1);
+                scene.addEntity("hero", unit1);
             }
 
             {
-                var spriteSheet1 = new spqr.Resources.SpriteSheet(spqr.Context.resources.images["warrior_spritesheet1"], 96, 96);
-                //var spriteSheet2 = new spqr.Resources.SpriteSheet(spqr.Context.resources.images["warrior_spritesheet2"], 128, 128);
+                var unit2 = new spqr.Scene.SpriteEntity(new spqr.Basic.Box(spqr.Context.tileWidth, spqr.Context.tileHeight, spqr.Context.tileAltitude));
+                unit2.setTranslation(new spqr.Basic.Point3D(200, 200, 0));
+                unit2.name = "guard";
+
+                unit2.addComponent("state", new spqr.Aragorn.UnitStateComponent(new spqr.Aragorn.IdleState()));
+                unit2.addComponent("direction", new spqr.Aragorn.EntityDirectionComponent(spqr.Basic.Point2D.directionToPoint3D("SW")));
+                unit2.addComponent("spriteAnimation", new spqr.Aragorn.SpriteAnimationComponent());
+                unit2.addComponent("animationSet", new spqr.Aragorn.AnimationSetComponent());
+
+                //scene.addEntity("guard", unit2);
+            }
+
+            {
+                /*var spriteSheet1 = new spqr.Resources.SpriteSheet(spqr.Context.resources.images["warrior_spritesheet1"], 96, 96);
+                var spriteSheet2 = new spqr.Resources.SpriteSheet(spqr.Context.resources.images["warrior_spritesheet2"], 128, 128);
 
                 var s1 = new spqr.Scene.SpriteEntity(new spqr.Basic.Box(spqr.Context.tileWidth, spqr.Context.tileHeight, spqr.Context.tileAltitude));
                 s1.setTranslation(new spqr.Basic.Point3D(200, 200, 0));
@@ -167,7 +178,7 @@
                 s1.setSprite(spriteSheet1.getFrame(26));
                 scene.addEntity("s1", s1);
 
-                /*var s2 = new spqr.Scene.SpriteEntity(new spqr.Basic.Box(spqr.Context.tileWidth, spqr.Context.tileHeight, spqr.Context.tileAltitude));
+                var s2 = new spqr.Scene.SpriteEntity(new spqr.Basic.Box(spqr.Context.tileWidth, spqr.Context.tileHeight, spqr.Context.tileAltitude));
                 s2.setTranslation(new spqr.Basic.Point3D(200, 200, 0));
                 spriteSheet2.setFramesOffset(80, 87, spqr.Context.tileWidth + 16, spqr.Context.tileHeight + 16);
                 s2.setSprite(spriteSheet2.getFrame(87));
