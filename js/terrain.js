@@ -89,7 +89,7 @@
                 visiblePolygon.label.offsetY = 4;
                 visiblePolygon.color = new spqr.Basic.ColorRgba(255, 255, 255);
 
-                renderManager.addPolygon(visiblePolygon);
+                //renderManager.addPolygon(visiblePolygon);
             }
         }
     });

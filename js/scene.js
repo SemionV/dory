@@ -213,6 +213,7 @@
         if(animationComponent && animationComponent.animation)
         {
             var sprite = animationComponent.animation.getCurrentFrame();
+            sprite.drawBorder = true;
             this.polygon.setTexture(sprite);
         }
 
@@ -291,7 +292,10 @@
 
     Camera.method("draw", function(renderer)
     {
-        renderer.addPolygon(this.polygon);
+        if(this.drawViewportBoundary)
+        {
+            renderer.addPolygon(this.polygon);
+        }
     });
 
     var Label = function(text)

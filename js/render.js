@@ -27,6 +27,12 @@
         var matrix = this.multiplyAllMatrix();
         this.renderingQueue.push({type: "point", matrix: matrix, point: point, drawPointer: drawPointer, color: color});
     });
+
+    RenderManager.method("addImage", function(image, point, drawBorder)
+    {
+        var matrix = this.multiplyAllMatrix();
+        this.renderingQueue.push({type: "image", matrix: matrix, point: point, image: image, drawBorder: drawBorder});
+    });
     
     RenderManager.method("multiplyAllMatrix", function()
     {
@@ -58,7 +64,7 @@
         this.context.clearRect(0, 0, this.width, this.height);
 
         this.context.save();
-        this.context.translate(400, 0);
+        //this.context.translate(400, 0);
 
         for(var i = 0, l = this.renderingQueue.length; i < l; i++)
         {
@@ -122,6 +128,19 @@
             if(texture.clipWidth)
             {
                 this.context.drawImage(texture.image, texture.clipX, texture.clipY, texture.clipWidth, texture.clipHeight, isoPoint.x, isoPoint.y, texture.clipWidth, texture.clipHeight);
+
+                if(texture.drawBorder)
+                {
+                    this.context.beginPath();
+                    this.context.moveTo(isoPoint.x, isoPoint.y);
+                    this.context.lineTo(isoPoint.x + texture.clipWidth, isoPoint.y);
+                    this.context.lineTo(isoPoint.x + texture.clipWidth, isoPoint.y + texture.clipHeight);
+                    this.context.lineTo(isoPoint.x, isoPoint.y + texture.clipHeight);
+                    this.context.lineTo(isoPoint.x, isoPoint.y);
+
+                    this.context.strokeStyle = "rgb(0,0,0)";
+                    this.context.stroke();
+                }
             }
             else
             {

@@ -124,6 +124,7 @@
 
             {
                 var camera = new spqr.Scene.Camera(200, 200);
+                camera.drawViewportBoundary = true;
                 scene.setActiveCamera(camera);
             }
 
@@ -187,11 +188,11 @@
 
             spqr.Context.engine.setActiveScene(scene);
 
-            {
+            /*{
                 var translation = unit1.translation;
                 var viewPort = spqr.Context.engine.scene.camera.viewPort;
                 spqr.Context.engine.scene.camera.setTranslation(new spqr.Basic.Point3D(-(translation.x - (viewPort.width)), -(translation.y - (viewPort.height / 2)), 0));
-            }
+            }*/
 
             //spqr.Context.engine.setHeart(customHeart);
             spqr.Context.engine.run();
