@@ -41,10 +41,10 @@ define(function(){
             this.events = this.backEvents;
             this.backEvents = new EventsSet();
 
-            return this.events;
+            return this.eventsIterator();
         }
 
-        events() {
+        eventsIterator() {
             return this.events.values();
         }
     }
