@@ -14,14 +14,12 @@ define(function(){
             }
         }
 
-        getComponents(type){
-            var result = [];
+        *getComponents(type){
             for(let x of this.components()){
                 if(x instanceof type){
-                    result.push(x);
+                    yield x;
                 }
             }
-            return result;
         }
 
         addComponent(component){
