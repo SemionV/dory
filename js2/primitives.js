@@ -89,10 +89,14 @@ define(function(){
     }
 
     class Image{
-        constructor(image, offsetX, offsetY){
+        constructor(image, offsetX = 0, offsetY = 0, clipX = 0, clipY = 0, clipWidth = 0, clipHeight = 0){
             this.image = image;
             this.offsetX = offsetX;
             this.offsetY = offsetY;
+            this.clipX = clipX;
+            this.clipY = clipY;
+            this.clipWidth = clipWidth;
+            this.clipHeight = clipHeight;
         }
     }
 
@@ -120,6 +124,75 @@ define(function(){
         }
     }
 
+    class SpriteSheet{
+        constructor(image, frameWidth, frameHeight){
+            this.image = image;
+            this.frameWidth = frameWidth;
+            this.frameHeight = frameHeight;
+            this.framesPerRow = this.image.width / frameWidth;
+            this.rowsCount = this.image.height / frameHeight;
+            this.offsets = new Array(this.framesPerRow * this.rowsCount);
+        }
+
+        setFramesOffset(startFrame, endFrame, x, y){
+            var offset = {x: x, y: y};
+            for(var i = startFrame; i <= endFrame; i++)
+            {
+                this.offsets[i] = offset;
+            }
+        }
+
+        getFrame(index){
+            var rowIndex = Math.floor(index / this.framesPerRow);
+            var colIndex = index % this.framesPerRow;
+            var y = this.frameHeight * rowIndex;
+            var x = this.frameWidth * colIndex;
+            var offset = this.offsets[index];
+
+            return new Image(this.image, offset ? offset.x : 0, offset ? offset.y : 0, x, y, this.frameWidth, this.frameHeight);
+        }
+    }
+
+    //TODO: Make entity component out of this class
+    class Animation{
+        constructor(spriteSheet, startFrame, endFrame, fps, updateDeltaTime){
+            this.spriteSheet = spriteSheet;
+            this.startFrame = startFrame;
+            this.fps = fps;
+            this.frameCount = (endFrame - startFrame) + 1;
+            this.dt = updateDeltaTime;
+            this.oneFrameTime = 1000 / fps;
+            this.currentFrame = 0;
+            this.frameTimePassed = 0;
+        }
+
+        reset(){
+            this.currentFrame = 0;
+            this.frameTimePassed = 0;
+        }
+
+        update(){
+            this.frameTimePassed += this.dt;
+            if(this.frameTimePassed >= this.oneFrameTime)
+            {
+                this.frameTimePassed = this.frameTimePassed - this.oneFrameTime;
+
+                if(this.currentFrame < (this.frameCount - 1))
+                {
+                    this.currentFrame++;
+                }
+                else
+                {
+                    this.currentFrame = 0;
+                }
+            }
+        }
+
+        getCurrentFrame(){
+            return this.spriteSheet.getFrame((this.currentFrame + this.startFrame));
+        }
+    }
+
     return {
         Point2D,
         Point3D,
@@ -128,6 +201,7 @@ define(function(){
         Image,
         Rectangle,
         Box,
-        Text
+        Text,
+        SpriteSheet
     }
 });
