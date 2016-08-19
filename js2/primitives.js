@@ -11,7 +11,7 @@ define(function(){
     ]);
 
     class Point2D{
-        constructor(x, y){
+        constructor(x = 0, y = 0){
             this.x = x;
             this.y = y;
         }
@@ -46,7 +46,7 @@ define(function(){
     }
 
     class Point3D extends Point2D{
-        constructor(x, y, z = 0){
+        constructor(x = 0, y = 0, z = 0){
             super(x, y);
             this.z = z;
         }

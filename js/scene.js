@@ -4,7 +4,7 @@
     {
         this.terrains = {};
         this.entities = {};
-        this.actions = {};
+        this.eventHandlers = {};
     };
 
     SceneManager.method("update", function(events)
@@ -28,12 +28,12 @@
 
     SceneManager.method("getAction", function(key)
     {
-        return this.actions[key];
+        return this.eventHandlers[key];
     });
 
     SceneManager.method("setAction", function(key, action)
     {
-        this.actions[key] = action;
+        this.eventHandlers[key] = action;
     });
 
     SceneManager.method("addEntity", function(id, node)

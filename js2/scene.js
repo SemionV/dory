@@ -1,4 +1,4 @@
-define(function(){
+define(['components'], function(components){
     var entityComponentsSymbol = Symbol();
 
     class Entity{
@@ -29,9 +29,124 @@ define(function(){
         components(){
             return this[entityComponentsSymbol].values();
         }
+
+        update(events){
+            var stateComponents = this.getComponents(components.StateComponent);
+            for(let component of stateComponents){
+                component.update(this, events);
+            }
+        }
+
+        draw(renderer){
+            var drawComponents = this.getComponents(components.RenderingComponent);
+            for(let component of drawComponents){
+                component.render(this, renderer);
+            }
+        }
+    }
+
+    class SceneManager{
+        constructor(){
+            this.entities = new Map();
+            this.eventHandlers = new Map();
+        }
+
+        update(events){
+            //Process events from previous heart beat
+            for(let event in events){
+                var handlers = this.eventHandlers.get(event.name);
+                if(handlers){
+                    for(let handler of handlers){
+                        handler(events);
+                    }
+                }
+            }
+
+            for(let entity of this.entities.values()){
+                entity.update(events);
+            }
+        }
+
+        draw(){
+            for(let camera of this.getActiveCameras()){
+                this.drawFromCamera(camera);
+            }
+        }
+
+        drawFromCamera(camera){
+            let cameraComponent = camera.getComponent(components.CameraComponent);
+
+            if(cameraComponent){
+                let renderer = cameraComponent.renderer;
+                let cameraPosition = camera.getComponent(components.PositionComponent);
+
+                if(cameraPosition){
+                    renderer.pushMatrix(cameraPosition.translation);
+                }
+
+                var visibleEntities = this.getVisibleEntities();
+                for(let entity of visibleEntities){
+                    let position = entity.getComponent(components.PositionComponent);
+                    if(position){
+                        renderer.pushMatrix(position.translation);
+                    }
+                    entity.draw(renderer);
+                    if(position){
+                        renderer.popMatrix();
+                    }
+                }
+
+                if(cameraPosition){
+                    renderer.popMatrix(cameraPosition.translation);
+                }
+
+                renderer.render();
+            }
+        }
+
+        getVisibleEntities(){
+            return this.entities.values();
+        }
+
+        *getActiveCameras(){
+            for(let entity of this.entities.values()){
+                var cameraComponent = entity.getComponent(components.CameraComponent);
+                if(cameraComponent){
+                    yield entity;
+                }
+            }
+        }
+
+        addEventHandler(eventName, callback){
+            var set = this.eventHandlers.get(eventName);
+            if(!set){
+                set = new Set();
+                this.eventHandlers.set(eventName, set);
+            }
+
+            if(!set.contains(callback)){
+                set.add(callback);
+            }
+        }
+
+        removeEventHandler(eventName, callback){
+            var set = this.eventHandlers.get(eventName);
+            if(set){
+                set.delete(callback);
+            }
+        }
+
+        addEntity(key, entity){
+            this.entities.set(key, entity);
+        }
+
+        getEntity(key){
+            return this.entities.get(key);
+        }
     }
 
     return {
-        Entity
+        Entity,
+        SceneManager
     };
 });
