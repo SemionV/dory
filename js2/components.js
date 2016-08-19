@@ -1,12 +1,12 @@
 define(['primitives', 'render'], function(primitives, render){
     class Component{
-        constructor(name){
+        constructor(name = null){
             this.name = name;
         }
     }
 
     class StateComponent extends Component{
-        constructor(name){
+        constructor(name = null){
             super(name);
         }
 
@@ -16,7 +16,7 @@ define(['primitives', 'render'], function(primitives, render){
     }
 
     class RenderingComponent extends Component{
-        constructor(name){
+        constructor(name = null){
             super(name);
         }
 
@@ -26,22 +26,22 @@ define(['primitives', 'render'], function(primitives, render){
     }
 
     class PositionComponent extends Component{
-        constructor(name){
-            super(name);
+        constructor(){
+            super();
             this.translation = new primitives.Point3D(0, 0, 0);
         }
     }
 
     class CameraComponent extends Component{
-        constructor(name, renderer){
-            super(name);
+        constructor(renderer){
+            super();
             this.renderer = renderer;
         }
     }
 
     class PointDrawer extends RenderingComponent{
-        constructor(name, color = new primitives.Color(0, 0, 0), drawPointer = true){
-            super(name);
+        constructor(color = new primitives.Color(0, 0, 0), drawPointer = true){
+            super();
             this.color = color;
             this.drawPointer = drawPointer;
         }
@@ -51,12 +51,36 @@ define(['primitives', 'render'], function(primitives, render){
         }
     }
 
+    class SpriteComponent extends Component{
+        constructor(image){
+            super();
+            this.image = image;
+        }
+    }
+
+    class SpriteDrawer extends RenderingComponent{
+        constructor(drawBorder = false, color = new primitives.Color(0, 0, 0)){
+            super();
+            this.color = color;
+            this.drawBorder = drawBorder;
+        }
+
+        render(entity, renderer){
+            var sprite = entity.getComponent(SpriteComponent);
+            if(sprite && sprite.image){
+                renderer.addPrimitive(new render.Sprite(sprite.image, this.drawBorder, this.color));
+            }
+        }
+    }
+
     return {
         Component,
         StateComponent,
         RenderingComponent,
         PositionComponent,
         CameraComponent,
-        PointDrawer
+        PointDrawer,
+        SpriteComponent,
+        SpriteDrawer
     };
 });

@@ -28,7 +28,7 @@ define(['primitives'], function(primitives){
     }
 
     class Sprite extends DrawPrimitive{
-        constructor(image, color, drawBorder){
+        constructor(image, drawBorder = false, color = null){
             super(color);
             this.image = image;
             this.drawBorder = drawBorder;
@@ -44,7 +44,7 @@ define(['primitives'], function(primitives){
         }
     }
 
-    class Canvas2DRenderer{
+    class Canvas2DIsometricRenderer{
         constructor(context, viewport){
             this.context = context;
             this.viewport = viewport;
@@ -65,8 +65,8 @@ define(['primitives'], function(primitives){
             this.addPrimitive(new Point(point, color, drawPointer));
         }
 
-        addSprite(image, color, drawBorder){
-            this.addPrimitive(new Sprite(image, color, drawBorder));
+        addSprite(image, drawBorder, color){
+            this.addPrimitive(new Sprite(image, drawBorder, color));
         }
 
         addPrimitive(primitive){
@@ -114,6 +114,9 @@ define(['primitives'], function(primitives){
                 else if (renderingItem.object instanceof Label) {
                     this.renderLabel(renderingItem);
                 }
+                else if(renderingItem.object instanceof Sprite){
+                    this.renderSprite(renderingItem);
+                }
             }
 
             this.context.restore();
@@ -124,6 +127,52 @@ define(['primitives'], function(primitives){
             var text = renderingItem.object.text;
             var point = renderingItem.matrix.toIsometric();
             this.drawText(text, renderingItem.object.color, point.x, point.y);
+        }
+
+        renderSprite(renderingItem){
+            var image = renderingItem.object.image;
+            var point = renderingItem.matrix.toIsometric();
+
+            if (image.offsetX) {
+                point.x -= image.offsetX;
+            }
+            if (image.offsetY) {
+                point.y -= image.offsetY;
+            }
+
+            if (image.clipWidth) {
+                this.context.drawImage(image.image, image.clipX, image.clipY, image.clipWidth,
+                    image.clipHeight, point.x, point.y, image.clipWidth, image.clipHeight);
+
+                if (renderingItem.object.drawBorder) {
+                    this.context.beginPath();
+                    this.context.moveTo(point.x, point.y);
+                    this.context.lineTo(point.x + image.clipWidth, point.y);
+                    this.context.lineTo(point.x + image.clipWidth, point.y + image.clipHeight);
+                    this.context.lineTo(point.x, point.y + image.clipHeight);
+                    this.context.lineTo(point.x, point.y);
+
+                    this.context.strokeStyle = renderingItem.object.color ?
+                        renderingItem.object.color.toCanvasColor() : "rgb(0,0,0)";
+                    this.context.stroke();
+                }
+            }
+            else {
+                this.context.drawImage(image.image, point.x, point.y);
+
+                if (renderingItem.object.drawBorder) {
+                    this.context.beginPath();
+                    this.context.moveTo(point.x, point.y);
+                    this.context.lineTo(point.x + image.image.width, point.y);
+                    this.context.lineTo(point.x + image.image.width, point.y + image.image.height);
+                    this.context.lineTo(point.x, point.y + image.image.height);
+                    this.context.lineTo(point.x, point.y);
+
+                    this.context.strokeStyle = renderingItem.object.color ?
+                        renderingItem.object.color.toCanvasColor() : "rgb(0,0,0)";
+                    this.context.stroke();
+                }
+            }
         }
 
         renderPolygon(renderingItem) {
@@ -292,7 +341,7 @@ define(['primitives'], function(primitives){
         Label,
         Point,
         Sprite,
-        Canvas2DRenderer,
+        Canvas2DIsometricRenderer,
         Viewport
     }
 });

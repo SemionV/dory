@@ -1,15 +1,16 @@
 define(function(){
     class ResourceManager{
         constructor(){
-            this.images = new Set();
+            this.images = new Map();
         }
 
         loadImages(images) {
             var promises = new Set();
 
             for (let key in images) {
-                promises.add(new Promise(() => {
-                    let image = this.images[key] = new Image();
+                promises.add(new Promise((resolve) => {
+                    let image = new Image();
+                    this.images.set(key, image);
 
                     image.onload = () => {
                         resolve();
@@ -22,7 +23,7 @@ define(function(){
         }
 
         getImage(key) {
-            return this.image.get(key);
+            return this.images.get(key);
         }
     }
 
