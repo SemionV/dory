@@ -42,12 +42,12 @@ define(function(){
                 }
             });
             document.body.addEventListener("keyup", (e)=> {
-                var code = self.keyboardMap[e.keyCode];
+                var code = this.keyboardMap[e.keyCode];
                 if (code) {
                     var state = this.keyboardState.get(code);
                     if (state) {
-                        self.keyboardState.set(false);
-                        self.notify("keyup", code);
+                        this.keyboardState.set(false);
+                        this.notify("keyup", code);
                     }
                 }
             });

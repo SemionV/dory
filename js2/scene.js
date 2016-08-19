@@ -81,12 +81,12 @@ define(['components'], function(components){
                 let cameraPosition = camera.getComponent(components.PositionComponent);
 
                 if(cameraPosition){
-                    renderer.pushMatrix(cameraPosition.translation);
+                    renderer.pushMatrix(cameraPosition.translation.multiply(-1));
                 }
 
                 var visibleEntities = this.getVisibleEntities();
                 for(let entity of visibleEntities){
-                    let position = entity.getComponent(components.PositionComponent);
+                    let position = entity !== camera ? entity.getComponent(components.PositionComponent) : null;
                     if(position){
                         renderer.pushMatrix(position.translation);
                     }
@@ -97,7 +97,7 @@ define(['components'], function(components){
                 }
 
                 if(cameraPosition){
-                    renderer.popMatrix(cameraPosition.translation);
+                    renderer.popMatrix();
                 }
 
                 renderer.render();

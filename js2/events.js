@@ -29,7 +29,7 @@ define(function(){
         }
 
         pushEvent(event) {
-            this.backEvents.push(event);
+            this.backEvents.add(event);
         }
 
         pushSimpleEvent(eventName) {

@@ -1,15 +1,4 @@
 define(function(){
-    var directionsMap2D = new Map([
-        ['N', new Point2D(0, -1)],  // ↑
-        ['NE', new Point2D(1, -1)], // ↗
-        ['E', new Point2D(1, 0)],   // →
-        ['SE', new Point2D(1, 1)],  // ↘
-        ['S', new Point2D(0, 1)],   // ↓
-        ['SW', new Point2D(-1, 1)], // ↙
-        ['W', new Point2D(-1, 0)],  // ←
-        ['NW', new Point2D(-1, -1)] // ↖
-    ]);
-
     class Point2D{
         constructor(x = 0, y = 0){
             this.x = x;
@@ -28,8 +17,12 @@ define(function(){
             return new Point2D(((2 * this.y + this.x) / 2), ((2 * this.y - this.x) / 2));
         }
 
-        setColor(color){
-            this.color = color;
+        translate(vector){
+            return new Point2D(this.x + vector.x, this.y + vector.y)
+        }
+
+        multiply(factor){
+            return new Point2D(this.x*factor, this.y*factor);
         }
 
         static getDirection(point){
@@ -45,6 +38,17 @@ define(function(){
         }
     }
 
+    var directionsMap2D = new Map([
+        ['N', new Point2D(0, -1)],  // ↑
+        ['NE', new Point2D(1, -1)], // ↗
+        ['E', new Point2D(1, 0)],   // →
+        ['SE', new Point2D(1, 1)],  // ↘
+        ['S', new Point2D(0, 1)],   // ↓
+        ['SW', new Point2D(-1, 1)], // ↙
+        ['W', new Point2D(-1, 0)],  // ←
+        ['NW', new Point2D(-1, -1)] // ↖
+    ]);
+
     class Point3D extends Point2D{
         constructor(x = 0, y = 0, z = 0){
             super(x, y);
@@ -59,6 +63,10 @@ define(function(){
 
         translate(vector){
             return new Point3D(this.x + vector.x, this.y + vector.y, this.z + vector.z);
+        }
+
+        multiply(factor){
+            return new Point3D(this.x*factor, this.y*factor, this.z*factor);
         }
     }
 

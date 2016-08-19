@@ -1,26 +1,25 @@
-require(['scene', 'components'], function(scene, components){
-    var entity = new scene.Entity();
+require(['engine', 'scene', 'components', 'render', 'primitives'], function(dori, scenes, components, render, primitives){
+    let canvas = document.getElementById('canvas');
+    let context = canvas.getContext('2d');
 
-    var component1 = new components.StateComponent("StateComponent1");
-    var component2 = new components.RenderingComponent("RenderingComponent1");
+    let engine = new dori.Engine({fps: 60});
 
-    entity.addComponent(component1);
-    entity.addComponent(component2);
+    let scene = new scenes.SceneManager();
 
-    var result1 = entity.getComponent(components.StateComponent);
-    if(result1){
-        console.log(result1.name);
-    }
+    let camera = new scenes.Entity();
+    let viewport = new render.Viewport(canvas.width, canvas.height);
+    let renderer = new render.Canvas2DRenderer(context, viewport);
+    let cameraComponent = new components.CameraComponent('Main Camera', renderer);
+    camera.addComponent(cameraComponent);
+    var positionComponent = new components.PositionComponent('pos');
+    camera.addComponent(positionComponent);
+    scene.addEntity('camera', camera);
 
-    var result1 = entity.getComponent(components.RenderingComponent);
-    if(result1){
-        console.log(result1.name);
-    }
+    let hero = new scenes.Entity();
+    hero.addComponent(new components.PositionComponent('pos'));
+    hero.addComponent(new components.PointDrawer('point'));
+    scene.addEntity('hero', hero);
 
-    var result2 = entity.getComponents(components.Component);
-    if(result2){
-        for(let component of result2){
-            console.log(component.name);
-        }
-    }
+    engine.setActiveScene(scene);
+    engine.run();
 });

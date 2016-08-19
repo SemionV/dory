@@ -86,7 +86,7 @@ define(['events', 'input'], function(events, input){
                 accumulator += passed;
 
                 while (accumulator >= dt) {
-                    self.update();
+                    this.update();
                     accumulator -= dt;
                 }
 
@@ -132,6 +132,7 @@ define(['events', 'input'], function(events, input){
     }
 
     return {
-        Engine
+        Engine,
+        EngineConfig
     };
 });

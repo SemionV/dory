@@ -35,11 +35,19 @@ define(['primitives'], function(primitives){
         }
     }
 
-    class Canvas2DRenderer{
-        constructor(context, width, height){
-            this.context = context;
+    class Viewport{
+        constructor(width, height, x = 0, y = 0){
+            this.x = x;
+            this.y = y;
             this.width = width;
             this.height = height;
+        }
+    }
+
+    class Canvas2DRenderer{
+        constructor(context, viewport){
+            this.context = context;
+            this.viewport = viewport;
 
             this.matrixStack = [];
             this.renderingQueue = [];
@@ -71,7 +79,7 @@ define(['primitives'], function(primitives){
 
             if (this.matrixStack.length) {
                 for (var i = this.matrixStack.length - 1; i >= 0; i--) {
-                    matrix.translate(this.matrixStack[i])
+                    matrix = matrix.translate(this.matrixStack[i])
                 }
             }
 
@@ -87,10 +95,12 @@ define(['primitives'], function(primitives){
         }
 
         render() {
-            this.context.clearRect(0, 0, this.width, this.height);
+            this.context.clearRect(this.viewport.x, this.viewport.y , this.viewport.width, this.viewport.height);
 
             this.context.save();
-            this.context.translate(400, 0);
+
+            var zeroPoint = new primitives.Point2D(this.viewport.width/2 + this.viewport.x, this.viewport.height/2 + this.viewport.y);
+            this.context.translate(zeroPoint.x, zeroPoint.y);
 
             for (var i = 0, l = this.renderingQueue.length; i < l; i++) {
                 var renderingItem = this.renderingQueue[i];
@@ -233,7 +243,7 @@ define(['primitives'], function(primitives){
 
             point = point.translate(renderingItem.matrix).toIsometric();
             this.context.strokeStyle = color;
-            this.context.strokeRect(point.x, point.y, 4, 4);
+            this.context.strokeRect(point.x - 2, point.y - 2, 4, 4);
         }
 
         drawLine(pointA, pointB, color){
@@ -275,5 +285,14 @@ define(['primitives'], function(primitives){
                 this.drawText(polygon.label, color, isoTextPoint.x, isoTextPoint.y);
             }
         }
+    }
+
+    return {
+        Polygon,
+        Label,
+        Point,
+        Sprite,
+        Canvas2DRenderer,
+        Viewport
     }
 });

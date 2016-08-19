@@ -1,4 +1,4 @@
-define(['primitives'], function(primitives){
+define(['primitives', 'render'], function(primitives, render){
     class Component{
         constructor(name){
             this.name = name;
@@ -39,11 +39,24 @@ define(['primitives'], function(primitives){
         }
     }
 
+    class PointDrawer extends RenderingComponent{
+        constructor(name, color = new primitives.Color(0, 0, 0), drawPointer = true){
+            super(name);
+            this.color = color;
+            this.drawPointer = drawPointer;
+        }
+
+        render(entity, renderer){
+            renderer.addPrimitive(new render.Point(new primitives.Point3D(), this.color, this.drawPointer));
+        }
+    }
+
     return {
         Component,
         StateComponent,
         RenderingComponent,
         PositionComponent,
-        CameraComponent
+        CameraComponent,
+        PointDrawer
     };
 });
