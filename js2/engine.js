@@ -5,13 +5,6 @@ define(['events', 'input'], function(events, input){
         }
     }
 
-    class InputEvent extends events.Event{
-        constructor(name, key){
-            super(name);
-            this.key = key;
-        }
-    }
-
     class Engine{
         constructor(config){
             this.isStop = false;
@@ -59,10 +52,6 @@ define(['events', 'input'], function(events, input){
 
         run() {
             this.inputManager.subscribe();
-            this.inputListener = (actionName, key) => {
-                this.eventsManager.pushEvent(new InputEvent(actionName, key));
-            };
-            this.inputManager.addListener(this.inputListener);
 
             var heart = this.createHeart(this.config.fps);
 
@@ -112,7 +101,6 @@ define(['events', 'input'], function(events, input){
         }
 
         stop(){
-            this.inputManager.removeListener(this.inputListener);
             this.inputManager.unsubscribe();
             this.isStop = true;
         }

@@ -6,9 +6,10 @@ define(['primitives'], function(primitives){
     }
 
     class Polygon extends DrawPrimitive{
-        constructor(polygon, color){
+        constructor(polygon, color, wireFrame = true){
             super(color);
             this.polygon = polygon;
+            this.wireFrame = wireFrame;
         }
     }
 
@@ -140,42 +141,55 @@ define(['primitives'], function(primitives){
                 point.y -= image.offsetY;
             }
 
+            let color = renderingItem.object.color ?
+                renderingItem.object.color.toCanvasColor() : "rgb(0,0,0)";
+
             if (image.clipWidth) {
                 this.context.drawImage(image.image, image.clipX, image.clipY, image.clipWidth,
                     image.clipHeight, point.x, point.y, image.clipWidth, image.clipHeight);
 
                 if (renderingItem.object.drawBorder) {
-                    this.context.beginPath();
-                    this.context.moveTo(point.x, point.y);
-                    this.context.lineTo(point.x + image.clipWidth, point.y);
-                    this.context.lineTo(point.x + image.clipWidth, point.y + image.clipHeight);
-                    this.context.lineTo(point.x, point.y + image.clipHeight);
-                    this.context.lineTo(point.x, point.y);
-
-                    this.context.strokeStyle = renderingItem.object.color ?
-                        renderingItem.object.color.toCanvasColor() : "rgb(0,0,0)";
-                    this.context.stroke();
+                    this.context.save();
+                    this.context.setLineDash([5]);
+                    this.drawRect(point.x, point.y, image.clipWidth, image.clipHeight, color);
+                    this.context.restore();
                 }
             }
             else {
                 this.context.drawImage(image.image, point.x, point.y);
 
                 if (renderingItem.object.drawBorder) {
-                    this.context.beginPath();
-                    this.context.moveTo(point.x, point.y);
-                    this.context.lineTo(point.x + image.image.width, point.y);
-                    this.context.lineTo(point.x + image.image.width, point.y + image.image.height);
-                    this.context.lineTo(point.x, point.y + image.image.height);
-                    this.context.lineTo(point.x, point.y);
-
-                    this.context.strokeStyle = renderingItem.object.color ?
-                        renderingItem.object.color.toCanvasColor() : "rgb(0,0,0)";
-                    this.context.stroke();
+                    this.context.save();
+                    this.context.setLineDash([5]);
+                    this.drawRect(point.x, point.y, image.image.width, image.image.height, color);
+                    this.context.restore();
                 }
             }
         }
 
-        renderPolygon(renderingItem) {
+        renderPolygon(renderingItem){
+            var polygon = renderingItem.object.polygon;
+            var matrix = renderingItem.matrix;
+
+            if(renderingItem.object.wireFrame){
+                var color = renderingItem.object.color ? renderingItem.object.color.toCanvasColor() : "rgba(200, 200, 200)";
+
+                this.context.beginPath();
+                var pointStart = polygon[0].translate(matrix).toIsometric();
+                this.context.moveTo(pointStart.x, pointStart.y);
+
+                for (var j = 1, k = polygon.length; j < k; j++) {
+                    var point = polygon[j].translate(matrix).toIsometric();
+                    this.context.lineTo(point.x, point.y);
+                }
+                this.context.lineTo(pointStart.x, pointStart.y);
+
+                this.context.strokeStyle = color;
+                this.context.stroke();
+            }
+        }
+
+        /*renderPolygon(renderingItem) {
             var polygon = renderingItem.object.polygon;
             var matrix = renderingItem.matrix;
 
@@ -255,7 +269,7 @@ define(['primitives'], function(primitives){
 
                 this.drawPolygonLabel(polygon, matrix, renderingItem.object.color);
             }
-        }
+        }*/
 
         renderPoint(renderingItem) {
             var pointerAxisLength = 100;
@@ -293,6 +307,18 @@ define(['primitives'], function(primitives){
             point = point.translate(renderingItem.matrix).toIsometric();
             this.context.strokeStyle = color;
             this.context.strokeRect(point.x - 2, point.y - 2, 4, 4);
+        }
+
+        drawRect(x, y, width, height, color){
+            this.context.beginPath();
+            this.context.moveTo(x, y);
+            this.context.lineTo(x + width, y);
+            this.context.lineTo(x + width, y + height);
+            this.context.lineTo(x, y + height);
+            this.context.lineTo(x, y);
+
+            this.context.strokeStyle = color;
+            this.context.stroke();
         }
 
         drawLine(pointA, pointB, color){

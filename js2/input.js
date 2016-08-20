@@ -1,7 +1,19 @@
-define(function(){
+define(['events', 'context'], function(events, context){
+    class InputEvent extends events.Event{
+        constructor(name, key){
+            super(name);
+            this.key = key;
+        }
+    }
+
+    class KeydownEvent extends InputEvent{
+    }
+
+    class KeyupEvent extends InputEvent{
+    }
+
     class InputManager{
         constructor(){
-            this.listeners = new Set();
             this.keyboardState = new Map();
 
             this.keyboardMap = {
@@ -10,20 +22,6 @@ define(function(){
                 39: "right",
                 40: "down"
             };
-        }
-
-        removeListener(listener) {
-            this.listeners.delete(listener);
-        }
-
-        addListener(listener){
-            this.listeners.add(listener);
-        }
-
-        notify(eventName, key) {
-            for(let listener of this.listeners){
-                listener(eventName, key);
-            }
         }
 
         getKeyState(key){
@@ -37,7 +35,7 @@ define(function(){
                     var state = this.keyboardState.get(code);
                     if (!state) {
                         this.keyboardState.set(code, true);
-                        this.notify("keydown", code);
+                        context.engine.eventsManager.pushEvent(new KeydownEvent('keydown', code));
                     }
                 }
             });
@@ -46,8 +44,8 @@ define(function(){
                 if (code) {
                     var state = this.keyboardState.get(code);
                     if (state) {
-                        this.keyboardState.set(false);
-                        this.notify("keyup", code);
+                        this.keyboardState.set(code, false);
+                        context.engine.eventsManager.pushEvent(new KeyupEvent('keyup', code));
                     }
                 }
             });
@@ -60,6 +58,8 @@ define(function(){
     }
 
     return {
-        InputManager
+        InputManager,
+        KeydownEvent,
+        KeyupEvent
     }
 });

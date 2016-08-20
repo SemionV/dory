@@ -6,15 +6,46 @@ define(function(){
     }
 
     class EventsSet extends Set{
-        getEvent(eventName) {
-            for (var i = 0, l = this.length; i < l; i++) {
-                var item = this[i];
-                if (item.name == eventName) {
-                    return item;
+        getEventByName(eventName) {
+            for(let event of this){
+                if (event.name == eventName) {
+                    return event;
                 }
             }
 
             return null;
+        }
+
+        *getEvents(...types){
+            for(let event of this){
+                for(let type of types){
+                    if(event instanceof type){
+                        yield event;
+                    }
+                }
+            }
+        }
+
+        hasEvent(type){
+            for(let event of this){
+                if(event instanceof type){
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        hasEvents(...types){
+            for(let event of this){
+                for(let type of types){
+                    if(event instanceof type){
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 
@@ -41,16 +72,13 @@ define(function(){
             this.events = this.backEvents;
             this.backEvents = new EventsSet();
 
-            return this.eventsIterator();
-        }
-
-        eventsIterator() {
-            return this.events.values();
+            return this.events;
         }
     }
 
     return {
         EventsManager,
-        Event
+        Event,
+        EventsSet
     };
 });

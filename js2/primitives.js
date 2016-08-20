@@ -25,6 +25,10 @@ define(function(){
             return new Point2D(this.x*factor, this.y*factor);
         }
 
+        toString(){
+            return `${this.x}, ${this.y}`;
+        }
+
         static getDirection(point){
             for(let [key, value] of directionsMap2D){
                 if(value.areEqual(point)){
@@ -68,10 +72,14 @@ define(function(){
         multiply(factor){
             return new Point3D(this.x*factor, this.y*factor, this.z*factor);
         }
+
+        toString(){
+            return super.toString() + `, ${this.z}`;
+        }
     }
 
     class Color{
-        constructor(r, g, b, a = 0){
+        constructor(r, g, b, a = 'undefined'){
             this.r = r;
             this.g = g;
             this.b = b;
@@ -79,19 +87,20 @@ define(function(){
         }
 
         toCanvasColor() {
-            if (this.a) {
-                return `rgba(${this.r},${this.b},${this.b},${this.a})`;
+            if (this.a != 'undefined') {
+                return `rgba(${this.r},${this.g},${this.b},${this.a})`;
             }
             else {
-                return `rgb(${this.r},${this.b},${this.b})`;
+                return `rgb(${this.r},${this.g},${this.b})`;
             }
         }
     }
 
-    class Polygon extends Set{
+    class Polygon extends Array{
         constructor(...points){
+            super();
             for(let point of points){
-                this.add(point)
+                this.push(point)
             }
         }
     }
@@ -201,15 +210,18 @@ define(function(){
         }
 
         static fromBox(box, color){
-            let vertex1 = new Vertex(0, 0, 0, color);
-            let vertex2 = new Vertex(box.width, 0, 0, color);
-            let vertex3 = new Vertex(box.width, box.height, 0, color);
-            let vertex4 = new Vertex(0, box.height, 0, color);
+            let halfWidth = box.width / 2;
+            let halfHeight = box.height / 2;
 
-            let vertex5 = new Vertex(0, 0, box.altitude, color);
-            let vertex6 = new Vertex(box.width, 0, box.altitude, color);
-            let vertex7 = new Vertex(box.width, box.height, box.altitude, color);
-            let vertex8 = new Vertex(0, box.height, box.altitude, color);
+            let vertex1 = new Vertex(-halfWidth, -halfHeight, 0, color);
+            let vertex2 = new Vertex(box.width - halfWidth, -halfHeight, 0, color);
+            let vertex3 = new Vertex(box.width - halfWidth, box.height - halfHeight, 0, color);
+            let vertex4 = new Vertex(0 - halfWidth, box.height - halfHeight, 0, color);
+
+            let vertex5 = new Vertex(vertex1.x, vertex1.y, -box.altitude, color);
+            let vertex6 = new Vertex(vertex2.x, vertex2.y, -box.altitude, color);
+            let vertex7 = new Vertex(vertex3.x, vertex3.y, -box.altitude, color);
+            let vertex8 = new Vertex(vertex4.x, vertex4.y, -box.altitude, color);
 
             let mesh = new Mesh();
             mesh.addVertexes(vertex1, vertex2, vertex3, vertex4, vertex5, vertex6, vertex7, vertex8);
@@ -221,7 +233,7 @@ define(function(){
             var polygon5 = new Polygon(vertex4, vertex1, vertex5, vertex8);
             var polygon6 = new Polygon(vertex5, vertex6, vertex7, vertex8);
 
-            this.addPolygons(polygon1, polygon2, polygon3, polygon4, polygon5, polygon6);
+            mesh.addPolygons(polygon1, polygon2, polygon3, polygon4, polygon5, polygon6);
 
             return mesh;
         }
