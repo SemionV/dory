@@ -73,6 +73,42 @@ define(['primitives', 'render'], function(primitives, render){
         }
     }
 
+    class MeshComponent extends Component{
+        constructor(name, mesh){
+            super(name);
+            this.mesh = mesh;
+        }
+    }
+
+    class BoundingVolumeComponent extends MeshComponent{
+        constructor(mesh){
+            super(null, mesh);
+        }
+    }
+
+    class BoundingBoxComponent extends BoundingVolumeComponent{
+        constructor(box, color){
+            super(this.buildMesh(box, color));
+            this.box = box;
+            this.color = color;
+        }
+
+        buildMesh(box, color){
+            return primitives.Mesh.fromBox(box, color);
+        }
+    }
+
+    class MeshDrawer{
+        constructor(meshComponent, wireFrame = true){
+            this.meshComponent = meshComponent;
+            this.wireFrame = true;
+        }
+
+        render(entity, renderer){
+
+        }
+    }
+
     return {
         Component,
         StateComponent,
@@ -81,6 +117,9 @@ define(['primitives', 'render'], function(primitives, render){
         CameraComponent,
         PointDrawer,
         SpriteComponent,
-        SpriteDrawer
+        SpriteDrawer,
+        MeshComponent,
+        BoundingVolumeComponent,
+        BoundingBoxComponent
     };
 });

@@ -161,6 +161,72 @@ define(function(){
         }
     }
 
+    class Vertex extends Point3D{
+        constructor(x, y, z, color = new Color(0, 0, 0)){
+            super(x, y, z);
+            this.color = color;
+        }
+    }
+
+    class Triangle extends Polygon{
+        constructor(vertex1, vertex2, vertex3){
+            super(vertex1, vertex2, vertex3);
+        }
+    }
+
+    class Mesh{
+        constructor(){
+            this.vertexes = [];//Use Array since it does not check uniqueness if items, that works faster
+            this.polygons = [];
+        }
+
+        addVertex(vertex){
+            this.vertexes.push(vertex);
+        }
+
+        addVertexes(...vertexes){
+            for(let vertex of vertexes){
+                this.addVertex(vertex)
+            }
+        }
+
+        addPolygon(polygon){
+            this.polygons.push(polygon);
+        }
+
+        addPolygons(...polygons){
+            for(let polygon of polygons){
+                this.addPolygon(polygon);
+            }
+        }
+
+        static fromBox(box, color){
+            let vertex1 = new Vertex(0, 0, 0, color);
+            let vertex2 = new Vertex(box.width, 0, 0, color);
+            let vertex3 = new Vertex(box.width, box.height, 0, color);
+            let vertex4 = new Vertex(0, box.height, 0, color);
+
+            let vertex5 = new Vertex(0, 0, box.altitude, color);
+            let vertex6 = new Vertex(box.width, 0, box.altitude, color);
+            let vertex7 = new Vertex(box.width, box.height, box.altitude, color);
+            let vertex8 = new Vertex(0, box.height, box.altitude, color);
+
+            let mesh = new Mesh();
+            mesh.addVertexes(vertex1, vertex2, vertex3, vertex4, vertex5, vertex6, vertex7, vertex8);
+
+            var polygon1 = new Polygon(vertex1, vertex4, vertex3, vertex2);
+            var polygon2 = new Polygon(vertex1, vertex2, vertex6, vertex5);
+            var polygon3 = new Polygon(vertex2, vertex3, vertex7, vertex6);
+            var polygon4 = new Polygon(vertex3, vertex4, vertex8, vertex7);
+            var polygon5 = new Polygon(vertex4, vertex1, vertex5, vertex8);
+            var polygon6 = new Polygon(vertex5, vertex6, vertex7, vertex8);
+
+            this.addPolygons(polygon1, polygon2, polygon3, polygon4, polygon5, polygon6);
+
+            return mesh;
+        }
+    }
+
     //TODO: Make entity component out of this class
     class Animation{
         constructor(spriteSheet, startFrame, endFrame, fps, updateDeltaTime){
@@ -210,6 +276,9 @@ define(function(){
         Rectangle,
         Box,
         Text,
-        SpriteSheet
+        SpriteSheet,
+        Vertex,
+        Triangle,
+        Mesh
     }
 });

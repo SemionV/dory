@@ -9,7 +9,6 @@ require(['engine', 'resources', 'scene', 'components', 'render', 'primitives', '
         "terrain.grass": "img/1-grass-1.png",
         "terrain.hole": "img/hole.png",
         "objects.chair": "img/2-chair1.png",
-        "actor.warrior": "img/warrior/looking se0000.png",
         "warrior_spritesheet1": "img/warrior/warrior_spritesheet1.png",
         "warrior_spritesheet2": "img/warrior/warrior_spritesheet2.png"
     }).then(() =>{
@@ -40,8 +39,8 @@ require(['engine', 'resources', 'scene', 'components', 'render', 'primitives', '
                 [1, 1, 1, 1, 1, 1, 1, 1],
                 [1, 1, 1, 1, 1, 1, 1, 1]
             ], new Map([
-                [1, new tileTerrain.TileType(new primitives.Image(imageGrass, imageGrass.width / 2))],
-                [2, new tileTerrain.TileType(new primitives.Image(imageHole, imageHole.width / 2))]
+                [2, new tileTerrain.TileType(new primitives.Image(imageGrass, imageGrass.width / 2))],
+                [1, new tileTerrain.TileType(new primitives.Image(imageHole, imageHole.width / 2))]
             ])));
         terrain.addComponent(new tileTerrain.TileTerrainDrawer());
         scene.addEntity('terrain', terrain);
@@ -50,7 +49,7 @@ require(['engine', 'resources', 'scene', 'components', 'render', 'primitives', '
         hero.addComponent(new components.PositionComponent());
         hero.addComponent(new components.PointDrawer());
         var imageChair = resourceManager.getImage('objects.chair');
-        hero.addComponent(new components.SpriteComponent(new primitives.Image(imageChair, imageChair.width / 2 + 4, imageChair.height / 2 + 22)));
+        hero.addComponent(new components.SpriteComponent(new primitives.Image(imageChair, imageChair.width / 2 + 4, imageChair.height / 2 + 24)));
         hero.addComponent(new components.SpriteDrawer(true));
         scene.addEntity('hero', hero);
 
