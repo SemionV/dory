@@ -267,7 +267,7 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
                     eventsSet.add(new MoveStartEvent());
                     var directionComponent = entity.getComponent(DirectionComponent);
                     if(directionComponent){
-                        directionComponent.direction = moveDirection;
+                        directionComponent.direction = new primitives.Point3D(moveDirection.x, moveDirection.y, 0);
                     }
                 }
                 else {
@@ -280,6 +280,12 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
     }
 
     class MovementComponent extends StateComponent{
+        constructor(speed){
+            super();
+            this.speed = speed;
+            this.ds = parseFloat(((speed / 1000) * context.engine.updateDeltaTime).toFixed(1));
+        }
+
         update(entity, events){
             var controllerComponent = entity.getComponent(ControllerComponent);
             var directionComponent = entity.getComponent(DirectionComponent);
@@ -289,9 +295,8 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
                 var state = controllerComponent.moveState.getState();
                 if(state instanceof MovingState)
                 {
-                    var speed = 1;
-                    var direction = directionComponent.direction;
-                    positionComponent.translation = positionComponent.translation.translate(new primitives.Point3D(direction.x * speed, direction.y * speed));
+                    var vector = directionComponent.direction.multiply(this.ds);
+                    positionComponent.translation = positionComponent.translation.translate(vector);
                 }
             }
         }

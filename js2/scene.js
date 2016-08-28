@@ -53,11 +53,11 @@ define(['components'], function(components){
 
         update(events){
             //Process events from previous heart beat
-            for(let event in events){
+            for(let event of events){
                 var handlers = this.eventHandlers.get(event.name);
                 if(handlers){
                     for(let handler of handlers){
-                        handler(events);
+                        handler(event);
                     }
                 }
             }
@@ -124,7 +124,7 @@ define(['components'], function(components){
                 this.eventHandlers.set(eventName, set);
             }
 
-            if(!set.contains(callback)){
+            if(!set.has(callback)){
                 set.add(callback);
             }
         }

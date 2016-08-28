@@ -71,7 +71,6 @@ define(function(){
         swap() {
             this.events = this.backEvents;
             this.backEvents = new EventsSet();
-
             return this.events;
         }
     }

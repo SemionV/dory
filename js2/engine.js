@@ -5,6 +5,13 @@ define(['events', 'input'], function(events, input){
         }
     }
 
+    class FpsUpdatedEvent extends events.Event{
+        constructor(name, fps){
+            super(name);
+            this.fps = fps;
+        }
+    }
+
     class Engine{
         constructor(config){
             this.isStop = false;
@@ -86,7 +93,7 @@ define(['events', 'input'], function(events, input){
                     this.currentFPS = frameCount;
                     frameCount = 0;
 
-                    this.eventsManager.pushSimpleEvent("fps.updated");
+                    this.eventsManager.pushEvent(new FpsUpdatedEvent('fps.updated', this.currentFPS));
                 }
 
                 if (!this.isStop) {
