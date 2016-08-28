@@ -60,7 +60,7 @@ define(['events', 'input'], function(events, input){
         run() {
             this.inputManager.subscribe();
 
-            var heart = this.createHeart(this.config.fps);
+            var heart = this.createHeart();
 
             var now = Date.now();
             var last = now;

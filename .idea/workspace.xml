@@ -3,11 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/components.js" afterPath="$PROJECT_DIR$/js2/components.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/engine.js" afterPath="$PROJECT_DIR$/js2/engine.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/events.js" afterPath="$PROJECT_DIR$/js2/events.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/scene.js" afterPath="$PROJECT_DIR$/js2/scene.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/spriteEditor.js" afterPath="$PROJECT_DIR$/js2/spriteEditor.js" />
     </list>
     <ignored path="Sandbox.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -27,11 +23,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="spriteEditor.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="spriteEditor.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js2/spriteEditor.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="29" column="14" selection-start-line="29" selection-start-column="14" selection-end-line="29" selection-end-column="14" />
+            <state relative-caret-position="545">
+              <caret line="67" column="68" selection-start-line="67" selection-start-column="68" selection-end-line="67" selection-end-column="68" />
               <folding />
             </state>
           </provider>
@@ -67,11 +63,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="engine.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="engine.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js2/engine.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="329">
-              <caret line="95" column="99" selection-start-line="95" selection-start-column="99" selection-end-line="95" selection-end-column="99" />
+            <state relative-caret-position="423">
+              <caret line="62" column="41" selection-start-line="62" selection-start-column="41" selection-end-line="62" selection-end-column="41" />
               <folding />
             </state>
           </provider>
@@ -150,8 +146,8 @@
         <option value="$PROJECT_DIR$/js2/primitives.js" />
         <option value="$PROJECT_DIR$/js2/events.js" />
         <option value="$PROJECT_DIR$/js2/scene.js" />
-        <option value="$PROJECT_DIR$/js2/engine.js" />
         <option value="$PROJECT_DIR$/js2/components.js" />
+        <option value="$PROJECT_DIR$/js2/engine.js" />
         <option value="$PROJECT_DIR$/js2/spriteEditor.js" />
       </list>
     </option>
@@ -339,7 +335,7 @@
       <updated>1423739341353</updated>
       <workItem from="1470898762364" duration="9774000" />
       <workItem from="1470984944129" duration="2977000" />
-      <workItem from="1471505811440" duration="63055000" />
+      <workItem from="1471505811440" duration="64930000" />
     </task>
     <task id="LOCAL-00001" summary="Refactoring">
       <created>1470910527338</created>
@@ -425,11 +421,18 @@
       <option name="project" value="LOCAL" />
       <updated>1471720312304</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Keyboard control">
+      <created>1472394272965</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1472394272965</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="75806000" />
+    <option name="totallyTimeSpent" value="77681000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1696" height="1026" extended-state="6" />
@@ -870,18 +873,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js2/spriteEditor.js">
+    <entry file="file://$PROJECT_DIR$/js2/engine.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="29" column="14" selection-start-line="29" selection-start-column="14" selection-end-line="29" selection-end-column="14" />
+        <state relative-caret-position="423">
+          <caret line="62" column="41" selection-start-line="62" selection-start-column="41" selection-end-line="62" selection-end-column="41" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js2/engine.js">
+    <entry file="file://$PROJECT_DIR$/js2/spriteEditor.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="329">
-          <caret line="95" column="99" selection-start-line="95" selection-start-column="99" selection-end-line="95" selection-end-column="99" />
+        <state relative-caret-position="545">
+          <caret line="67" column="68" selection-start-line="67" selection-start-column="68" selection-end-line="67" selection-end-column="68" />
           <folding />
         </state>
       </provider>
