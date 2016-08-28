@@ -1,7 +1,8 @@
 define(['events', 'input'], function(events, input){
     class EngineConfig{
-        constructor(fps = 60){
+        constructor(fps = 60, profile = false){
             this.fps = fps;
+            this.profile = profile;
         }
     }
 
@@ -9,6 +10,33 @@ define(['events', 'input'], function(events, input){
         constructor(name, fps){
             super(name);
             this.fps = fps;
+        }
+    }
+
+    class Frame{
+        constructor(){
+            this.index = 0;
+            this.startTime = 0;
+            this.endTime = 0;
+            this.accumulatorValue = 0;
+            this.passedTime = 0;
+            this.updateStartTime = 0;
+            this.updateEndTime = 0;
+            this.drawStartTime = 0;
+            this.drawEndTime = 0;
+            this.numberOfUpdates = 0;
+        }
+
+        get duration(){
+            return this.endTime - this.startTime;
+        }
+
+        get durationUpdate(){
+            return this.updateEndTime - this.updateStartTime;
+        }
+
+        get durationDraw(){
+            return this.drawEndTime - this.drawStartTime;
         }
     }
 
@@ -23,10 +51,36 @@ define(['events', 'input'], function(events, input){
             var deltaTime = 1000 / this.config.fps;
             this.updateDeltaTime = deltaTime;
             this.maxDeltaTime = deltaTime * 2;
+
+            this.profile = [];
         }
 
         setHeart(heart){
             this.heart = heart;
+        }
+
+        *getTooLongFrames(){
+            for(let frame of this.profile){
+                if(frame.duration > this.updateDeltaTime){
+                    yield frame;
+                }
+            }
+        }
+
+        *getAfterTooLongFrames(){
+            for(let frame of this.profile){
+                if(frame.passedTime > this.updateDeltaTime){
+                    yield frame;
+                }
+            }
+        }
+
+        *getMultiUpdateFrames(){
+            for(let frame of this.profile){
+                if(frame.numberOfUpdates > 1){
+                    yield frame;
+                }
+            }
         }
 
         createHeart(fps) {
@@ -63,7 +117,7 @@ define(['events', 'input'], function(events, input){
             var heart = this.createHeart();
 
             var now = Date.now();
-            var last = now;
+            var last = null;
             var passed = 0;
             var accumulator = 0;
             var dt = this.updateDeltaTime;
@@ -71,22 +125,39 @@ define(['events', 'input'], function(events, input){
             var frameCountStartDate = now;
 
             var heartBeat = () => {
-                frameCount++;
-
                 now = Date.now();
+
+                frameCount++;
+                var frameInfo = new Frame();
+                frameInfo.index = this.profile.length;
+                frameInfo.startTime = now;
+
+                if(!last){
+                    last = now;
+                }
                 passed = now - last;
+                frameInfo.passedTime = passed;
                 if (passed > this.maxDeltaTime) {
                     passed = this.maxDeltaTime;
                 }
                 last = now;
                 accumulator += passed;
 
+                frameInfo.accumulatorValue = accumulator;
+
+                frameInfo.updateStartTime = Date.now();
+                let numberOfUpdates = 0;
                 while (accumulator >= dt) {
                     this.update();
+                    numberOfUpdates++;
                     accumulator -= dt;
                 }
+                frameInfo.updateEndTime = Date.now();
+                frameInfo.numberOfUpdates = numberOfUpdates;
 
+                frameInfo.drawStartTime = Date.now();
                 this.draw();
+                frameInfo.drawEndTime = Date.now()
 
                 if ((now - frameCountStartDate) >= 1000) {
                     frameCountStartDate = now;
@@ -102,6 +173,12 @@ define(['events', 'input'], function(events, input){
                 else {
                     this.isStop = false;
                 }
+
+                if(this.config.profile){
+                    this.profile.push(frameInfo);
+                }
+
+                frameInfo.endTime = Date.now();
             };
 
             heart.call(window, heartBeat);
@@ -128,6 +205,7 @@ define(['events', 'input'], function(events, input){
 
     return {
         Engine,
-        EngineConfig
+        EngineConfig,
+        FpsUpdatedEvent
     };
 });

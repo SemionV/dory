@@ -53,11 +53,12 @@ define(['components'], function(components){
 
         update(events){
             //Process events from previous heart beat
-            for(let event of events){
-                var handlers = this.eventHandlers.get(event.name);
-                if(handlers){
-                    for(let handler of handlers){
-                        handler(event);
+            for(let [type, handlers] of this.eventHandlers){
+                for(let event of events){
+                    if(event instanceof type){
+                        for(let handler of handlers){
+                            handler(event);
+                        }
                     }
                 }
             }
@@ -117,11 +118,11 @@ define(['components'], function(components){
             }
         }
 
-        addEventHandler(eventName, callback){
-            var set = this.eventHandlers.get(eventName);
+        addEventHandler(eventType, callback){
+            var set = this.eventHandlers.get(eventType);
             if(!set){
                 set = new Set();
-                this.eventHandlers.set(eventName, set);
+                this.eventHandlers.set(eventType, set);
             }
 
             if(!set.has(callback)){
@@ -129,8 +130,8 @@ define(['components'], function(components){
             }
         }
 
-        removeEventHandler(eventName, callback){
-            var set = this.eventHandlers.get(eventName);
+        removeEventHandler(eventType, callback){
+            var set = this.eventHandlers.get(eventType);
             if(set){
                 set.delete(callback);
             }

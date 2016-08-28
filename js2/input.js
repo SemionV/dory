@@ -52,8 +52,9 @@ define(['events', 'context'], function(events, context){
         }
 
         unsubscribe(){
-            document.body.removeEventListener("keydown");
-            document.body.removeEventListener("keyup");
+            //TODO: unsubscribe from events correctly
+            //document.body.removeEventListener("keydown");
+            //document.body.removeEventListener("keyup");
         }
     }
 

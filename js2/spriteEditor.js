@@ -15,7 +15,7 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         "terrain.grass3": "img/grass2.png",
         "terrain.grass4": "img/grass32.png",
     }).then(() =>{
-        let engine = new dori.Engine({fps: 60});
+        let engine = new dori.Engine(new dori.EngineConfig(100, true));
         context.engine = engine;
 
         let scene = new scenes.SceneManager();
@@ -27,7 +27,7 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         camera.addComponent(new components.PositionComponent());
         camera.addComponent(new components.DirectionComponent());
         camera.addComponent(new components.KeyboardControllerComponent());
-        camera.addComponent(new components.MovementComponent(60));
+        camera.addComponent(new components.MovementComponent(100));
         scene.addEntity('camera', camera);
 
         let terrain = new scenes.Entity();
@@ -69,7 +69,7 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
 
         scene.addEntity('chair', chair);
 
-        scene.addEventHandler('fps.updated', (e)=>{
+        scene.addEventHandler(dori.FpsUpdatedEvent, (e)=>{
             document.getElementById('FPS').innerText = e.fps;
         });
 
