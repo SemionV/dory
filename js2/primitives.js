@@ -101,6 +101,7 @@ define(function(){
         }
     }
 
+    /*See http://glmatrix.net/*/
     class Matrix3D extends Array{
         constructor(...parts){
             if(parts.length == 16){
@@ -208,6 +209,13 @@ define(function(){
             result[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
             result[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
             return result;
+        }
+
+        toString(){
+            return `${this[0]} ${this[1]} ${this[2]} ${this[3]}
+ ${this[4]} ${this[5]} ${this[6]} ${this[7]}
+ ${this[8]} ${this[9]} ${this[10]} ${this[11]}
+ ${this[12]} ${this[13]} ${this[14]} ${this[15]}`;
         }
 
         static translate(x, y, z, result = new Matrix3D()){

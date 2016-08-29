@@ -283,7 +283,7 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
         constructor(speed){
             super();
             this.speed = speed;
-            this.ds = parseFloat(((speed / 1000) * context.engine.updateDeltaTime).toFixed(1));
+            this.ds = parseFloat(((speed / 1000) * context.engine.updateDeltaTime).toFixed(2));
             this.vector = new primitives.Point3D();
             this.translate = new primitives.Matrix3D();
         }
@@ -299,7 +299,40 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
                 {
                     directionComponent.direction.multiply(this.ds, this.vector);
                     primitives.Matrix3D.translate(this.vector.x, this.vector.y, this.vector.z, this.translate);
-                    positionComponent.transformation.multiply(this.translate, positionComponent.transformation);
+                    this.translate.multiply(positionComponent.transformation, positionComponent.transformation);
+                }
+            }
+        }
+    }
+
+    class SpinComponent extends  StateComponent{
+        constructor(a, b, g){
+            super();
+            this.da = parseFloat(((a / 1000) * context.engine.updateDeltaTime).toFixed(2));
+            this.db = parseFloat(((b / 1000) * context.engine.updateDeltaTime).toFixed(2));
+            this.dg = parseFloat(((g / 1000) * context.engine.updateDeltaTime).toFixed(2));
+
+            this.rotateA = new primitives.Matrix3D();
+            primitives.Matrix3D.rotateX(this.da, this.rotateA);
+            this.rotateB = new primitives.Matrix3D();
+            primitives.Matrix3D.rotateY(this.db, this.rotateB);
+            this.rotateG = new primitives.Matrix3D();
+            primitives.Matrix3D.rotateZ(this.dg, this.rotateG);
+        }
+
+        update(entity, events){
+            var positionComponent = entity.getComponent(PositionComponent);
+            if(positionComponent)
+            {
+                var transformation = positionComponent.transformation;
+                if(this.da) {
+                    this.rotateA.multiply(transformation, transformation);
+                }
+                if(this.db) {
+                    this.rotateB.multiply(transformation, transformation);
+                }
+                if(this.dg) {
+                    this.rotateG.multiply(transformation, transformation);
                 }
             }
         }
@@ -322,6 +355,7 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
         BoundingBoxFrontDrawer,
         DirectionComponent,
         KeyboardControllerComponent,
-        MovementComponent
+        MovementComponent,
+        SpinComponent
     };
 });
