@@ -31,14 +31,10 @@ define(['primitives', 'components', 'render'], function(primitives, components, 
                         let tileType = terrain.tileTypes.get(tileCode);
                         if(tileType){
                             var position = new primitives.Point3D(j * terrain.tileWidth - halfWidth, i * terrain.tileHeight - halfHeight);
-                            renderer.pushMatrix(position);
-
                             if(tileType.image){
-                                var sprite = new render.Sprite(tileType.image);
+                                var sprite = new render.Sprite(tileType.image, position);
                                 renderer.addPrimitive(sprite);
                             }
-
-                            renderer.popMatrix();
                         }
                     }
                 }

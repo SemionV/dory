@@ -9,12 +9,16 @@ define(function(){
             return this.x == point.x && this.y == point.y;
         }
 
-        toIsometric(){
-            return new Point2D((this.x - this.y), ((this.x + this.y) / 2));
+        toIsometric(result = new Point2D()){
+            result.x = this.x - this.y;
+            result.y = (this.x + this.y) / 2;
+            return result;
         }
 
-        to2D(){
-            return new Point2D(((2 * this.y + this.x) / 2), ((2 * this.y - this.x) / 2));
+        to2D(result = new Point2D()){
+            result.x = (2 * this.y + this.x) / 2;
+            result.y = (2 * this.y - this.x) / 2;
+            return result;
         }
 
         translate(vector){
@@ -27,6 +31,11 @@ define(function(){
 
         toString(){
             return `${this.x}, ${this.y}`;
+        }
+
+        reset(){
+            this.x = 0;
+            this.y = 0;
         }
 
         static getDirection(point){
@@ -60,18 +69,31 @@ define(function(){
             this.w = w;
         }
 
-        toIsometric(){
-            var point = super.toIsometric();
+        toIsometric(result){
+            var point = super.toIsometric(result);
             point.y += this.z;
             return point;
         }
 
-        translate(vector){
-            return new Point3D(this.x + vector.x, this.y + vector.y, this.z + vector.z);
+        translate(vector, result = new Point3D()){
+            result.x = this.x + vector.x;
+            result.y = this.y + vector.y;
+            result.z = this.z + vector.z;
+            return result;
         }
 
-        multiply(factor){
-            return new Point3D(this.x*factor, this.y*factor, this.z*factor);
+        multiply(factor, result = new Point3D()){
+            result.x = this.x*factor;
+            result.y = this.y*factor;
+            result.z = this.z*factor;
+            return result;
+        }
+
+        reset(){
+            this.x = 0;
+            this.y = 0;
+            this.z = 0;
+            this.w = 1;
         }
 
         toString(){
@@ -80,17 +102,30 @@ define(function(){
     }
 
     class Matrix3D extends Array{
-        constructor(value = [1, 0, 0, 0,
-                              0, 1, 0, 0,
-                              0, 0, 1, 0,
-                              0, 0, 0, 1]){
-            if(value.length != 16){
-                throw new Error('Matrix3D value consists of 16 parts');
-            }
-            super(value);
+        constructor(){
+            super(16);
+            this[0] = 1;
+            this[1] = 0;
+            this[2] = 0;
+            this[3] = 0;
+
+            this[4] = 0;
+            this[5] = 1;
+            this[6] = 0;
+            this[7] = 0;
+
+            this[8] = 0;
+            this[9] = 0;
+            this[10] = 1;
+            this[11] = 0;
+
+            this[12] = 0;
+            this[13] = 0;
+            this[14] = 0;
+            this[15] = 1;
         }
 
-        transform(point, result){
+        transform(point, result = new Point3D()){
             let x = (point.x * this[0]) + (point.y * this[4]) + (point.z * this[8]) + (point.w * this[11]);
             let y = (point.x * this[1]) + (point.y * this[5]) + (point.z * this[9]) + (point.w * this[12]);
             let z = (point.x * this[2]) + (point.y * this[6]) + (point.z * this[10]) + (point.w * this[13]);
@@ -99,9 +134,11 @@ define(function(){
             result.y = y;
             result.z = z;
             result.w = w;
+
+            return result;
         }
 
-        multiply(matrix, result){
+        multiply(matrix, result = new Matrix3D()){
             let mc0r0 = this[0];
             let mc1r0 = this[1];
             let mc2r0 = this[2];
@@ -181,46 +218,273 @@ define(function(){
             result[13] = c1r3;
             result[14] = c2r3;
             result[15] = c3r3;
+
+            return result;
         }
 
-        static translation(x, y, z){
-            return new Matrix3D(
-                [1, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 0, 1, 0,
-                x, y, z, 1]);
+        /*Algorithm is found here http://stackoverflow.com/questions/1148309/inverting-a-4x4-matrix*/
+        invert(result = new Matrix3D())
+        {
+            let mc0r0 = this[0];
+            let mc1r0 = this[1];
+            let mc2r0 = this[2];
+            let mc3r0 = this[3];
+
+            let mc0r1 = this[4];
+            let mc1r1 = this[5];
+            let mc2r1 = this[6];
+            let mc3r1 = this[7];
+
+            let mc0r2 = this[8];
+            let mc1r2 = this[9];
+            let mc2r2 = this[10];
+            let mc3r2 = this[11];
+
+            let mc0r3 = this[12];
+            let mc1r3 = this[13];
+            let mc2r3 = this[14];
+            let mc3r3 = this[15];
+
+            result[0] = mc1r1  * mc2r2 * mc3r3 -
+                mc1r1  * mc3r2 * mc2r3 -
+                mc1r2  * mc2r1  * mc3r3 +
+                mc1r2  * mc3r1  * mc2r3 +
+                mc1r3 * mc2r1  * mc3r2 -
+                mc1r3 * mc3r1  * mc2r2;
+
+            result[4] = -mc0r1  * mc2r2 * mc3r3 +
+                mc0r1  * mc3r2 * mc2r3 +
+                mc0r2  * mc2r1  * mc3r3 -
+                mc0r2  * mc3r1  * mc2r3 -
+                mc0r3 * mc2r1  * mc3r2 +
+                mc0r3 * mc3r1  * mc2r2;
+
+            result[8] = mc0r1 * mc1r2 * mc3r3 -
+                mc0r1 * mc3r2 * mc1r3 -
+                mc0r2 * mc1r1 * mc3r3 +
+                mc0r2 * mc3r1 * mc1r3 +
+                mc0r3 * mc1r1 * mc3r2 -
+                mc0r3 * mc3r1 * mc1r2;
+
+            result[12] = -mc0r1 * mc1r2 * mc2r3 +
+                mc0r1 * mc2r2 * mc1r3 +
+                mc0r2 * mc1r1 * mc2r3 -
+                mc0r2 * mc2r1 * mc1r3 -
+                mc0r3 * mc1r1 * mc2r2 +
+                mc0r3 * mc2r1 * mc1r2;
+
+            result[1] = -mc1r0 * mc2r2 * mc3r3 +
+                mc1r0 * mc3r2 * mc2r3 +
+                mc1r2 * mc2r0 * mc3r3 -
+                mc1r2 * mc3r0 * mc2r3 -
+                mc1r3 * mc2r0 * mc3r2 +
+                mc1r3 * mc3r0 * mc2r2;
+
+            result[5] = mc0r0 * mc2r2 * mc3r3 -
+                mc0r0 * mc3r2 * mc2r3 -
+                mc0r2 * mc2r0 * mc3r3 +
+                mc0r2 * mc3r0 * mc2r3 +
+                mc0r3 * mc2r0 * mc3r2 -
+                mc0r3 * mc3r0 * mc2r2;
+
+            result[9] = -mc0r0 * mc1r2 * mc3r3 +
+                mc0r0 * mc3r2 * mc1r3 +
+                mc0r2 * mc1r0 * mc3r3 -
+                mc0r2 * mc3r0 * mc1r3 -
+                mc0r3 * mc1r0 * mc3r2 +
+                mc0r3 * mc3r0 * mc1r2;
+
+            result[13] = mc0r0 * mc1r2 * mc2r3 -
+                mc0r0 * mc2r2 * mc1r3 -
+                mc0r2 * mc1r0 * mc2r3 +
+                mc0r2 * mc2r0 * mc1r3 +
+                mc0r3 * mc1r0 * mc2r2 -
+                mc0r3 * mc2r0 * mc1r2;
+
+            result[2] = mc1r0 * mc2r1 * mc3r3 -
+                mc1r0 * mc3r1 * mc2r3 -
+                mc1r1 * mc2r0 * mc3r3 +
+                mc1r1 * mc3r0 * mc2r3 +
+                mc1r3 * mc2r0 * mc3r1 -
+                mc1r3 * mc3r0 * mc2r1;
+
+            result[6] = -mc0r0 * mc2r1 * mc3r3 +
+                mc0r0 * mc3r1 * mc2r3 +
+                mc0r1 * mc2r0 * mc3r3 -
+                mc0r1 * mc3r0 * mc2r3 -
+                mc0r3 * mc2r0 * mc3r1 +
+                mc0r3 * mc3r0 * mc2r1;
+
+            result[10] = mc0r0 * mc1r1 * mc3r3 -
+                mc0r0 * mc3r1 * mc1r3 -
+                mc0r1 * mc1r0 * mc3r3 +
+                mc0r1 * mc3r0 * mc1r3 +
+                mc0r3 * mc1r0 * mc3r1 -
+                mc0r3 * mc3r0 * mc1r1;
+
+            result[14] = -mc0r0 * mc1r1 * mc2r3 +
+                mc0r0 * mc2r1 * mc1r3 +
+                mc0r1 * mc1r0 * mc2r3 -
+                mc0r1 * mc2r0 * mc1r3 -
+                mc0r3 * mc1r0 * mc2r1 +
+                mc0r3 * mc2r0 * mc1r1;
+
+            result[3] = -mc1r0 * mc2r1 * mc3r2 +
+                mc1r0 * mc3r1 * mc2r2 +
+                mc1r1 * mc2r0 * mc3r2 -
+                mc1r1 * mc3r0 * mc2r2 -
+                mc1r2 * mc2r0 * mc3r1 +
+                mc1r2 * mc3r0 * mc2r1;
+
+            result[7] = mc0r0 * mc2r1 * mc3r2 -
+                mc0r0 * mc3r1 * mc2r2 -
+                mc0r1 * mc2r0 * mc3r2 +
+                mc0r1 * mc3r0 * mc2r2 +
+                mc0r2 * mc2r0 * mc3r1 -
+                mc0r2 * mc3r0 * mc2r1;
+
+            result[11] = -mc0r0 * mc1r1 * mc3r2 +
+                mc0r0 * mc3r1 * mc1r2 +
+                mc0r1 * mc1r0 * mc3r2 -
+                mc0r1 * mc3r0 * mc1r2 -
+                mc0r2 * mc1r0 * mc3r1 +
+                mc0r2 * mc3r0 * mc1r1;
+
+            result[15] = mc0r0 * mc1r1 * mc2r2 -
+                mc0r0 * mc2r1 * mc1r2 -
+                mc0r1 * mc1r0 * mc2r2 +
+                mc0r1 * mc2r0 * mc1r2 +
+                mc0r2 * mc1r0 * mc2r1 -
+                mc0r2 * mc2r0 * mc1r1;
+
+            let det = mc0r0 * result[0] + mc1r0 * result[4] + mc2r0 * result[8] + mc3r0 * result[12];
+
+            if (det == 0) {
+                return result;
+            }
+
+            det = 1.0 / det;
+
+            for (let i = 0; i < 16; i++){
+                result[i] = result[i] * det
+            }
+
+            return result;
         }
 
-        static scale(x, y, z){
-            return new Matrix3D(
-                [x, 0, 0, 0,
-                0, y, 0, 0,
-                0, 0, z, 0,
-                0, 0, 0, 1]);
+        static translate(x, y, z, result = new Matrix3D()){
+            result[0] = 1;
+            result[1] = 0;
+            result[2] = 0;
+            result[3] = 0;
+
+            result[4] = 0;
+            result[5] = 1;
+            result[6] = 0;
+            result[7] = 0;
+
+            result[8] = 0;
+            result[9] = 0;
+            result[10] = 1;
+            result[11] = 0;
+
+            result[12] = x;
+            result[13] = y;
+            result[14] = z;
+            result[15] = 1;
+            return result;
         }
 
-        static rotateX(a){
-            return new Matrix3D(
-                [1, 0, 0, 0,
-                0, Math.cos(a), -Math.sin(a), 0,
-                0, Math.sin(a), Math.cos(a), 0,
-                0, 0, 0, 1]);
+        static scale(x, y, z, result = new Matrix3D()){
+            result[0] = x;
+            result[1] = 0;
+            result[2] = 0;
+            result[3] = 0;
+
+            result[4] = 0;
+            result[5] = y;
+            result[6] = 0;
+            result[7] = 0;
+
+            result[8] = 0;
+            result[9] = 0;
+            result[10] = z;
+            result[11] = 0;
+
+            result[12] = 0;
+            result[13] = 0;
+            result[14] = 0;
+            result[15] = 1;
+            return result;
         }
 
-        static rotateY(a){
-            return new Matrix3D(
-                [Math.cos(a), 0, Math.sin(a), 0,
-                0, 1, 0, 0,
-                -Math.sin(a), 0, Math.cos(a), 0,
-                0, 0, 0, 1]);
+        static rotateX(a, result = new Matrix3D()){
+            result[0] = 1;
+            result[1] = 0;
+            result[2] = 0;
+            result[3] = 0;
+
+            result[4] = 0;
+            result[5] = Math.cos(a);
+            result[6] = -Math.sin(a);
+            result[7] = 0;
+
+            result[8] = 0;
+            result[9] = Math.sin(a);
+            result[10] = Math.cos(a);
+            result[11] = 0;
+
+            result[12] = 0;
+            result[13] = 0;
+            result[14] = 0;
+            result[15] = 1;
+            return result;
         }
 
-        static rotateZ(a){
-            return new Matrix3D(
-                [Math.cos(a), -Math.sin(a), 0, 0,
-                Math.sin(a), Math.cos(a), 0, 0,
-                0, 0, 1, 0,
-                0, 0, 0, 1]);
+        static rotateY(a, result = new Matrix3D()){
+            result[0] = Math.cos(a);
+            result[1] = 0;
+            result[2] = Math.sin(a);
+            result[3] = 0;
+
+            result[4] = 0;
+            result[5] = 1;
+            result[6] = 0;
+            result[7] = 0;
+
+            result[8] = -Math.sin(a);
+            result[9] = 0;
+            result[10] = Math.cos(a);
+            result[11] = 0;
+
+            result[12] = 0;
+            result[13] = 0;
+            result[14] = 0;
+            result[15] = 1;
+            return result;
+        }
+
+        static rotateZ(a, result = new Matrix3D()){
+            result[0] = Math.cos(a);
+            result[1] = -Math.sin(a);
+            result[2] = 0;
+            result[3] = 0;
+
+            result[4] = Math.sin(a);
+            result[5] = Math.cos(a);
+            result[6] = 0;
+            result[7] = 0;
+
+            result[8] = 0;
+            result[9] = 0;
+            result[10] = 1;
+            result[11] = 0;
+
+            result[12] = 0;
+            result[13] = 0;
+            result[14] = 0;
+            result[15] = 1;
+            return result;
         }
     }
 
@@ -428,6 +692,7 @@ define(function(){
     return {
         Point2D,
         Point3D,
+        Matrix3D,
         Polygon,
         Color,
         Image,

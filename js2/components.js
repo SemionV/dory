@@ -29,7 +29,7 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
     class PositionComponent extends Component{
         constructor(){
             super();
-            this.translation = new primitives.Point3D(0, 0, 0);
+            this.transformation = new primitives.Matrix3D();
         }
     }
 
@@ -69,7 +69,7 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
         render(entity, renderer){
             var sprite = entity.getComponent(SpriteComponent);
             if(sprite && sprite.image){
-                renderer.addPrimitive(new render.Sprite(sprite.image, this.drawBorder, this.color));
+                renderer.addPrimitive(new render.Sprite(sprite.image, null, this.drawBorder, this.color));
             }
         }
     }
@@ -284,6 +284,8 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
             super();
             this.speed = speed;
             this.ds = parseFloat(((speed / 1000) * context.engine.updateDeltaTime).toFixed(1));
+            this.vector = new primitives.Point3D();
+            this.translate = new primitives.Matrix3D();
         }
 
         update(entity, events){
@@ -295,8 +297,9 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
                 var state = controllerComponent.moveState.getState();
                 if(state instanceof MovingState)
                 {
-                    var vector = directionComponent.direction.multiply(this.ds);
-                    positionComponent.translation = positionComponent.translation.translate(vector);
+                    directionComponent.direction.multiply(this.ds, this.vector);
+                    primitives.Matrix3D.translate(this.vector.x, this.vector.y, this.vector.z, this.translate);
+                    positionComponent.transformation.multiply(this.translate, positionComponent.transformation);
                 }
             }
         }

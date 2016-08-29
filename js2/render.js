@@ -1,7 +1,8 @@
 define(['primitives'], function(primitives){
     class DrawPrimitive{
-        constructor(color){
+        constructor(color, transformation = new primitives.Matrix3D()){
             this.color = color;
+            this.transformation = transformation;
         }
     }
 
@@ -29,10 +30,11 @@ define(['primitives'], function(primitives){
     }
 
     class Sprite extends DrawPrimitive{
-        constructor(image, drawBorder = false, color = null){
+        constructor(image, point = new Point3D(), drawBorder = false, color = null){
             super(color);
             this.image = image;
             this.drawBorder = drawBorder;
+            this.point = point;
         }
     }
 
@@ -52,43 +54,42 @@ define(['primitives'], function(primitives){
 
             this.matrixStack = [];
             this.renderingQueue = [];
+
+            this.centerPoint = new primitives.Point3D();
+
+            this.labelPoint = new primitives.Point3D();
+            this.labelPointIso = new primitives.Point2D();
+
+            this.spritePoint = new primitives.Point3D();
+            this.spritePointIso = new primitives.Point2D();
+
+            this.pointPoint = new primitives.Point3D();
+            this.pointPointIso = new primitives.Point2D();
+            this.pointPointerTop = new primitives.Point3D();
+            this.pointPointerTopIso = new primitives.Point3D();
+            this.pointPointerBottom = new primitives.Point3D();
+            this.pointPointerBottomIso = new primitives.Point3D();
+            this.pointPointerLeft = new primitives.Point3D();
+            this.pointPointerLeftIso = new primitives.Point3D();
+            this.pointPointerRight = new primitives.Point3D();
+            this.pointPointerRightIso = new primitives.Point3D();
         }
 
-        addPolygon(polygon, color){
-            this.addPrimitive(new Polygon(polygon, color));
+        addPrimitive(primitive, resultTransformation = new primitives.Matrix3D()){
+            this.combineTransformations(resultTransformation);
+            this.renderingQueue.push({matrix: resultTransformation, object: primitive});
         }
 
-        addLabel(text, color){
-            this.addPrimitive(new Label(text, color));
-        }
-
-        addPoint(point, color, drawPointer){
-            this.addPrimitive(new Point(point, color, drawPointer));
-        }
-
-        addSprite(image, drawBorder, color){
-            this.addPrimitive(new Sprite(image, drawBorder, color));
-        }
-
-        addPrimitive(primitive){
-            var matrix = this.multiplyAllMatrix();
-            this.renderingQueue.push({matrix: matrix, object: primitive});
-        }
-
-        multiplyAllMatrix() {
-            var matrix = new primitives.Point3D(0, 0, 0);
-
+        combineTransformations(resultTransformation) {
             if (this.matrixStack.length) {
                 for (var i = this.matrixStack.length - 1; i >= 0; i--) {
-                    matrix = matrix.translate(this.matrixStack[i])
+                    resultTransformation.multiply(this.matrixStack[i], resultTransformation);
                 }
             }
-
-            return matrix;
         }
 
-        pushMatrix(translation){
-            this.matrixStack.unshift(translation);
+        pushMatrix(transformation){
+            this.matrixStack.unshift(transformation);
         }
 
         popMatrix(){
@@ -126,42 +127,45 @@ define(['primitives'], function(primitives){
 
         renderLabel(renderingItem){
             var text = renderingItem.object.text;
-            var point = renderingItem.matrix.toIsometric();
-            this.drawText(text, renderingItem.object.color, point.x, point.y);
+            renderingItem.matrix.transform(this.centerPoint, this.labelPoint).toIsometric(this.labelPointIso);
+            this.drawText(text, renderingItem.object.color, this.labelPointIso.x, this.labelPointIso.y);
         }
 
         renderSprite(renderingItem){
             var image = renderingItem.object.image;
-            var point = renderingItem.matrix.toIsometric();
+            renderingItem.matrix.transform(renderingItem.object.point ? renderingItem.object.point : this.centerPoint, this.spritePoint).toIsometric(this.spritePointIso);
 
             if (image.offsetX) {
-                point.x -= image.offsetX;
+                this.spritePointIso.x -= image.offsetX;
             }
             if (image.offsetY) {
-                point.y -= image.offsetY;
+                this.spritePointIso.y -= image.offsetY;
             }
-
-            let color = renderingItem.object.color ?
-                renderingItem.object.color.toCanvasColor() : "rgb(0,0,0)";
 
             if (image.clipWidth) {
                 this.context.drawImage(image.image, image.clipX, image.clipY, image.clipWidth,
-                    image.clipHeight, point.x, point.y, image.clipWidth, image.clipHeight);
+                    image.clipHeight, this.spritePointIso.x, this.spritePointIso.y, image.clipWidth, image.clipHeight);
 
                 if (renderingItem.object.drawBorder) {
+                    let color = renderingItem.object.color ?
+                        renderingItem.object.color.toCanvasColor() : "rgb(0,0,0)";
+
                     this.context.save();
                     this.context.setLineDash([5]);
-                    this.drawRect(point.x, point.y, image.clipWidth, image.clipHeight, color);
+                    this.drawRect(this.spritePointIso.x, this.spritePointIso.y, image.clipWidth, image.clipHeight, color);
                     this.context.restore();
                 }
             }
             else {
-                this.context.drawImage(image.image, point.x, point.y);
+                this.context.drawImage(image.image, this.spritePointIso.x, this.spritePointIso.y);
 
                 if (renderingItem.object.drawBorder) {
+                    let color = renderingItem.object.color ?
+                        renderingItem.object.color.toCanvasColor() : "rgb(0,0,0)";
+
                     this.context.save();
                     this.context.setLineDash([5]);
-                    this.drawRect(point.x, point.y, image.image.width, image.image.height, color);
+                    this.drawRect(this.spritePointIso.x, this.spritePointIso.y, image.image.width, image.image.height, color);
                     this.context.restore();
                 }
             }
@@ -175,11 +179,11 @@ define(['primitives'], function(primitives){
                 var color = renderingItem.object.color ? renderingItem.object.color.toCanvasColor() : "rgba(200, 200, 200)";
 
                 this.context.beginPath();
-                var pointStart = polygon[0].translate(matrix).toIsometric();
+                var pointStart = matrix.transform(polygon[0]).toIsometric();
                 this.context.moveTo(pointStart.x, pointStart.y);
 
-                for (var j = 1, k = polygon.length; j < k; j++) {
-                    var point = polygon[j].translate(matrix).toIsometric();
+                for (let j = 1, k = polygon.length; j < k; j++) {
+                    let point = matrix.transform(polygon[j]).toIsometric();
                     this.context.lineTo(point.x, point.y);
                 }
                 this.context.lineTo(pointStart.x, pointStart.y);
@@ -189,111 +193,35 @@ define(['primitives'], function(primitives){
             }
         }
 
-        /*renderPolygon(renderingItem) {
-            var polygon = renderingItem.object.polygon;
-            var matrix = renderingItem.matrix;
-
-            if (!polygon.length)
-                return;
-
-            if (polygon.debug) {
-                debugger;
-            }
-
-            //Tile
-            var texture = polygon.texture;
-            if (texture) {
-                var point = polygon[0].translate(matrix);
-                var isoPoint = point.toIsometric(point);
-
-                if (texture.offsetX) {
-                    isoPoint.x -= texture.offsetX;
-                }
-                if (texture.offsetY) {
-                    isoPoint.y -= texture.offsetY;
-                }
-
-                if (texture.clipWidth) {
-                    this.context.drawImage(texture.image, texture.clipX, texture.clipY, texture.clipWidth, texture.clipHeight, isoPoint.x, isoPoint.y, texture.clipWidth, texture.clipHeight);
-
-                    if (texture.drawBorder) {
-                        this.context.beginPath();
-                        this.context.moveTo(isoPoint.x, isoPoint.y);
-                        this.context.lineTo(isoPoint.x + texture.clipWidth, isoPoint.y);
-                        this.context.lineTo(isoPoint.x + texture.clipWidth, isoPoint.y + texture.clipHeight);
-                        this.context.lineTo(isoPoint.x, isoPoint.y + texture.clipHeight);
-                        this.context.lineTo(isoPoint.x, isoPoint.y);
-
-                        this.context.strokeStyle = "rgb(0,0,0)";
-                        this.context.stroke();
-                    }
-                }
-                else {
-                    this.context.drawImage(texture.image, isoPoint.x, isoPoint.y);
-                }
-
-                this.drawPolygonLabel(polygon, matrix, renderingItem.object.color);
-            }
-            else {
-                var color;
-                if (polygon.color) {
-                    color = polygon.color.toCanvasColor();
-                }
-                else {
-                    color = "rgba(200, 200, 200)";
-                }
-
-                if (polygon.solid) {
-                    this.context.fillStyle = color;
-                }
-                else {
-                    this.context.strokeStyle = color;
-                }
-
-                this.context.beginPath();
-                var pointStart = polygon[0].translate(matrix).toIsometric();
-                this.context.moveTo(pointStart.x, pointStart.y);
-
-                for (var j = 1, k = polygon.length; j < k; j++) {
-                    var point = polygon[j].translate(matrix).toIsometric();
-                    this.context.lineTo(point.x, point.y);
-                }
-                this.context.lineTo(pointStart.x, pointStart.y);
-
-                if (polygon.solid) {
-                    this.context.fill();
-                }
-                else {
-                    this.context.stroke();
-                }
-
-                this.drawPolygonLabel(polygon, matrix, renderingItem.object.color);
-            }
-        }*/
-
         renderPoint(renderingItem) {
             var pointerAxisLength = 100;
             var point = renderingItem.object.point;
 
             if (renderingItem.object.drawPointer) {
-                var topPoint = new primitives.Point3D(point.x, point.y - pointerAxisLength, point.z);
-                topPoint = topPoint.translate(renderingItem.matrix).toIsometric();
-                var bottomPoint = new primitives.Point3D(point.x, point.y + pointerAxisLength, point.z);
-                bottomPoint = bottomPoint.translate(renderingItem.matrix).toIsometric();
 
-                var leftPoint = new primitives.Point3D(point.x - pointerAxisLength, point.y, point.z);
-                leftPoint = leftPoint.translate(renderingItem.matrix).toIsometric();
-                var rightPoint = new primitives.Point3D(point.x + pointerAxisLength, point.y, point.z);
-                rightPoint = rightPoint.translate(renderingItem.matrix).toIsometric();
+                this.pointPointerTop.x = point.x;
+                this.pointPointerTop.y = point.y - pointerAxisLength;
+                this.pointPointerTop.z = point.z;
+                renderingItem.matrix.transform(this.pointPointerTop, this.pointPointerTop).toIsometric(this.pointPointerTopIso);
 
-                var topAltPoint = new primitives.Point3D(point.x, point.y, point.z + pointerAxisLength);
-                topAltPoint = topAltPoint.translate(renderingItem.matrix).toIsometric();
-                var bottomAltPoint = new primitives.Point3D(point.x, point.y, point.z - pointerAxisLength);
-                bottomAltPoint = bottomAltPoint.translate(renderingItem.matrix).toIsometric();
+                this.pointPointerBottom.x = point.x;
+                this.pointPointerBottom.y = point.y + pointerAxisLength;
+                this.pointPointerBottom.z = point.z;
+                renderingItem.matrix.transform(this.pointPointerBottom, this.pointPointerBottom).toIsometric(this.pointPointerBottomIso);
 
-                this.drawLine(topPoint, bottomPoint, "rgb(0, 0, 255)");
-                this.drawLine(leftPoint, rightPoint, "rgb(255, 0, 0)");
-                //this.drawLine(topAltPoint, bottomAltPoint, "rgb(0, 255, 0)");
+                this.pointPointerLeft.x = point.x - pointerAxisLength;
+                this.pointPointerLeft.y = point.y;
+                this.pointPointerLeft.z = point.z;
+                renderingItem.matrix.transform(this.pointPointerLeft, this.pointPointerLeft).toIsometric(this.pointPointerLeftIso);
+
+                this.pointPointerRight.x = point.x + pointerAxisLength;
+                this.pointPointerRight.y = point.y;
+                this.pointPointerRight.z = point.z;
+                renderingItem.matrix.transform(this.pointPointerRight, this.pointPointerRight).toIsometric(this.pointPointerRightIso);
+
+
+                this.drawLine(this.pointPointerTopIso, this.pointPointerBottomIso, "rgb(0, 0, 255)");
+                this.drawLine(this.pointPointerLeftIso, this.pointPointerRightIso, "rgb(255, 0, 0)");
             }
 
             var color;
@@ -304,9 +232,9 @@ define(['primitives'], function(primitives){
                 color = "rgba(250, 0, 0)";
             }
 
-            point = point.translate(renderingItem.matrix).toIsometric();
+            renderingItem.matrix.transform(point, this.pointPoint).toIsometric(this.pointPointIso);
             this.context.strokeStyle = color;
-            this.context.strokeRect(point.x - 2, point.y - 2, 4, 4);
+            this.context.strokeRect(this.pointPointIso.x - 2, this.pointPointIso.y - 2, 4, 4);
         }
 
         drawRect(x, y, width, height, color){
@@ -340,25 +268,6 @@ define(['primitives'], function(primitives){
 
             this.context.fillStyle = color;
             this.context.fillText(text, x, y);
-        }
-
-        drawPolygonLabel(polygon, matrix, color) {
-            if (polygon.label && polygon.length == 4) {
-                var point = polygon[0].translate(matrix);
-                var oppositePoint = polygon[2].translate(matrix);
-
-                var width = oppositePoint.x - point.x;
-                var height = oppositePoint.y - point.y;
-
-                var textMeasures = this.context.measureText(polygon.label.text);
-                var x = point.x + ((width / 2) - (textMeasures.width / 2));
-                var y = point.y + ((height / 2));
-                var isoTextPoint = new primitives.Point2D(x, y).toIsometric();
-                isoTextPoint.x += polygon.label.offsetX;
-                isoTextPoint.y += polygon.label.offsetY;
-
-                this.drawText(polygon.label, color, isoTextPoint.x, isoTextPoint.y);
-            }
         }
     }
 

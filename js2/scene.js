@@ -1,4 +1,4 @@
-define(['components'], function(components){
+define(['components', 'primitives'], function(components, primitives){
     var entityComponentsSymbol = Symbol();
 
     class Entity{
@@ -49,6 +49,7 @@ define(['components'], function(components){
         constructor(){
             this.entities = new Map();
             this.eventHandlers = new Map();
+            this.cameraTransformation = new primitives.Matrix3D();
         }
 
         update(events){
@@ -82,14 +83,15 @@ define(['components'], function(components){
                 let cameraPosition = camera.getComponent(components.PositionComponent);
 
                 if(cameraPosition){
-                    renderer.pushMatrix(cameraPosition.translation.multiply(-1));
+                    cameraPosition.transformation.invert(this.cameraTransformation);
+                    renderer.pushMatrix(this.cameraTransformation);
                 }
 
                 var visibleEntities = this.getVisibleEntities();
                 for(let entity of visibleEntities){
                     let position = entity !== camera ? entity.getComponent(components.PositionComponent) : null;
                     if(position){
-                        renderer.pushMatrix(position.translation);
+                        renderer.pushMatrix(position.transformation);
                     }
                     entity.draw(renderer);
                     if(position){

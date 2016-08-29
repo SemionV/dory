@@ -15,7 +15,7 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         "terrain.grass3": "img/grass2.png",
         "terrain.grass4": "img/grass32.png",
     }).then(() =>{
-        let engine = new dori.Engine(new dori.EngineConfig(100, true));
+        let engine = new dori.Engine(new dori.EngineConfig(100, false));
         context.engine = engine;
 
         let scene = new scenes.SceneManager();
