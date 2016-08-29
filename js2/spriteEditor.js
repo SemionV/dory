@@ -64,19 +64,26 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         chair.addComponent(new components.DirectionComponent());
         chair.addComponent(new components.KeyboardControllerComponent());
         chair.addComponent(new components.MovementComponent(100));
-        let imageChair = resourceManager.getImage('objects.chair');
-        chair.addComponent(new components.SpriteComponent(new primitives.Image(imageChair, imageChair.width / 2 + 6, imageChair.height / 2 + 26)));
-        chair.addComponent(new components.BoundingBoxComponent(new primitives.Box(28, 26, 46)));
-        chair.addComponent(new components.BoundingBoxBackDrawer());
-        chair.addComponent(new components.SpriteDrawer(true));
-        chair.addComponent(new components.BoundingBoxFrontDrawer());
+        chair.addComponent(new components.SpinComponent(0, 0, 20 * (Math.PI / 180)));
         scene.addEntity('chair', chair);
 
         let chairPoint = new scenes.Entity();
         chairPoint.addComponent( new components.PositionComponent());
-        chairPoint.addComponent(new components.SpinComponent(0, 0, 45 * (Math.PI / 180)));
+        chairPoint.addComponent(new components.SpinComponent(0, 0, (-20) * (Math.PI / 180)));
+        chairPoint.addComponent(new components.SpinComponent(0, 0, 90 * (Math.PI / 180)));
         chairPoint.addComponent(new components.PointDrawer());
         chair.addChild(chairPoint);
+
+        let chairView = new scenes.Entity();
+        let imageChair = resourceManager.getImage('objects.chair');
+        chairView.addComponent( new components.PositionComponent());
+        chairView.addComponent(new components.SpriteComponent(new primitives.Image(imageChair, imageChair.width / 2 + 6, imageChair.height / 2 + 26)));
+        chairView.addComponent(new components.BoundingBoxComponent(new primitives.Box(28, 26, 46)));
+        chairView.addComponent(new components.BoundingBoxBackDrawer());
+        chairView.addComponent(new components.SpriteDrawer(true));
+        chairView.addComponent(new components.BoundingBoxFrontDrawer());
+        chairView.addComponent(new components.SpinComponent(0, 0, (-20) * (Math.PI / 180)));
+        chair.addChild(chairView);
 
         scene.addEventHandler(dori.FpsUpdatedEvent, (e)=>{
             document.getElementById('FPS').innerText = e.fps;

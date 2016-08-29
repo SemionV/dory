@@ -310,9 +310,9 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
     class SpinComponent extends  StateComponent{
         constructor(a, b, g){
             super();
-            this.da = parseFloat(((a / 1000) * context.engine.updateDeltaTime).toFixed(2));
-            this.db = parseFloat(((b / 1000) * context.engine.updateDeltaTime).toFixed(2));
-            this.dg = parseFloat(((g / 1000) * context.engine.updateDeltaTime).toFixed(2));
+            this.da = parseFloat(((a / 1000) * context.engine.updateDeltaTime).toFixed(5));
+            this.db = parseFloat(((b / 1000) * context.engine.updateDeltaTime).toFixed(5));
+            this.dg = parseFloat(((g / 1000) * context.engine.updateDeltaTime).toFixed(5));
 
             this.rotateA = new primitives.Matrix3D();
             primitives.Matrix3D.rotateX(this.da, this.rotateA);
