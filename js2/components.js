@@ -64,12 +64,14 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
             super();
             this.color = color;
             this.drawBorder = drawBorder;
+            this.spritePrimitive = new render.Sprite(null, null, this.drawBorder, this.color);
         }
 
         render(entity, renderer){
             var sprite = entity.getComponent(SpriteComponent);
             if(sprite && sprite.image){
-                renderer.addPrimitive(new render.Sprite(sprite.image, null, this.drawBorder, this.color));
+                this.spritePrimitive.image = sprite.image;
+                renderer.addPrimitive(this.spritePrimitive);
             }
         }
     }

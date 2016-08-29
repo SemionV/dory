@@ -118,6 +118,13 @@ define(function(){
             }
         }
 
+        copyTo(matrix){
+            matrix[0] = this[0]; matrix[1] = this[1]; matrix[2] = this[2]; matrix[3] = this[3];
+            matrix[4] = this[4]; matrix[5] = this[5]; matrix[6] = this[6]; matrix[7] = this[7];
+            matrix[8] = this[8]; matrix[9] = this[9]; matrix[10] = this[10]; matrix[11] = this[11];
+            matrix[12] = this[12]; matrix[13] = this[13]; matrix[14] = this[14]; matrix[15] = this[15];
+        }
+
         transform(point, result = new Point3D()){
             let x = (point.x * this[0]) + (point.y * this[4]) + (point.z * this[8]) + (point.w * this[12]);
             let y = (point.x * this[1]) + (point.y * this[5]) + (point.z * this[9]) + (point.w * this[13]);
