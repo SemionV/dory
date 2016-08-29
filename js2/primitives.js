@@ -218,6 +218,13 @@ define(function(){
             return result;
         }
 
+        getTranslation(result = new Point3D()) {
+            result.x = this[12];
+            result.y = this[13];
+            result.z = this[14];
+            return result;
+        }
+
         toString(){
             return `${this[0]} ${this[1]} ${this[2]} ${this[3]}
  ${this[4]} ${this[5]} ${this[6]} ${this[7]}

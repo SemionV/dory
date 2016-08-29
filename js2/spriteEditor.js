@@ -14,6 +14,7 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         "terrain.grass2": "img/grass.png",
         "terrain.grass3": "img/grass2.png",
         "terrain.grass4": "img/grass32.png",
+        "pine-none04.png": "img/pine-none04.png"
     }).then(() =>{
         let engine = new dori.Engine(new dori.EngineConfig(100, false));
         context.engine = engine;
@@ -59,30 +60,49 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         center.addComponent(new components.PointDrawer());
         scene.addEntity('center', center);
 
+        let imagePine = resourceManager.getImage('pine-none04.png');
+        var pineSprite = new primitives.Image(imagePine, 158.07999999999663, 223.99999999999665);
+        let pine = new scenes.Entity();
+        var positionComponent = new components.PositionComponent();
+        primitives.Matrix3D.translate(-74.23999999999982, 144.63999999999834, 0, positionComponent.transformation)
+        pine.addComponent(positionComponent);
+        pine.addComponent(new components.SpriteComponent(pineSprite));
+        pine.addComponent(new components.SpriteDrawer());
+        scene.addEntity('pine', pine);
+
+        pine = new scenes.Entity();
+        var positionComponent = new components.PositionComponent();
+        primitives.Matrix3D.translate(-139.83999999999844, 115.51999999999896, 0, positionComponent.transformation)
+        pine.addComponent(positionComponent);
+        pine.addComponent(new components.SpriteComponent(pineSprite));;
+        pine.addComponent(new components.SpriteDrawer());
+        scene.addEntity('pine2', pine);
+
+        pine = new scenes.Entity();
+        var positionComponent = new components.PositionComponent();
+        primitives.Matrix3D.translate(-47.04000000000004, 54.08000000000005, 0, positionComponent.transformation)
+        pine.addComponent(positionComponent);
+        pine.addComponent(new components.SpriteComponent(pineSprite));;
+        pine.addComponent(new components.SpriteDrawer());
+        scene.addEntity('pine3', pine);
+
         let chair = new scenes.Entity();
         chair.addComponent( new components.PositionComponent());
         chair.addComponent(new components.DirectionComponent());
-        chair.addComponent(new components.KeyboardControllerComponent());
-        chair.addComponent(new components.MovementComponent(100));
-        chair.addComponent(new components.SpinComponent(0, 0, 20 * (Math.PI / 180)));
-        scene.addEntity('chair', chair);
+        //scene.addEntity('chair', chair);
 
         let chairPoint = new scenes.Entity();
         chairPoint.addComponent( new components.PositionComponent());
-        chairPoint.addComponent(new components.SpinComponent(0, 0, (-20) * (Math.PI / 180)));
-        chairPoint.addComponent(new components.SpinComponent(0, 0, 90 * (Math.PI / 180)));
         chairPoint.addComponent(new components.PointDrawer());
         chair.addChild(chairPoint);
 
         let chairView = new scenes.Entity();
         let imageChair = resourceManager.getImage('objects.chair');
-        chairView.addComponent( new components.PositionComponent());
         chairView.addComponent(new components.SpriteComponent(new primitives.Image(imageChair, imageChair.width / 2 + 6, imageChair.height / 2 + 26)));
         chairView.addComponent(new components.BoundingBoxComponent(new primitives.Box(28, 26, 46)));
         chairView.addComponent(new components.BoundingBoxBackDrawer());
         chairView.addComponent(new components.SpriteDrawer(true));
         chairView.addComponent(new components.BoundingBoxFrontDrawer());
-        chairView.addComponent(new components.SpinComponent(0, 0, (-20) * (Math.PI / 180)));
         chair.addChild(chairView);
 
         scene.addEventHandler(dori.FpsUpdatedEvent, (e)=>{
@@ -91,5 +111,7 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
 
         engine.setActiveScene(scene);
         engine.run();
+
+        window.pos = positionComponent.transformation;
     });
 });
