@@ -54,9 +54,10 @@ define(function(){
     ]);
 
     class Point3D extends Point2D{
-        constructor(x = 0, y = 0, z = 0){
+        constructor(x = 0, y = 0, z = 0, w = 1){
             super(x, y);
             this.z = z;
+            this.w = w;
         }
 
         toIsometric(){
@@ -75,6 +76,151 @@ define(function(){
 
         toString(){
             return super.toString() + `, ${this.z}`;
+        }
+    }
+
+    class Matrix3D extends Array{
+        constructor(value = [1, 0, 0, 0,
+                              0, 1, 0, 0,
+                              0, 0, 1, 0,
+                              0, 0, 0, 1]){
+            if(value.length != 16){
+                throw new Error('Matrix3D value consists of 16 parts');
+            }
+            super(value);
+        }
+
+        transform(point, result){
+            let x = (point.x * this[0]) + (point.y * this[4]) + (point.z * this[8]) + (point.w * this[11]);
+            let y = (point.x * this[1]) + (point.y * this[5]) + (point.z * this[9]) + (point.w * this[12]);
+            let z = (point.x * this[2]) + (point.y * this[6]) + (point.z * this[10]) + (point.w * this[13]);
+            let w = (point.x * this[3]) + (point.y * this[7]) + (point.z * this[11]) + (point.w * this[14]);
+            result.x = x;
+            result.y = y;
+            result.z = z;
+            result.w = w;
+        }
+
+        multiply(matrix, result){
+            let mc0r0 = this[0];
+            let mc1r0 = this[1];
+            let mc2r0 = this[2];
+            let mc3r0 = this[3];
+
+            let mc0r1 = this[4];
+            let mc1r1 = this[5];
+            let mc2r1 = this[6];
+            let mc3r1 = this[7];
+
+            let mc0r2 = this[8];
+            let mc1r2 = this[9];
+            let mc2r2 = this[10];
+            let mc3r2 = this[11];
+
+            let mc0r3 = this[12];
+            let mc1r3 = this[13];
+            let mc2r3 = this[14];
+            let mc3r3 = this[15];
+
+            let pc0r0 = matrix[0];
+            let pc1r0 = matrix[1];
+            let pc2r0 = matrix[2];
+            let pc3r0 = matrix[3];
+
+            let pc0r1 = matrix[4];
+            let pc1r1 = matrix[5];
+            let pc2r1 = matrix[6];
+            let pc3r1 = matrix[7];
+
+            let pc0r2 = matrix[8];
+            let pc1r2 = matrix[9];
+            let pc2r2 = matrix[10];
+            let pc3r2 = matrix[11];
+
+            let pc0r3 = matrix[12];
+            let pc1r3 = matrix[13];
+            let pc2r3 = matrix[14];
+            let pc3r3 = matrix[15];
+
+            let c0r0 = (pc0r0 * mc0r0) + (pc0r1 * mc0r1) + (pc0r2 * mc0r2) + (pc0r3 * mc0r3);
+            let c0r1 = (pc0r0 * mc1r0) + (pc0r1 * mc1r1) + (pc0r2 * mc1r2) + (pc0r3 * mc1r3);
+            let c0r2 = (pc0r0 * mc2r0) + (pc0r1 * mc2r1) + (pc0r2 * mc2r2) + (pc0r3 * mc2r3);
+            let c0r3 = (pc0r0 * mc3r0) + (pc0r1 * mc3r1) + (pc0r2 * mc3r2) + (pc0r3 * mc3r3);
+
+            let c1r0 = (pc1r0 * mc0r0) + (pc1r1 * mc0r1) + (pc1r2 * mc0r2) + (pc1r3 * mc0r3);
+            let c1r1 = (pc1r0 * mc1r0) + (pc1r1 * mc1r1) + (pc1r2 * mc1r2) + (pc1r3 * mc1r3);
+            let c1r2 = (pc1r0 * mc2r0) + (pc1r1 * mc2r1) + (pc1r2 * mc2r2) + (pc1r3 * mc2r3);
+            let c1r3 = (pc1r0 * mc3r0) + (pc1r1 * mc3r1) + (pc1r2 * mc3r2) + (pc1r3 * mc3r3);
+
+            let c2r0 = (pc2r0 * mc0r0) + (pc2r1 * mc0r1) + (pc2r2 * mc0r2) + (pc2r3 * mc0r3);
+            let c2r1 = (pc2r0 * mc1r0) + (pc2r1 * mc1r1) + (pc2r2 * mc1r2) + (pc2r3 * mc1r3);
+            let c2r2 = (pc2r0 * mc2r0) + (pc2r1 * mc2r1) + (pc2r2 * mc2r2) + (pc2r3 * mc2r3);
+            let c2r3 = (pc2r0 * mc3r0) + (pc2r1 * mc3r1) + (pc2r2 * mc3r2) + (pc2r3 * mc3r3);
+
+            let c3r0 = (pc3r0 * mc0r0) + (pc3r1 * mc0r1) + (pc3r2 * mc0r2) + (pc3r3 * mc0r3);
+            let c3r1 = (pc3r0 * mc1r0) + (pc3r1 * mc1r1) + (pc3r2 * mc1r2) + (pc3r3 * mc1r3);
+            let c3r2 = (pc3r0 * mc2r0) + (pc3r1 * mc2r1) + (pc3r2 * mc2r2) + (pc3r3 * mc2r3);
+            let c3r3 = (pc3r0 * mc3r0) + (pc3r1 * mc3r1) + (pc3r2 * mc3r2) + (pc3r3 * mc3r3);
+
+            result[0] = c0r0;
+            result[1] = c1r0;
+            result[2] = c2r0;
+            result[3] = c3r0;
+
+            result[4] = c0r1;
+            result[5] = c1r1;
+            result[6] = c2r1;
+            result[7] = c3r1;
+
+            result[8] = c0r2;
+            result[9] = c1r2;
+            result[10] = c2r2;
+            result[11] = c3r2;
+
+            result[12] = c0r3;
+            result[13] = c1r3;
+            result[14] = c2r3;
+            result[15] = c3r3;
+        }
+
+        static translation(x, y, z){
+            return new Matrix3D(
+                [1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                x, y, z, 1]);
+        }
+
+        static scale(x, y, z){
+            return new Matrix3D(
+                [x, 0, 0, 0,
+                0, y, 0, 0,
+                0, 0, z, 0,
+                0, 0, 0, 1]);
+        }
+
+        static rotateX(a){
+            return new Matrix3D(
+                [1, 0, 0, 0,
+                0, Math.cos(a), -Math.sin(a), 0,
+                0, Math.sin(a), Math.cos(a), 0,
+                0, 0, 0, 1]);
+        }
+
+        static rotateY(a){
+            return new Matrix3D(
+                [Math.cos(a), 0, Math.sin(a), 0,
+                0, 1, 0, 0,
+                -Math.sin(a), 0, Math.cos(a), 0,
+                0, 0, 0, 1]);
+        }
+
+        static rotateZ(a){
+            return new Matrix3D(
+                [Math.cos(a), -Math.sin(a), 0, 0,
+                Math.sin(a), Math.cos(a), 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1]);
         }
     }
 
