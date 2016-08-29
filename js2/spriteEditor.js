@@ -54,27 +54,29 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         terrain.addComponent(new tileTerrain.TileTerrainDrawer());
         scene.addEntity('terrain', terrain);
 
+        let center = new scenes.Entity();
+        center.addComponent(new components.PositionComponent());
+        center.addComponent(new components.PointDrawer());
+        scene.addEntity('center', center);
+
         let chair = new scenes.Entity();
-        var positionComponent = new components.PositionComponent();
-        chair.addComponent(positionComponent);
+        chair.addComponent( new components.PositionComponent());
         chair.addComponent(new components.DirectionComponent());
         chair.addComponent(new components.KeyboardControllerComponent());
         chair.addComponent(new components.MovementComponent(100));
-        chair.addComponent(new components.SpinComponent(0, 0, 45 * (Math.PI / 180)));
-        chair.addComponent(new components.PointDrawer());
         let imageChair = resourceManager.getImage('objects.chair');
         chair.addComponent(new components.SpriteComponent(new primitives.Image(imageChair, imageChair.width / 2 + 6, imageChair.height / 2 + 26)));
         chair.addComponent(new components.BoundingBoxComponent(new primitives.Box(28, 26, 46)));
         chair.addComponent(new components.BoundingBoxBackDrawer());
         chair.addComponent(new components.SpriteDrawer(true));
         chair.addComponent(new components.BoundingBoxFrontDrawer());
-
         scene.addEntity('chair', chair);
 
-        let center = new scenes.Entity();
-        center.addComponent(new components.PositionComponent());
-        center.addComponent(new components.PointDrawer());
-        scene.addEntity('center', center);
+        let chairPoint = new scenes.Entity();
+        chairPoint.addComponent( new components.PositionComponent());
+        chairPoint.addComponent(new components.SpinComponent(0, 0, 45 * (Math.PI / 180)));
+        chairPoint.addComponent(new components.PointDrawer());
+        chair.addChild(chairPoint);
 
         scene.addEventHandler(dori.FpsUpdatedEvent, (e)=>{
             document.getElementById('FPS').innerText = e.fps;
@@ -82,9 +84,5 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
 
         engine.setActiveScene(scene);
         engine.run();
-
-        window.engine = engine;
-        window.positionComponent = positionComponent;
-        window.p = primitives;
     });
 });

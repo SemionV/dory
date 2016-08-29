@@ -1,13 +1,15 @@
 define(['components', 'primitives'], function(components, primitives){
     var entityComponentsSymbol = Symbol();
+    var entityChildrenSymbol = Symbol();
 
     class Entity{
         constructor(){
             this[entityComponentsSymbol] = new Set();
+            this[entityChildrenSymbol] = new Set();
         }
 
         getComponent(type){
-            for(let x of this.components()){
+            for(let x of this.components){
                 if(x instanceof type){
                     return x;
                 }
@@ -15,7 +17,7 @@ define(['components', 'primitives'], function(components, primitives){
         }
 
         *getComponents(type){
-            for(let x of this.components()){
+            for(let x of this.components){
                 if(x instanceof type){
                     yield x;
                 }
@@ -23,21 +25,54 @@ define(['components', 'primitives'], function(components, primitives){
         }
 
         addComponent(component){
-            this[entityComponentsSymbol].add(component);
-        }
+        this[entityComponentsSymbol].add(component);
+    }
 
-        components(){
+        get components(){
             return this[entityComponentsSymbol].values();
         }
 
+        addChild(component){
+            this[entityChildrenSymbol].add(component);
+        }
+
+        get children(){
+            return this[entityChildrenSymbol].values();
+        }
+
         update(events){
+            for(let child of this.children){
+                child.update(events);
+            }
+
+            this.updateComponents(events);
+        }
+
+        updateComponents(events){
             var stateComponents = this.getComponents(components.StateComponent);
             for(let component of stateComponents){
                 component.update(this, events);
             }
         }
 
-        draw(renderer){
+        draw(renderer, camera){
+            let position = this !== camera ? this.getComponent(components.PositionComponent) : null;
+            if(position){
+                renderer.pushMatrix(position.transformation);
+            }
+
+            for(let child of this.children){
+                child.draw(renderer, camera);
+            }
+
+            this.drawComponents(renderer);
+
+            if(position){
+                renderer.popMatrix();
+            }
+        }
+
+        drawComponents(renderer){
             var drawComponents = this.getComponents(components.RenderingComponent);
             for(let component of drawComponents){
                 component.render(this, renderer);
@@ -89,14 +124,7 @@ define(['components', 'primitives'], function(components, primitives){
 
                 var visibleEntities = this.getVisibleEntities();
                 for(let entity of visibleEntities){
-                    let position = entity !== camera ? entity.getComponent(components.PositionComponent) : null;
-                    if(position){
-                        renderer.pushMatrix(position.transformation);
-                    }
-                    entity.draw(renderer);
-                    if(position){
-                        renderer.popMatrix();
-                    }
+                    entity.draw(renderer, camera);
                 }
 
                 if(cameraPosition){
