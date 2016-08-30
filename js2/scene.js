@@ -25,8 +25,8 @@ define(['components', 'primitives'], function(components, primitives){
         }
 
         addComponent(component){
-        this[entityComponentsSymbol].add(component);
-    }
+            this[entityComponentsSymbol].add(component);
+        }
 
         get components(){
             return this[entityComponentsSymbol].values();

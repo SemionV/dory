@@ -20,7 +20,9 @@ define(['events', 'context'], function(events, context){
                 37: "left",
                 38: "up",
                 39: "right",
-                40: "down"
+                40: "down",
+                81: 'q',
+                69: 'e'
             };
         }
 

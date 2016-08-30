@@ -38,6 +38,43 @@ define(function(){
             this.y = 0;
         }
 
+        perpendicular(result = new Point2D()){
+            result.x = this.y;
+            result.y = -this.x;
+
+            return result;
+        }
+
+        inverse(result = new Point2D()){
+            result.x = -this.x;
+            result.y = -this.y;
+
+            return result;
+        }
+
+        normalize(result = new Point2D()) {
+            let len = this.x * this.x + this.y * this.y;
+            if (len > 0) {
+                len = 1 / Math.sqrt(len);
+                result.x = this.x * len;
+                result.y = this.y * len;
+            }
+            return result;
+        }
+
+        rotate45DegreesNormal(result = new Point2D()){
+            let px = this.y;
+            let py = -this.x;
+
+            let x = this.x + px;
+            let y = this.y + py;
+
+            result.x = x != 0 ? x / Math.abs(x) : 0;
+            result.y = y != 0 ? y / Math.abs(y) : 0;
+
+            return result;
+        }
+
         static getDirection(point){
             for(let [key, value] of directionsMap2D){
                 if(value.areEqual(point)){
@@ -94,6 +131,10 @@ define(function(){
             this.y = 0;
             this.z = 0;
             this.w = 1;
+        }
+
+        dot(vector){
+            return vector.x * this.x + vector.y * this.y + vector.z * this.z;
         }
 
         toString(){

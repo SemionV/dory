@@ -26,6 +26,16 @@ define(function(){
             }
         }
 
+        getEvent(type){
+            for(let event of this){
+                if(event instanceof type){
+                    return event;
+                }
+            }
+
+            return null;
+        }
+
         hasEvent(type){
             for(let event of this){
                 if(event instanceof type){

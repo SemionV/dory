@@ -27,9 +27,9 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
     }
 
     class PositionComponent extends Component{
-        constructor(){
+        constructor(transformation = new primitives.Matrix3D()){
             super();
-            this.transformation = new primitives.Matrix3D();
+            this.transformation = transformation;
         }
     }
 
@@ -225,10 +225,16 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
             super();
             this.moveState = new states.StateStack();
             this.moveState.push(new StandingState());
+            this.direction = new primitives.Point3D();
         }
     }
 
     class KeyboardControllerComponent extends ControllerComponent{
+        constructor(direction = new Point3D(-1, -1, 0)){
+            super();
+            this.axis = direction;
+        }
+
         update(entity, events){
             if(events.hasEvents(input.KeydownEvent, input.KeyupEvent)){
                 var inputManager = context.engine.inputManager;
@@ -240,28 +246,28 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
                 var moveDirection = null;
 
                 if (!left && !bottom && !right && top) {
-                    moveDirection = primitives.Point2D.fromDirection("NW");
+                    moveDirection = new primitives.Point2D(this.axis.x, this.axis.y);//NW
                 }
                 else if (left && !bottom && !right && !top) {
-                    moveDirection = primitives.Point2D.fromDirection("SW");
+                    moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).perpendicular();//SW
                 }
                 else if (left && !bottom && !right && top) {
-                    moveDirection = primitives.Point2D.fromDirection("W");
+                    moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).rotate45DegreesNormal();//W
                 }
                 else if (left && bottom && !right && !top) {
-                    moveDirection = primitives.Point2D.fromDirection("S");
+                    moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).perpendicular().rotate45DegreesNormal();//S
                 }
                 else if (!left && !bottom && right && top) {
-                    moveDirection = primitives.Point2D.fromDirection("N");
+                    moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).inverse().perpendicular().rotate45DegreesNormal();//N
                 }
                 else if (!left && bottom && right && !top) {
-                    moveDirection = primitives.Point2D.fromDirection("E");
+                    moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).inverse().rotate45DegreesNormal();//E
                 }
                 else if (!left && bottom && !right && !top) {
-                    moveDirection = primitives.Point2D.fromDirection("SE");
+                    moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).inverse();//SE
                 }
                 else if (!left && !bottom && right && !top) {
-                    moveDirection = primitives.Point2D.fromDirection("NE");
+                    moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).inverse().perpendicular();//NE
                 }
 
                 let eventsSet = new eventsModel.EventsSet();
@@ -269,7 +275,7 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
                     eventsSet.add(new MoveStartEvent());
                     var directionComponent = entity.getComponent(DirectionComponent);
                     if(directionComponent){
-                        directionComponent.direction = new primitives.Point3D(moveDirection.x, moveDirection.y, 0);
+                        this.direction = new primitives.Point3D(moveDirection.x, moveDirection.y, 0);
                     }
                 }
                 else {
@@ -292,14 +298,13 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
 
         update(entity, events){
             var controllerComponent = entity.getComponent(ControllerComponent);
-            var directionComponent = entity.getComponent(DirectionComponent);
             var positionComponent = entity.getComponent(PositionComponent);
-            if(controllerComponent && directionComponent && positionComponent)
+            if(controllerComponent && positionComponent)
             {
                 var state = controllerComponent.moveState.getState();
                 if(state instanceof MovingState)
                 {
-                    directionComponent.direction.multiply(this.ds, this.vector);
+                    controllerComponent.direction.multiply(this.ds, this.vector);
                     primitives.Matrix3D.translate(this.vector.x, this.vector.y, this.vector.z, this.translate);
                     this.translate.multiply(positionComponent.transformation, positionComponent.transformation);
                 }
