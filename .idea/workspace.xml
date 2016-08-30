@@ -3,12 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/components.js" afterPath="$PROJECT_DIR$/js2/components.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/events.js" afterPath="$PROJECT_DIR$/js2/events.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/input.js" afterPath="$PROJECT_DIR$/js2/input.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/primitives.js" afterPath="$PROJECT_DIR$/js2/primitives.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/scene.js" afterPath="$PROJECT_DIR$/js2/scene.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/render.js" afterPath="$PROJECT_DIR$/js2/render.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/spriteEditor.js" afterPath="$PROJECT_DIR$/js2/spriteEditor.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/tileTerrain.js" afterPath="$PROJECT_DIR$/js2/tileTerrain.js" />
     </list>
     <ignored path="Sandbox.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,11 +25,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="spriteEditor.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="spriteEditor.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js2/spriteEditor.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="80" column="21" selection-start-line="80" selection-start-column="21" selection-end-line="80" selection-end-column="21" />
+            <state relative-caret-position="454">
+              <caret line="80" column="22" selection-start-line="80" selection-start-column="22" selection-end-line="80" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -51,18 +48,18 @@
       <file leaf-file-name="render.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js2/render.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1088">
-              <caret line="86" column="69" selection-start-line="86" selection-start-column="50" selection-end-line="86" selection-end-column="69" />
+            <state relative-caret-position="357">
+              <caret line="105" column="61" selection-start-line="105" selection-start-column="61" selection-end-line="105" selection-end-column="61" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tileTerrain.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="tileTerrain.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js2/tileTerrain.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="578">
-              <caret line="34" column="87" selection-start-line="34" selection-start-column="79" selection-end-line="34" selection-end-column="87" />
+              <caret line="34" column="136" selection-start-line="34" selection-start-column="136" selection-end-line="34" selection-end-column="136" />
               <folding />
             </state>
           </provider>
@@ -126,12 +123,13 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/js2/render.js" />
         <option value="$PROJECT_DIR$/js2/scene.js" />
         <option value="$PROJECT_DIR$/js2/events.js" />
         <option value="$PROJECT_DIR$/js2/primitives.js" />
         <option value="$PROJECT_DIR$/js2/input.js" />
         <option value="$PROJECT_DIR$/js2/components.js" />
+        <option value="$PROJECT_DIR$/js2/tileTerrain.js" />
+        <option value="$PROJECT_DIR$/js2/render.js" />
         <option value="$PROJECT_DIR$/js2/spriteEditor.js" />
       </list>
     </option>
@@ -320,13 +318,20 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1472540334125</updated>
-      <workItem from="1472540337830" duration="15350000" />
+      <workItem from="1472540337830" duration="19125000" />
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Transformations">
+      <created>1472564986086</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1472564986086</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="38545000" />
+    <option name="totallyTimeSpent" value="42320000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
@@ -365,9 +370,9 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Transformations" />
     <MESSAGE value="Transformations and Children" />
-    <option name="LAST_COMMIT_MESSAGE" value="Transformations and Children" />
+    <MESSAGE value="Transformations" />
+    <option name="LAST_COMMIT_MESSAGE" value="Transformations" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -692,14 +697,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js2/render.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1088">
-          <caret line="86" column="69" selection-start-line="86" selection-start-column="50" selection-end-line="86" selection-end-column="69" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/eventsManager.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="641">
@@ -748,18 +745,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js2/spriteEditor.js">
+    <entry file="file://$PROJECT_DIR$/js2/tileTerrain.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="80" column="21" selection-start-line="80" selection-start-column="21" selection-end-line="80" selection-end-column="21" />
+        <state relative-caret-position="578">
+          <caret line="34" column="136" selection-start-line="34" selection-start-column="136" selection-end-line="34" selection-end-column="136" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js2/tileTerrain.js">
+    <entry file="file://$PROJECT_DIR$/js2/render.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="578">
-          <caret line="34" column="87" selection-start-line="34" selection-start-column="79" selection-end-line="34" selection-end-column="87" />
+        <state relative-caret-position="357">
+          <caret line="105" column="61" selection-start-line="105" selection-start-column="61" selection-end-line="105" selection-end-column="61" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js2/spriteEditor.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="454">
+          <caret line="80" column="22" selection-start-line="80" selection-start-column="22" selection-end-line="80" selection-end-column="22" />
           <folding />
         </state>
       </provider>

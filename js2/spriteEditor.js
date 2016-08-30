@@ -60,7 +60,7 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         let viewport = new render.Viewport(canvas.width, canvas.height);
         let renderer = new render.Canvas2DIsometricRenderer(canvasContext, viewport);
         camera.addComponent(new components.CameraComponent(renderer));
-        var matrix = window.cam = primitives.Matrix3D.rotateZ(0).multiply(primitives.Matrix3D.translate(100, 100, -100));
+        var matrix = primitives.Matrix3D.rotateZ(0).multiply(primitives.Matrix3D.translate(100, 100, -100));
         camera.addComponent(new components.PositionComponent(matrix));
         var direction = new primitives.Point3D(-1, -1, 1);
         camera.addComponent(new components.DirectionComponent(direction));
