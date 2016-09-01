@@ -38,7 +38,14 @@ define(function(){
             this.y = 0;
         }
 
-        perpendicular(result = new Point2D()){
+        perpendicularLeft(result = new Point2D()){
+            result.x = this.y;
+            result.y = -this.x;
+
+            return result;
+        }
+
+        perpendicularRight(result = new Point2D()){
             result.x = this.y;
             result.y = -this.x;
 

@@ -249,16 +249,16 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
                     moveDirection = new primitives.Point2D(this.axis.x, this.axis.y);//NW
                 }
                 else if (left && !bottom && !right && !top) {
-                    moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).perpendicular();//SW
+                    moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).perpendicularLeft();//SW
                 }
                 else if (left && !bottom && !right && top) {
                     moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).rotate45DegreesNormal();//W
                 }
                 else if (left && bottom && !right && !top) {
-                    moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).perpendicular().rotate45DegreesNormal();//S
+                    moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).perpendicularLeft().rotate45DegreesNormal();//S
                 }
                 else if (!left && !bottom && right && top) {
-                    moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).inverse().perpendicular().rotate45DegreesNormal();//N
+                    moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).perpendicularRight().rotate45DegreesNormal();//N
                 }
                 else if (!left && bottom && right && !top) {
                     moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).inverse().rotate45DegreesNormal();//E
@@ -267,7 +267,7 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
                     moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).inverse();//SE
                 }
                 else if (!left && !bottom && right && !top) {
-                    moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).inverse().perpendicular();//NE
+                    moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).perpendicularRight();//NE
                 }
 
                 let eventsSet = new eventsModel.EventsSet();
