@@ -36,20 +36,34 @@ define(['primitives'], function(primitives){
                 extremumX = offset.x; extremumY = maxY;
             }
 
+            let diagonalDirX = dx1 > dx2 ? -1 : 1;
+            let diagonalDirY = dy1 > dy2 ? -1 : 1;
             let x1 = startPoint.x, y1 = startPoint.y, x2 = startPoint.x, y2 = startPoint.y;
             let x, y;
             for(let i = 0, l = width + height - 1; i < l; i++){
                 x = x1;
                 y = y1;
-                do{
-                    callback(x, y);
+                callback(array[y * array.length + x]);
+                while(x != x2 && y != y2){
+                    x += diagonalDirX;
+                    y += diagonalDirY;
+                    callback(array[y * array.length + x]);
+                }
 
-                }while(x != x2 && y != y2);
+                if(x1 == extremumX || y1 == extremumY){
+                    let ndx = dy1, ndy = -dx1;
+                    dx1 = ndx; dy1 = ndy;
+                }
+                if(x2 == extremumX || y2 == extremumY){
+                    let ndx = -dy2, ndy = dx2;
+                    dx2 = ndx; dy2 = ndy;
+                }
+
+                x1 += dx1; y1 += dy1;
+                x2 += dx2; y2 += dy2;
             }
         }
     }
-
-    window.array = Array;
 
     return {
         Array2D

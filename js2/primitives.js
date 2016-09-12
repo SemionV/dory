@@ -46,8 +46,8 @@ define(function(){
         }
 
         perpendicularRight(result = new Point2D()){
-            result.x = this.y;
-            result.y = -this.x;
+            result.x = -this.y;
+            result.y = this.x;
 
             return result;
         }
