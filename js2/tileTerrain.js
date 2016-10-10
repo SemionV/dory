@@ -1,4 +1,4 @@
-define(['primitives', 'components', 'render'], function(primitives, components, render){
+define(['primitives', 'components', 'render', 'algorithms'], function(primitives, components, render, algorithms){
     class TileType{
         constructor(image){
             this.image = image;
@@ -21,8 +21,8 @@ define(['primitives', 'components', 'render'], function(primitives, components, 
         render(entity, renderer){
             var terrain = entity.getComponent(TileTerrainComponent);
             if(terrain){
-                var halfWidth = terrain.width / 2;
-                var halfHeight = terrain.height / 2;
+                let halfWidth = terrain.width / 2;
+                let halfHeight = terrain.height / 2;
 
                 for(let i = 0; i < terrain.tiles.length; i++){
                     let row = terrain.tiles[i];
@@ -42,9 +42,58 @@ define(['primitives', 'components', 'render'], function(primitives, components, 
         }
     }
 
+    class OneDimensionTileTerrain extends components.Component{
+        constructor(tiles, columnsCount, tileWidth, tileHeight, tileTypes){
+            super();
+            this.tileWidth = tileWidth;
+            this.tileHeight = tileHeight;
+            this.coulumnsCount = columnsCount;
+            this.rowsCount = tiles.length / columnsCount;
+            this.tiles = tiles;
+            this.tileTypes = tileTypes;
+            this.width = this.coulumnsCount * tileWidth;
+            this.height = this.rowsCount * tileHeight;
+        }
+    }
+
+    class OneDimensionTileTerrainDrawer extends components.RenderingComponent{
+        constructor(cameraDirection = new primitives.Point3D(-1, -1, 0)) {
+            super();
+            this.cameraDirection = cameraDirection;
+            this.startPoint = new primitives.Point2D();
+            this.drawOffset = new primitives.Point2D();
+        }
+
+        render(entity, renderer){
+            var terrain = entity.getComponent(OneDimensionTileTerrain);
+            if(terrain){
+                var halfWidth = terrain.width / 2;
+                var halfHeight = terrain.height / 2;
+
+                algorithms.Array2D.getCornerCoordsByVector(this.drawOffset, terrain.coulumnsCount, terrain.rowsCount, this.cameraDirection, this.startPoint);
+
+                algorithms.Array2D.iterateByDiagonal(terrain.tiles, new primitives.Point2D(),
+                    terrain.coulumnsCount, terrain.rowsCount, this.startPoint, (tileCode, j, i) => {
+                        console.log(`item: ${tileCode}, x: ${j}, y: ${i}`);
+
+                        let tileType = terrain.tileTypes.get(tileCode);
+                        if(tileType){
+                            var position = new primitives.Point3D(j * terrain.tileWidth - halfWidth, i * terrain.tileHeight - halfHeight);
+                            if(tileType.image){
+                                var sprite = new render.Sprite(tileType.image, position);
+                                renderer.addPrimitive(sprite);
+                            }
+                        }
+                    });
+            }
+        }
+    }
+
     return {
         TileType,
         TileTerrainComponent,
-        TileTerrainDrawer
+        TileTerrainDrawer,
+        OneDimensionTileTerrain,
+        OneDimensionTileTerrainDrawer
     }
 });

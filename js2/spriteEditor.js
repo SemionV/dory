@@ -1,5 +1,9 @@
-require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'primitives', 'tileTerrain', 'input'],
-    function(context, dori, resources, scenes, components, render, primitives, tileTerrain, input){
+function motor(callback) {
+
+}
+
+require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'primitives', 'tileTerrain', 'input', 'algorithms'],
+    function(context, dori, resources, scenes, components, render, primitives, tileTerrain, input, algorithms){
 
     let canvas = document.getElementById('canvas');
     let canvasContext = canvas.getContext('2d');
@@ -54,6 +58,9 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         let engine = new dori.Engine(new dori.EngineConfig(100, false));
         context.engine = engine;
 
+        window.engine = engine;
+        engine.heart = motor;
+
         let scene = new scenes.SceneManager();
 
         let camera = new scenes.Entity();
@@ -62,9 +69,9 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         camera.addComponent(new components.CameraComponent(renderer));
         var matrix = primitives.Matrix3D.rotateZ(0).multiply(primitives.Matrix3D.translate(100, 100, -100));
         camera.addComponent(new components.PositionComponent(matrix));
-        var direction = new primitives.Point3D(-1, -1, 1);
-        camera.addComponent(new components.DirectionComponent(direction));
-        camera.addComponent(new components.KeyboardControllerComponent(direction));
+        var cameraDirection = new primitives.Point3D(-1, -1, 1);
+        camera.addComponent(new components.DirectionComponent(cameraDirection));
+        camera.addComponent(new components.KeyboardControllerComponent(cameraDirection));
         camera.addComponent(new components.MovementComponent(100));
         camera.addComponent(new RotateCameraComponent());
         scene.addEntity('camera', camera);
@@ -75,27 +82,14 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         const tileHeight = 32;
         var imageGrass = resourceManager.getImage('terrain.grass4');
         var imageHole = resourceManager.getImage('terrain.hole');
-        terrain.addComponent(new tileTerrain.TileTerrainComponent(tileWidth, tileHeight,
-            [
-                [1, 1],
-                [1, 1]
-                /*[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]*/
-            ], new Map([
+        terrain.addComponent(new tileTerrain.OneDimensionTileTerrain(
+            [1, 1,
+            1, 1], 2, tileWidth, tileHeight,
+            new Map([
                 [1, new tileTerrain.TileType(new primitives.Image(imageGrass, imageGrass.width / 2))],
                 [2, new tileTerrain.TileType(new primitives.Image(imageHole, imageHole.width / 2))]
             ])));
-        terrain.addComponent(new tileTerrain.TileTerrainDrawer());
+        terrain.addComponent(new tileTerrain.OneDimensionTileTerrainDrawer(cameraDirection));
         scene.addEntity('terrain', terrain);
 
         let center = new scenes.Entity();

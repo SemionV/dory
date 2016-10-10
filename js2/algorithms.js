@@ -1,4 +1,4 @@
-define(['primitives'], function(primitives){
+define(['algorithms'], function(primitives){
     class Array2D{
         static getItem(array, x, y){
             return array[y * array.length + x];
@@ -40,14 +40,18 @@ define(['primitives'], function(primitives){
             let diagonalDirY = dy1 > dy2 ? -1 : 1;
             let x1 = startPoint.x, y1 = startPoint.y, x2 = startPoint.x, y2 = startPoint.y;
             let x, y;
+
             for(let i = 0, l = width + height - 1; i < l; i++){
-                x = x1;
-                y = y1;
-                callback(array[y * array.length + x]);
+                x = x1; y = y1;
+
+                let item = array[y * width + x];
+                callback(item, x, y);
+
                 while(x != x2 && y != y2){
-                    x += diagonalDirX;
-                    y += diagonalDirY;
-                    callback(array[y * array.length + x]);
+                    x += diagonalDirX; y += diagonalDirY;
+
+                    let item = array[y * width + x];
+                    callback(item, x, y);
                 }
 
                 if(x1 == extremumX || y1 == extremumY){

@@ -181,6 +181,7 @@ define(['events', 'input'], function(events, input){
                 frameInfo.endTime = Date.now();
             };
 
+            this.heartBeat = heartBeat;
             heart.call(window, heartBeat);
         }
 
