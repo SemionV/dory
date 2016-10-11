@@ -1,7 +1,3 @@
-function motor(callback) {
-
-}
-
 require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'primitives', 'tileTerrain', 'input', 'algorithms'],
     function(context, dori, resources, scenes, components, render, primitives, tileTerrain, input, algorithms){
 
@@ -58,8 +54,8 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         let engine = new dori.Engine(new dori.EngineConfig(100, false));
         context.engine = engine;
 
+        engine.heart = () => {};
         window.engine = engine;
-        engine.heart = motor;
 
         let scene = new scenes.SceneManager();
 
@@ -83,11 +79,12 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         var imageGrass = resourceManager.getImage('terrain.grass4');
         var imageHole = resourceManager.getImage('terrain.hole');
         terrain.addComponent(new tileTerrain.OneDimensionTileTerrain(
-            [1, 1,
-            1, 1], 2, tileWidth, tileHeight,
+            [1, 1, 1,
+            1, 1, 1,
+            1, 1, 1], 3, tileWidth, tileHeight,
             new Map([
-                [1, new tileTerrain.TileType(new primitives.Image(imageGrass, imageGrass.width / 2))],
-                [2, new tileTerrain.TileType(new primitives.Image(imageHole, imageHole.width / 2))]
+                [1, new tileTerrain.TileType(new primitives.Image(imageGrass, tileWidth, tileHeight / 2))],
+                [2, new tileTerrain.TileType(new primitives.Image(imageHole, imageHole.width / 4))]
             ])));
         terrain.addComponent(new tileTerrain.OneDimensionTileTerrainDrawer(cameraDirection));
         scene.addEntity('terrain', terrain);

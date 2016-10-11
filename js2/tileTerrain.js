@@ -67,20 +67,24 @@ define(['primitives', 'components', 'render', 'algorithms'], function(primitives
         render(entity, renderer){
             var terrain = entity.getComponent(OneDimensionTileTerrain);
             if(terrain){
-                var halfWidth = terrain.width / 2;
-                var halfHeight = terrain.height / 2;
+                let halfWidth = terrain.width / 2;
+                let halfHeight = terrain.height / 2;
+                let tileHalfWidth = terrain.tileWidth / 2;
+                let tileHalfHeight = terrain.tileHeight / 2;
 
                 algorithms.Array2D.getCornerCoordsByVector(this.drawOffset, terrain.coulumnsCount, terrain.rowsCount, this.cameraDirection, this.startPoint);
 
                 algorithms.Array2D.iterateByDiagonal(terrain.tiles, new primitives.Point2D(),
                     terrain.coulumnsCount, terrain.rowsCount, this.startPoint, (tileCode, j, i) => {
-                        console.log(`item: ${tileCode}, x: ${j}, y: ${i}`);
-
                         let tileType = terrain.tileTypes.get(tileCode);
                         if(tileType){
-                            var position = new primitives.Point3D(j * terrain.tileWidth - halfWidth, i * terrain.tileHeight - halfHeight);
+
+                            let x = j * terrain.tileWidth + tileHalfWidth - halfWidth;
+                            let y = i * terrain.tileHeight + tileHalfHeight - halfHeight;
+                            let position = new primitives.Point3D(x, y);
+                            debugger;
                             if(tileType.image){
-                                var sprite = new render.Sprite(tileType.image, position);
+                                var sprite = new render.Sprite(tileType.image, position, true, new primitives.Color(200, 0, 0));
                                 renderer.addPrimitive(sprite);
                             }
                         }
