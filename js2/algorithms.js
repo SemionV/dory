@@ -54,11 +54,11 @@ define(['algorithms'], function(primitives){
                     callback(item, x, y);
                 }
 
-                if(x1 == extremumX || y1 == extremumY){
+                if((dx1 !== 0 && x1 == extremumX) || (dy1 !== 0 && y1 == extremumY)){
                     let ndx = dy1, ndy = -dx1;
                     dx1 = ndx; dy1 = ndy;
                 }
-                if(x2 == extremumX || y2 == extremumY){
+                if((dx2 !== 0 && x2 == extremumX) || (dy2 !== 0 && y2 == extremumY)){
                     let ndx = -dy2, ndy = dx2;
                     dx2 = ndx; dy2 = ndy;
                 }

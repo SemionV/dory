@@ -82,9 +82,9 @@ define(['primitives', 'components', 'render', 'algorithms'], function(primitives
                             let x = j * terrain.tileWidth + tileHalfWidth - halfWidth;
                             let y = i * terrain.tileHeight + tileHalfHeight - halfHeight;
                             let position = new primitives.Point3D(x, y);
-                            debugger;
+
                             if(tileType.image){
-                                var sprite = new render.Sprite(tileType.image, position, true, new primitives.Color(200, 0, 0));
+                                var sprite = new render.Sprite(tileType.image, position);
                                 renderer.addPrimitive(sprite);
                             }
                         }
