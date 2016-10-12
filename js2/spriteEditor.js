@@ -79,14 +79,17 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         var imageGrass = resourceManager.getImage('terrain.grass4');
         var imageHole = resourceManager.getImage('terrain.hole');
         terrain.addComponent(new tileTerrain.OneDimensionTileTerrain(
-            [1, 1,
-            1, 1,
-            1, 1,
-            1, 1,
-            1, 1], 2, tileWidth, tileHeight,
+            [1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1,
+            1, 2, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1], 8, tileWidth, tileHeight,
             new Map([
                 [1, new tileTerrain.TileType(new primitives.Image(imageGrass, tileWidth, tileHeight / 2))],
-                [2, new tileTerrain.TileType(new primitives.Image(imageHole, imageHole.width / 4))]
+                [2, new tileTerrain.TileType()]
             ])));
         terrain.addComponent(new tileTerrain.OneDimensionTileTerrainDrawer(cameraDirection));
         scene.addEntity('terrain', terrain);
