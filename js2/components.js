@@ -239,10 +239,10 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
             if(events.hasEvents(input.KeydownEvent, input.KeyupEvent)){
                 var inputManager = context.engine.inputManager;
 
-                var left = inputManager.getKeyState("left");
-                var right = inputManager.getKeyState("right");
-                var top = inputManager.getKeyState("up");
-                var bottom = inputManager.getKeyState("down");
+                var left = inputManager.getKeyState("left") || inputManager.getKeyState("a");
+                var right = inputManager.getKeyState("right") || inputManager.getKeyState("d");
+                var top = inputManager.getKeyState("up") || inputManager.getKeyState("w");
+                var bottom = inputManager.getKeyState("down") || inputManager.getKeyState("s");
                 var moveDirection = null;
 
                 if (!left && !bottom && !right && top) {

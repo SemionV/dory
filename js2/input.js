@@ -22,7 +22,11 @@ define(['events', 'context'], function(events, context){
                 39: "right",
                 40: "down",
                 81: 'q',
-                69: 'e'
+                69: 'e',
+                65: 'a',
+                83: 's',
+                68: 'd',
+                87: 'w'
             };
         }
 
