@@ -39,11 +39,12 @@ define(['primitives'], function(primitives){
     }
 
     class Viewport{
-        constructor(width, height, x = 0, y = 0){
+        constructor(width, height, x = 0, y = 0, showCenter = false){
             this.x = x;
             this.y = y;
             this.width = width;
             this.height = height;
+            this.showCenter = showCenter;
         }
     }
 
@@ -124,6 +125,11 @@ define(['primitives'], function(primitives){
 
             this.context.restore();
             this.renderingQueue = [];
+
+            if(this.viewport.showCenter) {
+                this.drawLine(new primitives.Point2D(0, zeroPoint.y), new primitives.Point2D(this.viewport.width, zeroPoint.y));
+                this.drawLine(new primitives.Point2D(zeroPoint.x, 0), new primitives.Point2D(zeroPoint.x, this.viewport.height));
+            }
         }
 
         renderLabel(renderingItem){

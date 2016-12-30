@@ -225,7 +225,6 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
             super();
             this.moveState = new states.StateStack();
             this.moveState.push(new StandingState());
-            this.direction = new primitives.Point3D();
         }
     }
 
@@ -275,7 +274,9 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
                     eventsSet.add(new MoveStartEvent());
                     var directionComponent = entity.getComponent(DirectionComponent);
                     if(directionComponent){
-                        this.direction = new primitives.Point3D(moveDirection.x, moveDirection.y, 0);
+                        directionComponent.direction.x = moveDirection.x;
+                        directionComponent.direction.y = moveDirection.y;
+                        directionComponent.direction.z = 0;
                     }
                 }
                 else {
@@ -299,12 +300,13 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
         update(entity, events){
             var controllerComponent = entity.getComponent(ControllerComponent);
             var positionComponent = entity.getComponent(PositionComponent);
-            if(controllerComponent && positionComponent)
+            var directionComponent = entity.getComponent(DirectionComponent);
+            if(controllerComponent && positionComponent && directionComponent)
             {
                 var state = controllerComponent.moveState.getState();
                 if(state instanceof MovingState)
                 {
-                    controllerComponent.direction.multiply(this.ds, this.vector);
+                    directionComponent.direction.multiply(this.ds, this.vector);
                     primitives.Matrix3D.translate(this.vector.x, this.vector.y, this.vector.z, this.translate);
                     this.translate.multiply(positionComponent.transformation, positionComponent.transformation);
                 }

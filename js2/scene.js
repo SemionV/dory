@@ -6,6 +6,7 @@ define(['components', 'primitives'], function(components, primitives){
         constructor(){
             this[entityComponentsSymbol] = new Set();
             this[entityChildrenSymbol] = new Set();
+            this.parent = null;
         }
 
         getComponent(type){
@@ -32,8 +33,14 @@ define(['components', 'primitives'], function(components, primitives){
             return this[entityComponentsSymbol].values();
         }
 
-        addChild(component){
-            this[entityChildrenSymbol].add(component);
+        addChild(entity){
+            entity.parent = this;
+            this[entityChildrenSymbol].add(entity);
+        }
+
+        removeChild(entity){
+            entity.parent = null;
+            this[entityChildrenSymbol].delete(entity);
         }
 
         get children(){
@@ -85,6 +92,7 @@ define(['components', 'primitives'], function(components, primitives){
             this.entities = new Map();
             this.eventHandlers = new Map();
             this.cameraTransformation = new primitives.Matrix3D();
+            this.cameras = new Set();
         }
 
         update(events){
@@ -115,23 +123,39 @@ define(['components', 'primitives'], function(components, primitives){
 
             if(cameraComponent){
                 let renderer = cameraComponent.renderer;
-                let cameraPosition = camera.getComponent(components.PositionComponent);
-
-                if(cameraPosition){
-                    cameraPosition.transformation.invert(this.cameraTransformation);
-                    renderer.pushMatrix(this.cameraTransformation);
-                }
+                let pushCount = this.setupCameraTransformation(renderer, camera);
 
                 var visibleEntities = this.getVisibleEntities();
                 for(let entity of visibleEntities){
                     entity.draw(renderer, camera);
                 }
 
-                if(cameraPosition){
-                    renderer.popMatrix();
-                }
+                this.revertCameraTransformation(renderer, pushCount);
 
                 renderer.render();
+            }
+        }
+
+        setupCameraTransformation(renderer, entity){
+            let position = entity.getComponent(components.PositionComponent);
+            let pushCount = 0;
+
+            if(position){
+                let matrix = position.transformation.invert();
+                renderer.pushMatrix(matrix);
+                pushCount++;
+            }
+
+            if(entity.parent){
+                pushCount += this.setupCameraTransformation(renderer, entity.parent)
+            }
+
+            return pushCount;
+        }
+
+        revertCameraTransformation(renderer, pushCount){
+            for(let i = 0; i < pushCount; i++){
+                renderer.popMatrix();
             }
         }
 
@@ -139,13 +163,8 @@ define(['components', 'primitives'], function(components, primitives){
             return this.entities.values();
         }
 
-        *getActiveCameras(){
-            for(let entity of this.entities.values()){
-                var cameraComponent = entity.getComponent(components.CameraComponent);
-                if(cameraComponent){
-                    yield entity;
-                }
-            }
+        getActiveCameras(){
+            return this.cameras;
         }
 
         addEventHandler(eventType, callback){
@@ -168,7 +187,39 @@ define(['components', 'primitives'], function(components, primitives){
         }
 
         addEntity(key, entity){
+            let cameras = this.lookUpForCameras(entity);
+            for(let camera of cameras){
+                if(!this.cameras.has(camera)){
+                    this.cameras.add(camera);
+                } else {
+                    throw new Error(`The camera was already attached to the scene`);
+                }
+            }
             this.entities.set(key, entity);
+        }
+
+        *lookUpForCameras(entity){
+            var cameraComponent = entity.getComponent(components.CameraComponent);
+            if(cameraComponent){
+                yield entity;
+            }
+
+            for(let child of entity.children){
+                yield *this.lookUpForCameras(child);
+            }
+        }
+
+        removeEntity(key){
+            let entity = this.entities.get(key);
+            if(entity){
+                let cameras = this.lookUpForCameras(entity);
+                for(let camera of cameras){
+                    if(this.cameras.has(camera)){
+                        this.cameras.delete(camera);
+                    }
+                }
+                this.entities.delete(key);
+            }
         }
 
         getEntity(key){

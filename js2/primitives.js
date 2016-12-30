@@ -1,4 +1,14 @@
 define(function(){
+    class Constants {
+        static get radian90(){
+            return 1.5707963267948966;
+        }
+
+        static get radianNeg90(){
+            return -1.5707963267948966;
+        }
+    }
+
     class Point2D{
         constructor(x = 0, y = 0){
             this.x = x;
@@ -164,6 +174,13 @@ define(function(){
                     0,0,1,0,
                     0,0,0,1);
             }
+        }
+
+        toIdentity(){
+            this[0] = 1; this[1] = 0; this[2] = 0; this[3] = 0;
+            this[4] = 0; this[5] = 1; this[6] = 0; this[7] = 0;
+            this[8] = 0; this[9] = 0; this[10] = 1; this[11] = 0;
+            this[12] = 0; this[13] = 0; this[14] = 0; this[15] = 1;
         }
 
         copyTo(matrix){
@@ -523,6 +540,7 @@ define(function(){
     }
 
     return {
+        Constants,
         Point2D,
         Point3D,
         Matrix3D,

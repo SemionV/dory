@@ -1,5 +1,5 @@
-require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'primitives', 'tileTerrain', 'input', 'algorithms'],
-    function(context, dori, resources, scenes, components, render, primitives, tileTerrain, input, algorithms){
+require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'primitives', 'tileTerrain', 'input'],
+    function(context, dori, resources, scenes, components, render, primitives, tileTerrain, input){
 
     let canvas = document.getElementById('canvas');
     let canvasContext = canvas.getContext('2d');
@@ -7,8 +7,8 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
     class RotateCameraComponent extends components.StateComponent{
         constructor(){
             super();
-            this.rotateMatrix = primitives.Matrix3D.rotateZ(-90 * (Math.PI / 180));
-            this.rotateMatrixBack = primitives.Matrix3D.rotateZ(90 * (Math.PI / 180));
+            this.rotateMatrix = primitives.Matrix3D.rotateZ(primitives.Constants.radianNeg90);
+            this.rotateMatrixBack = primitives.Matrix3D.rotateZ(primitives.Constants.radian90);
         }
 
         update(entity, events){
@@ -63,15 +63,11 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         let viewport = new render.Viewport(canvas.width, canvas.height);
         let renderer = new render.Canvas2DIsometricRenderer(canvasContext, viewport);
         camera.addComponent(new components.CameraComponent(renderer));
-        var matrix = primitives.Matrix3D.rotateZ(0).multiply(primitives.Matrix3D.translate(100, 100, -100));
+        var matrix = primitives.Matrix3D.translate(100, 100, -100);
         camera.addComponent(new components.PositionComponent(matrix));
         var cameraDirection = new primitives.Point3D(-1, -1, 1);
         camera.addComponent(new components.DirectionComponent(cameraDirection));
-        camera.addComponent(new components.KeyboardControllerComponent(cameraDirection));
-        camera.addComponent(new components.MovementComponent(100));
         camera.addComponent(new RotateCameraComponent());
-        scene.addEntity('camera', camera);
-
 
         let terrain = new scenes.Entity();
         const tileWidth = 32;
@@ -79,14 +75,14 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         var imageGrass = resourceManager.getImage('terrain.grass4');
         var imageHole = resourceManager.getImage('terrain.hole');
         terrain.addComponent(new tileTerrain.OneDimensionTileTerrain(
-            [1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1,
-            1, 2, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1], 8, tileWidth, tileHeight,
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 2, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 10, tileWidth, tileHeight,
             new Map([
                 [1, new tileTerrain.TileType(new primitives.Image(imageGrass, tileWidth, tileHeight / 2))],
                 [2, new tileTerrain.TileType()]
@@ -94,10 +90,14 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         terrain.addComponent(new tileTerrain.OneDimensionTileTerrainDrawer(cameraDirection));
         scene.addEntity('terrain', terrain);
 
-        let center = new scenes.Entity();
-        center.addComponent(new components.PositionComponent());
-        center.addComponent(new components.PointDrawer());
-        scene.addEntity('center', center);
+        let cameraFocus = new scenes.Entity();
+        cameraFocus.addComponent(new components.PositionComponent());
+        cameraFocus.addComponent(new components.DirectionComponent());
+        cameraFocus.addComponent(new components.KeyboardControllerComponent(cameraDirection));
+        cameraFocus.addComponent(new components.MovementComponent(100));
+        cameraFocus.addComponent(new components.PointDrawer());
+        cameraFocus.addChild(camera);
+        scene.addEntity('cameraFocus', cameraFocus);
 
         let imagePine = resourceManager.getImage('pine-none04.png');
         var pineSprite = new primitives.Image(imagePine, 158.07999999999663, 223.99999999999665);
@@ -119,9 +119,9 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
 
         pine = new scenes.Entity();
         var positionComponent = new components.PositionComponent();
-        primitives.Matrix3D.translate(-47.04000000000004, 54.08000000000005, 0, positionComponent.transformation)
+        primitives.Matrix3D.translate(-50, 50, 0, positionComponent.transformation)
         pine.addComponent(positionComponent);
-        pine.addComponent(new components.SpriteComponent(pineSprite));;
+        pine.addComponent(new components.SpriteComponent(pineSprite));
         pine.addComponent(new components.SpriteDrawer());
         scene.addEntity('pine3', pine);
 
