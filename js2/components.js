@@ -40,6 +40,41 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
         }
     }
 
+    class RotateCameraComponent extends components.StateComponent{
+        constructor(){
+            super();
+            this.rotateMatrix = primitives.Matrix3D.rotateZ(primitives.Constants.radianNeg90);
+            this.rotateMatrixBack = primitives.Matrix3D.rotateZ(primitives.Constants.radian90);
+        }
+
+        update(entity, events){
+
+            let keyUp = events.getEvent(input.KeyupEvent);
+            if(keyUp){
+                let rotMatrix = null;
+                if(keyUp.key == 'q'){
+                    rotMatrix = this.rotateMatrix;
+                } else if(keyUp.key == 'e'){
+                    rotMatrix = this.rotateMatrixBack;
+                }
+
+                if(rotMatrix){
+                    var posComponent = entity.getComponent(components.PositionComponent);
+                    if(posComponent){
+                        rotMatrix.multiply(posComponent.transformation, posComponent.transformation);
+                        var dirComponent = entity.getComponent(components.DirectionComponent);
+                        if(dirComponent){
+                            rotMatrix.transform(dirComponent.direction, dirComponent.direction);
+                            dirComponent.direction.x = dirComponent.direction.x != 0 ? dirComponent.direction.x / Math.abs(dirComponent.direction.x) : 0;
+                            dirComponent.direction.y = dirComponent.direction.y != 0 ? dirComponent.direction.y / Math.abs(dirComponent.direction.y) : 0;
+                            dirComponent.direction.z = dirComponent.direction.z != 0 ? dirComponent.direction.z / Math.abs(dirComponent.direction.z) : 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     class PointDrawer extends RenderingComponent{
         constructor(color = new primitives.Color(0, 0, 0), drawPointer = true){
             super();
@@ -353,6 +388,7 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
         RenderingComponent,
         PositionComponent,
         CameraComponent,
+        RotateCameraComponent,
         PointDrawer,
         SpriteComponent,
         SpriteDrawer,

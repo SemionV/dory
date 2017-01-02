@@ -69,6 +69,10 @@ define(function(){
             return result;
         }
 
+        length(){
+            return Math.sqrt(this.x*this.x + this.y*this.y);
+        }
+
         normalize(result = new Point2D()) {
             let len = this.x * this.x + this.y * this.y;
             if (len > 0) {
@@ -90,6 +94,18 @@ define(function(){
             result.y = y != 0 ? y / Math.abs(y) : 0;
 
             return result;
+        }
+
+        dot(vector){
+            return vector.x * this.x + vector.y * this.y;
+        }
+
+        projectionOn(vector){
+            return this.dot(vector) / vector.length()
+        }
+
+        projectionOnNormalized(vector){
+            return this.dot(vector);
         }
 
         static getDirection(point){
@@ -150,8 +166,23 @@ define(function(){
             this.w = 1;
         }
 
+        normalize(result = new Point2D()) {
+            let len = this.x * this.x + this.y * this.y + this.z * this.z;
+            if (len > 0) {
+                len = 1 / Math.sqrt(len);
+                result.x = this.x * len;
+                result.y = this.y * len;
+                result.z = this.z * len;
+            }
+            return result;
+        }
+
         dot(vector){
             return vector.x * this.x + vector.y * this.y + vector.z * this.z;
+        }
+
+        length(){
+            return Math.sqrt(this.x*this.x + this.y*this.y + this.z*this.z);
         }
 
         toString(){

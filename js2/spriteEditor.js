@@ -4,41 +4,6 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
     let canvas = document.getElementById('canvas');
     let canvasContext = canvas.getContext('2d');
 
-    class RotateCameraComponent extends components.StateComponent{
-        constructor(){
-            super();
-            this.rotateMatrix = primitives.Matrix3D.rotateZ(primitives.Constants.radianNeg90);
-            this.rotateMatrixBack = primitives.Matrix3D.rotateZ(primitives.Constants.radian90);
-        }
-
-        update(entity, events){
-
-            let keyUp = events.getEvent(input.KeyupEvent);
-            if(keyUp){
-                let rotMatrix = null;
-                if(keyUp.key == 'q'){
-                    rotMatrix = this.rotateMatrix;
-                } else if(keyUp.key == 'e'){
-                    rotMatrix = this.rotateMatrixBack;
-                }
-
-                if(rotMatrix){
-                    var posComponent = entity.getComponent(components.PositionComponent);
-                    if(posComponent){
-                        rotMatrix.multiply(posComponent.transformation, posComponent.transformation);
-                        var dirComponent = entity.getComponent(components.DirectionComponent);
-                        if(dirComponent){
-                            rotMatrix.transform(dirComponent.direction, dirComponent.direction);
-                            dirComponent.direction.x = dirComponent.direction.x != 0 ? dirComponent.direction.x / Math.abs(dirComponent.direction.x) : 0;
-                            dirComponent.direction.y = dirComponent.direction.y != 0 ? dirComponent.direction.y / Math.abs(dirComponent.direction.y) : 0;
-                            dirComponent.direction.z = dirComponent.direction.z != 0 ? dirComponent.direction.z / Math.abs(dirComponent.direction.z) : 0;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     var resourceManager = new resources.ResourceManager();
     resourceManager.loadImages({
         "terrain.grass": "img/1-grass-1.png",
@@ -67,7 +32,7 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         camera.addComponent(new components.PositionComponent(matrix));
         var cameraDirection = new primitives.Point3D(-1, -1, 1);
         camera.addComponent(new components.DirectionComponent(cameraDirection));
-        camera.addComponent(new RotateCameraComponent());
+        camera.addComponent(new components.RotateCameraComponent());
 
         let terrain = new scenes.Entity();
         const tileWidth = 32;
@@ -98,6 +63,11 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         cameraFocus.addComponent(new components.PointDrawer());
         cameraFocus.addChild(camera);
         scene.addEntity('cameraFocus', cameraFocus);
+
+        let center = new scenes.Entity();
+        center.addComponent(new components.PositionComponent());
+        center.addComponent(new components.PointDrawer());
+        scene.addEntity('center', center);
 
         let imagePine = resourceManager.getImage('pine-none04.png');
         var pineSprite = new primitives.Image(imagePine, 158.07999999999663, 223.99999999999665);
@@ -158,8 +128,5 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
 
         engine.setActiveScene(scene);
         engine.run();
-
-        window.pos = positionComponent.transformation;
-        window.p = primitives;
     });
 });
