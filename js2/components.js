@@ -39,11 +39,11 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
             this.renderer = renderer;
             this.zAxis = zAxis;
             this.yAxis = yAxis;
-            this.zAxis = zsAxis;
+            this.zAxis = zAxis;
         }
     }
 
-    class RotateCameraComponent extends components.StateComponent{
+    class RotateCameraComponent extends StateComponent{
         constructor(){
             super();
             this.rotateMatrix = primitives.Matrix3D.rotateZ(primitives.Constants.radianNeg90);
@@ -62,10 +62,10 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
                 }
 
                 if(rotMatrix){
-                    var posComponent = entity.getComponent(components.PositionComponent);
+                    var posComponent = entity.getComponent(PositionComponent);
                     if(posComponent){
                         rotMatrix.multiply(posComponent.transformation, posComponent.transformation);
-                        var dirComponent = entity.getComponent(components.DirectionComponent);
+                        var dirComponent = entity.getComponent(DirectionComponent);
                         if(dirComponent){
                             rotMatrix.transform(dirComponent.direction, dirComponent.direction);
                             dirComponent.direction.x = dirComponent.direction.x != 0 ? dirComponent.direction.x / Math.abs(dirComponent.direction.x) : 0;
