@@ -34,9 +34,12 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
     }
 
     class CameraComponent extends Component{
-        constructor(renderer){
+        constructor(renderer, zAxis = new primitives.Point3D(), yAxis = new primitives.Point3D(), xAxis = new primitives.Point3D()){
             super();
             this.renderer = renderer;
+            this.zAxis = zAxis;
+            this.yAxis = yAxis;
+            this.zAxis = zsAxis;
         }
     }
 

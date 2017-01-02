@@ -30,7 +30,7 @@ define(['primitives'], function(primitives){
     }
 
     class Sprite extends DrawPrimitive{
-        constructor(image, point = new Point3D(), drawBorder = false, color = null){
+        constructor(image, point = new primitives.Point3D(), drawBorder = false, color = null){
             super(color);
             this.image = image;
             this.drawBorder = drawBorder;

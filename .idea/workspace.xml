@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/components.js" afterPath="$PROJECT_DIR$/js2/components.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/primitives.js" afterPath="$PROJECT_DIR$/js2/primitives.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/render.js" afterPath="$PROJECT_DIR$/js2/render.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/spriteEditor.js" afterPath="$PROJECT_DIR$/js2/spriteEditor.js" />
     </list>
     <ignored path="Sandbox.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -49,8 +46,8 @@
       <file leaf-file-name="render.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js2/render.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="168" column="20" lean-forward="false" selection-start-line="168" selection-start-column="20" selection-end-line="168" selection-end-column="20" />
+            <state relative-caret-position="476">
+              <caret line="49" column="0" lean-forward="true" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -106,6 +103,16 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="components.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js2/components.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="374">
+              <caret line="41" column="32" lean-forward="false" selection-start-line="41" selection-start-column="32" selection-end-line="41" selection-end-column="32" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -128,8 +135,8 @@
         <option value="$PROJECT_DIR$/js2/tileTerrain.js" />
         <option value="$PROJECT_DIR$/js2/scene.js" />
         <option value="$PROJECT_DIR$/js2/primitives.js" />
-        <option value="$PROJECT_DIR$/js2/components.js" />
         <option value="$PROJECT_DIR$/js2/spriteEditor.js" />
+        <option value="$PROJECT_DIR$/js2/components.js" />
         <option value="$PROJECT_DIR$/js2/render.js" />
       </list>
     </option>
@@ -320,7 +327,7 @@
       <workItem from="1481960780942" duration="5483000" />
       <workItem from="1481966332846" duration="78000" />
       <workItem from="1482390770950" duration="982000" />
-      <workItem from="1482735900672" duration="38970000" />
+      <workItem from="1482735900672" duration="39250000" />
     </task>
     <task id="LOCAL-00006" summary="Transformations">
       <created>1472564986086</created>
@@ -354,7 +361,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="104377000" />
+    <option name="totallyTimeSpent" value="104657000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -748,14 +755,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js2/components.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="145" column="10" lean-forward="false" selection-start-line="145" selection-start-column="10" selection-end-line="145" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/spriteEditor.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
@@ -780,10 +779,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/js2/components.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="41" column="32" lean-forward="false" selection-start-line="41" selection-start-column="32" selection-end-line="41" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/js2/render.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="168" column="20" lean-forward="false" selection-start-line="168" selection-start-column="20" selection-end-line="168" selection-end-column="20" />
+        <state relative-caret-position="476">
+          <caret line="49" column="0" lean-forward="true" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
           <folding />
         </state>
       </provider>
