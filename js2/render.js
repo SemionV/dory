@@ -1,40 +1,39 @@
 define(['primitives'], function(primitives){
     class DrawPrimitive{
-        constructor(color, transformation = new primitives.Matrix3D()){
+        constructor(position = new primitives.Point3D(), color){
             this.color = color;
-            this.transformation = transformation;
+            this.position = position;
         }
     }
 
     class Polygon extends DrawPrimitive{
-        constructor(polygon, color, wireFrame = true){
-            super(color);
+        constructor(position, polygon, color, wireFrame = true){
+            super(position, color);
             this.polygon = polygon;
             this.wireFrame = wireFrame;
         }
     }
 
     class Label extends DrawPrimitive{
-        constructor(text, color){
-            super(color);
+        constructor(position, text, color){
+            super(position, color);
             this.text = text;
         }
     }
 
     class Point extends DrawPrimitive{
-        constructor(point, color, drawPointer = false){
-            super(color);
+        constructor(position, point, color, drawPointer = false){
+            super(position, color);
             this.point = point;
             this.drawPointer = drawPointer;
         }
     }
 
     class Sprite extends DrawPrimitive{
-        constructor(image, point = new primitives.Point3D(), drawBorder = false, color = null){
-            super(color);
+        constructor(image, position = new primitives.Point3D(), drawBorder = false, color = null){
+            super(position, color);
             this.image = image;
             this.drawBorder = drawBorder;
-            this.point = point;
         }
     }
 
@@ -77,25 +76,7 @@ define(['primitives'], function(primitives){
         }
 
         addPrimitive(primitive){
-            this.combineTransformations(primitive.transformation);
             this.renderingQueue.push(primitive);
-        }
-
-        combineTransformations(resultTransformation) {
-            if (this.matrixStack.length) {
-                this.matrixStack[this.matrixStack.length - 1].copyTo(resultTransformation);
-                for (let i = this.matrixStack.length - 2; i >= 0; i--) {
-                    resultTransformation.multiply(this.matrixStack[i], resultTransformation);
-                }
-            }
-        }
-
-        pushMatrix(transformation){
-            this.matrixStack.unshift(transformation);
-        }
-
-        popMatrix(){
-            this.matrixStack.shift();
         }
 
         render() {
@@ -134,13 +115,13 @@ define(['primitives'], function(primitives){
 
         renderLabel(renderingItem){
             var text = renderingItem.text;
-            renderingItem.transformation.transform(this.centerPoint, this.labelPoint).toIsometric(this.labelPointIso);
+            renderingItem.position.toIsometric(this.labelPointIso);
             this.drawText(text, renderingItem.color, this.labelPointIso.x, this.labelPointIso.y);
         }
 
         renderSprite(renderingItem){
             var image = renderingItem.image;
-            renderingItem.transformation.transform(renderingItem.point ? renderingItem.point : this.centerPoint, this.spritePoint).toIsometric(this.spritePointIso);
+            renderingItem.position.toIsometric(this.spritePointIso);
 
             if (image.offsetX) {
                 this.spritePointIso.x -= image.offsetX;

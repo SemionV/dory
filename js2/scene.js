@@ -85,21 +85,18 @@ define(['components', 'primitives'], function(components, primitives){
             }
         }
 
-        draw(renderer, camera){
-            let position = this !== camera ? this.getComponent(components.TransformationComponent) : null;
+        draw(renderer, camera, transformation){
+            let position = this.getComponent(components.PositionComponent);
             if(position){
-                renderer.pushMatrix(position.transformation);
+                position.cameraViewPoint.reset();
+                transformation.transform(position.cameraViewPoint);
             }
 
             for(let child of this.children){
-                child.draw(renderer, camera);
+                child.draw(renderer, camera, transformation);
             }
 
             this.drawComponents(renderer);
-
-            if(position){
-                renderer.popMatrix();
-            }
         }
 
         drawComponents(renderer){
@@ -150,7 +147,7 @@ define(['components', 'primitives'], function(components, primitives){
 
             if(cameraComponent){
                 let renderer = cameraComponent.renderer;
-                let pushCount = this.setupCameraTransformation(renderer, camera);
+                let transformation = this.setupCameraTransformation(camera);
 
                 var visibleEntities = this.getVisibleEntities();
                 for(let entity of visibleEntities){
@@ -163,7 +160,25 @@ define(['components', 'primitives'], function(components, primitives){
             }
         }
 
-        setupCameraTransformation(renderer, entity){
+        setupCameraTransformation(cameraEntity){
+            this.cameraTransformation.toIdentity();
+            let transformationComponent = cameraEntity.getComponent(components.TransformationComponent);
+            if(transformationComponent){
+                transformationComponent.transformation.invert(this.cameraTransformation);
+            }
+
+            let parents = cameraEntity.getParents();
+            for(let parent of parents){
+                transformationComponent = parent.getComponent(components.TransformationComponent);
+                if(transformationComponent){
+                    this.cameraTransformation.multiply(transformationComponent.invert(), this.cameraTransformation);
+                }
+            }
+
+            return this.cameraTransformation;
+        }
+
+        /*setupCameraTransformation(renderer, entity){
             let position = entity.getComponent(components.TransformationComponent);
             let pushCount = 0;
 
@@ -184,7 +199,7 @@ define(['components', 'primitives'], function(components, primitives){
             for(let i = 0; i < pushCount; i++){
                 renderer.popMatrix();
             }
-        }
+        }*/
 
         getVisibleEntities(){
             return this.entities.values();

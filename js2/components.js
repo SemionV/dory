@@ -41,6 +41,7 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
             super();
             this.isStatic = isStatic;
             this.point = point;
+            this.cameraViewPoint = new primitives.Point3D();
             this.combinedTransformation;
         }
 
