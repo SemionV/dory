@@ -16,6 +16,16 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
         }
     }
 
+    class PostUpdateComponent extends Component{
+        constructor(name = null){
+            super(name);
+        }
+
+        process(entity, events){
+
+        }
+    }
+
     class RenderingComponent extends Component{
         constructor(name = null){
             super(name);
@@ -27,11 +37,19 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
     }
 
     class PositionComponent extends Component{
-        constructor(transformation = new primitives.Matrix3D()){
+        constructor(isStatic = false, point = new primitives.Point3D()){
             super();
-            this.transformation = transformation;
+            this.isStatic = isStatic;
+            this.point = point;
         }
     }
+
+        class TransformationComponent extends Component{
+            constructor(transformation = new primitives.Matrix3D()){
+                super();
+                this.transformation = transformation;
+            }
+        }
 
     class CameraComponent extends Component{
         constructor(renderer, zAxis = new primitives.Point3D(), yAxis = new primitives.Point3D(), xAxis = new primitives.Point3D()){
@@ -62,7 +80,7 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
                 }
 
                 if(rotMatrix){
-                    var posComponent = entity.getComponent(PositionComponent);
+                    var posComponent = entity.getComponent(TransformationComponent);
                     if(posComponent){
                         rotMatrix.multiply(posComponent.transformation, posComponent.transformation);
                         var dirComponent = entity.getComponent(DirectionComponent);
@@ -337,7 +355,7 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
 
         update(entity, events){
             var controllerComponent = entity.getComponent(ControllerComponent);
-            var positionComponent = entity.getComponent(PositionComponent);
+            var positionComponent = entity.getComponent(TransformationComponent);
             var directionComponent = entity.getComponent(DirectionComponent);
             if(controllerComponent && positionComponent && directionComponent)
             {
@@ -368,7 +386,7 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
         }
 
         update(entity, events){
-            var positionComponent = entity.getComponent(PositionComponent);
+            var positionComponent = entity.getComponent(TransformationComponent);
             if(positionComponent)
             {
                 var transformation = positionComponent.transformation;
@@ -388,8 +406,10 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
     return {
         Component,
         StateComponent,
+        PostUpdateComponent,
         RenderingComponent,
         PositionComponent,
+        TransformationComponent,
         CameraComponent,
         RotateCameraComponent,
         PointDrawer,

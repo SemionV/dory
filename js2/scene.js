@@ -62,8 +62,23 @@ define(['components', 'primitives'], function(components, primitives){
             }
         }
 
+        processPostUpdate(events){
+            for(let child of this.children){
+                child.processPostUpdate(events);
+            }
+
+            this.processPostUpdateComponents(events);
+        }
+
+        processPostUpdateComponents(events){
+            var postUpdateComponents = this.getComponents(components.PostUpdateComponent);
+            for(let component of postUpdateComponents){
+                component.process(this, events);
+            }
+        }
+
         draw(renderer, camera){
-            let position = this !== camera ? this.getComponent(components.PositionComponent) : null;
+            let position = this !== camera ? this.getComponent(components.TransformationComponent) : null;
             if(position){
                 renderer.pushMatrix(position.transformation);
             }
@@ -110,6 +125,10 @@ define(['components', 'primitives'], function(components, primitives){
             for(let entity of this.entities.values()){
                 entity.update(events);
             }
+
+            for(let entity of this.entities.values()){
+                entity.processPostUpdate(events);
+            }
         }
 
         draw(){
@@ -137,7 +156,7 @@ define(['components', 'primitives'], function(components, primitives){
         }
 
         setupCameraTransformation(renderer, entity){
-            let position = entity.getComponent(components.PositionComponent);
+            let position = entity.getComponent(components.TransformationComponent);
             let pushCount = 0;
 
             if(position){
