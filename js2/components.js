@@ -36,20 +36,56 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
         }
     }
 
-    class PositionComponent extends Component{
+    class PositionComponent extends PostUpdateComponent{
         constructor(isStatic = false, point = new primitives.Point3D()){
             super();
             this.isStatic = isStatic;
             this.point = point;
+            this.combinedTransformation;
+        }
+
+        process(entity, events){
+            if(!this.isStatic || !this.combinedTransformation){
+                this.point.reset();
+
+                if(!this.combinedTransformation){
+                    this.combinedTransformation = new primitives.Matrix3D();
+                }
+
+                let parents = entity.getParents();
+                let parentPosition = null;
+                for(let parent of parents){
+                    let parentPosition = parent.getComponent(PositionComponent);
+                    if(parentPosition){
+                        break;
+                    }
+                }
+
+                let transformationComponent = entity.getComponent(TransformationComponent);
+
+                if(parentPosition){
+                    if(transformationComponent){
+                        parentPosition.combinedTransformation.multiply(transformationComponent.transformation, this.combinedTransformation);
+                    }
+                    else{
+                        parentPosition.combinedTransformation.copyTo(this.combinedTransformation);
+                    }
+                }
+                else if(transformationComponent){
+                    transformationComponent.transformation.copyTo(this.combinedTransformation)
+                }
+
+                this.combinedTransformation.transform(this.point, this.point)
+            }
         }
     }
 
-        class TransformationComponent extends Component{
-            constructor(transformation = new primitives.Matrix3D()){
-                super();
-                this.transformation = transformation;
-            }
+    class TransformationComponent extends Component{
+        constructor(transformation = new primitives.Matrix3D()){
+            super();
+            this.transformation = transformation;
         }
+    }
 
     class CameraComponent extends Component{
         constructor(renderer, zAxis = new primitives.Point3D(), yAxis = new primitives.Point3D(), xAxis = new primitives.Point3D()){

@@ -47,6 +47,14 @@ define(['components', 'primitives'], function(components, primitives){
             return this[entityChildrenSymbol].values();
         }
 
+        *getParents(){
+            let parent = this.parent;
+            while(parent){
+                yield parent;
+                parent = parent.parent;
+            }
+        }
+
         update(events){
             for(let child of this.children){
                 child.update(events);
@@ -63,11 +71,11 @@ define(['components', 'primitives'], function(components, primitives){
         }
 
         processPostUpdate(events){
+            this.processPostUpdateComponents(events);
+
             for(let child of this.children){
                 child.processPostUpdate(events);
             }
-
-            this.processPostUpdateComponents(events);
         }
 
         processPostUpdateComponents(events){
