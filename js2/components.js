@@ -26,6 +26,16 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
         }
     }
 
+    class PreRenderingComponent extends Component{
+        constructor(name = null){
+            super(name);
+        }
+
+        process(entity, camera){
+
+        }
+    }
+
     class RenderingComponent extends Component{
         constructor(name = null){
             super(name);
@@ -41,7 +51,6 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
             super();
             this.isStatic = isStatic;
             this.point = point;
-            this.cameraViewPoint = new primitives.Point3D();
             this.combinedTransformation;
         }
 
@@ -77,6 +86,50 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
                 }
 
                 this.combinedTransformation.transform(this.point, this.point)
+            }
+        }
+    }
+
+    class CameraTransformationComponent extends PostUpdateComponent{
+        constructor(){
+            super();
+            this.transformation = new primitives.Matrix3D();
+            this.invertMatrix = new primitives.Matrix3D();
+        }
+
+        process(entity, events){
+            this.transformation.toIdentity();
+            let transformationComponent = entity.getComponent(TransformationComponent);
+            if(transformationComponent){
+                transformationComponent.transformation.invert(this.transformation);
+            }
+
+            let parents = entity.getParents();
+            for(let parent of parents){
+                transformationComponent = parent.getComponent(TransformationComponent);
+                if(transformationComponent){
+                    transformationComponent.transformation.invert(this.invertMatrix);
+                    this.transformation.multiply(this.invertMatrix, this.transformation);
+                }
+            }
+        }
+    }
+
+    class CameraPositionComponent extends PreRenderingComponent{
+        constructor(){
+            super();
+            this.point = new primitives.Point3D();
+        }
+
+        process(entity, camera){
+            this.point.reset();
+            let position = camera.getComponent(PositionComponent);
+            let cameraTransformation = camera.getComponent(CameraTransformationComponent);
+            if(position){
+                position.point.copyTo(this.point);
+                if(cameraTransformation){
+                    cameraTransformation.transformation.transform(this.point);
+                }
             }
         }
     }
@@ -444,8 +497,11 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
         Component,
         StateComponent,
         PostUpdateComponent,
+        PreRenderingComponent,
         RenderingComponent,
         PositionComponent,
+        CameraTransformationComponent,
+        CameraPositionComponent,
         TransformationComponent,
         CameraComponent,
         RotateCameraComponent,

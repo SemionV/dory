@@ -31,6 +31,11 @@ define(function(){
             return result;
         }
 
+        copyTo(result = new Point2D()){
+            result.x = this.x;
+            result.y = this.y;
+        }
+
         translate(vector){
             return new Point2D(this.x + vector.x, this.y + vector.y)
         }
@@ -143,6 +148,12 @@ define(function(){
             var point = super.toIsometric(result);
             point.y += this.z;
             return point;
+        }
+
+        copyTo(result = new Point3D()){
+            result.x = this.x;
+            result.y = this.y;
+            result.z = this.z;
         }
 
         translate(vector, result = new Point3D()){
