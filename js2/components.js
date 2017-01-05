@@ -46,46 +46,72 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
         }
     }
 
-    class PositionComponent extends PostUpdateComponent{
-        constructor(isStatic = false, point = new primitives.Point3D()){
+    class PropertiesComponent extends Component{
+        constructor(isStatic = false){
             super();
             this.isStatic = isStatic;
-            this.point = point;
-            this.combinedTransformation;
+        }
+    }
+
+    class PositionComponent extends PostUpdateComponent{
+        constructor(){
+            super();
+            this.point = null;
         }
 
         process(entity, events){
-            if(!this.isStatic || !this.combinedTransformation){
-                this.point.reset();
+            let cotComponent = entity.getComponent(CombinedTransformationComponent);
+            let properties = entity.getComponent(PropertiesComponent);
+            let isStatic = properties ? properties.isStatic : false;
 
-                if(!this.combinedTransformation){
-                    this.combinedTransformation = new primitives.Matrix3D();
+            if(cotComponent && (!isStatic || !this.point)){
+                if(!this.point){
+                    this.point = new primitives.Point3D();
+                }
+
+                this.point.reset();
+                cotComponent.transformation.transform(this.point, this.point)
+            }
+        }
+    }
+
+    class CombinedTransformationComponent extends PostUpdateComponent{
+        constructor(){
+            super();
+            this.transformation = null;
+        }
+
+        process(entity, events){
+            let properties = entity.getComponent(PropertiesComponent);
+            let isStatic = properties ? properties.isStatic : false;
+
+            if(!isStatic || !this.transformation){
+                if(!this.transformation){
+                    this.transformation = new primitives.Matrix3D();
                 }
 
                 let parents = entity.getParents();
-                let parentPosition = null;
+                let parentCot = null;
                 for(let parent of parents){
-                    let parentPosition = parent.getComponent(PositionComponent);
-                    if(parentPosition){
+                    let parentCot = parent.getComponent(CombinedTransformation);
+                    if(parentCot){
                         break;
                     }
                 }
 
                 let transformationComponent = entity.getComponent(TransformationComponent);
 
-                if(parentPosition){
+                if(parentCot){
                     if(transformationComponent){
-                        parentPosition.combinedTransformation.multiply(transformationComponent.transformation, this.combinedTransformation);
+                        parentCot.transformation.multiply(transformationComponent.transformation, this.transformation);
                     }
                     else{
-                        parentPosition.combinedTransformation.copyTo(this.combinedTransformation);
+                        parentCot.transformation.copyTo(this.transformation);
                     }
                 }
                 else if(transformationComponent){
-                    transformationComponent.transformation.copyTo(this.combinedTransformation)
+                    transformationComponent.transformation.copyTo(this.transformation)
                 }
-
-                this.combinedTransformation.transform(this.point, this.point)
             }
         }
     }
@@ -499,7 +525,9 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
         PostUpdateComponent,
         PreRenderingComponent,
         RenderingComponent,
+        PropertiesComponent,
         PositionComponent,
+        CombinedTransformationComponent,
         CameraTransformationComponent,
         CameraPositionComponent,
         TransformationComponent,

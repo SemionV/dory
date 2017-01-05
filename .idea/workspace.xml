@@ -4,8 +4,6 @@
     <list default="true" id="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/components.js" afterPath="$PROJECT_DIR$/js2/components.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/primitives.js" afterPath="$PROJECT_DIR$/js2/primitives.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/scene.js" afterPath="$PROJECT_DIR$/js2/scene.js" />
     </list>
     <ignored path="Sandbox.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,7 +26,7 @@
       <file leaf-file-name="spriteEditor.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js2/spriteEditor.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
+            <state relative-caret-position="2442">
               <caret line="111" column="71" lean-forward="false" selection-start-line="111" selection-start-column="71" selection-end-line="111" selection-end-column="71" />
               <folding />
             </state>
@@ -38,7 +36,7 @@
       <file leaf-file-name="scene.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js2/scene.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="280">
+            <state relative-caret-position="3454">
               <caret line="157" column="56" lean-forward="false" selection-start-line="157" selection-start-column="56" selection-end-line="157" selection-end-column="56" />
               <folding />
             </state>
@@ -48,7 +46,7 @@
       <file leaf-file-name="render.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js2/render.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
+            <state relative-caret-position="3762">
               <caret line="171" column="0" lean-forward="false" selection-start-line="171" selection-start-column="0" selection-end-line="171" selection-end-column="0" />
               <folding />
             </state>
@@ -58,7 +56,7 @@
       <file leaf-file-name="tileTerrain.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js2/tileTerrain.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
+            <state relative-caret-position="1474">
               <caret line="67" column="0" lean-forward="false" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
               <folding />
             </state>
@@ -68,7 +66,7 @@
       <file leaf-file-name="engine.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js2/engine.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
+            <state relative-caret-position="3784">
               <caret line="172" column="22" lean-forward="false" selection-start-line="172" selection-start-column="22" selection-end-line="172" selection-end-column="22" />
               <folding />
             </state>
@@ -78,7 +76,7 @@
       <file leaf-file-name="input.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js2/input.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
+            <state relative-caret-position="616">
               <caret line="28" column="23" lean-forward="false" selection-start-line="28" selection-start-column="23" selection-end-line="28" selection-end-column="23" />
               <folding />
             </state>
@@ -88,8 +86,8 @@
       <file leaf-file-name="components.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js2/components.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="678">
-              <caret line="65" column="31" lean-forward="false" selection-start-line="65" selection-start-column="31" selection-end-line="65" selection-end-column="31" />
+            <state relative-caret-position="500">
+              <caret line="72" column="48" lean-forward="true" selection-start-line="72" selection-start-column="48" selection-end-line="72" selection-end-column="48" />
               <folding />
             </state>
           </provider>
@@ -98,8 +96,8 @@
       <file leaf-file-name="primitives.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js2/primitives.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="506">
-              <caret line="152" column="39" lean-forward="true" selection-start-line="152" selection-start-column="39" selection-end-line="152" selection-end-column="39" />
+            <state relative-caret-position="390">
+              <caret line="234" column="8" lean-forward="false" selection-start-line="234" selection-start-column="8" selection-end-line="234" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -133,8 +131,8 @@
         <option value="$PROJECT_DIR$/js2/spriteEditor.js" />
         <option value="$PROJECT_DIR$/js2/render.js" />
         <option value="$PROJECT_DIR$/js2/primitives.js" />
-        <option value="$PROJECT_DIR$/js2/components.js" />
         <option value="$PROJECT_DIR$/js2/scene.js" />
+        <option value="$PROJECT_DIR$/js2/components.js" />
       </list>
     </option>
   </component>
@@ -194,8 +192,8 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -327,7 +325,9 @@
       <workItem from="1482735900672" duration="44126000" />
       <workItem from="1483504845380" duration="10596000" />
       <workItem from="1483530808669" duration="3558000" />
-      <workItem from="1483548084768" duration="5282000" />
+      <workItem from="1483548084768" duration="5351000" />
+      <workItem from="1483598325462" duration="75000" />
+      <workItem from="1483606556325" duration="3040000" />
     </task>
     <task id="LOCAL-00006" summary="Transformations">
       <created>1472564986086</created>
@@ -361,7 +361,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="128969000" />
+    <option name="totallyTimeSpent" value="132153000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -379,7 +379,6 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16927083" sideWeight="0.6720554" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3281075" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295964" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5602537" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.3281075" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17135416" sideWeight="0.6720554" order="3" side_tool="false" content_ui="tabs" />
@@ -394,6 +393,7 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5602537" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -701,7 +701,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js2/tileTerrain.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
+        <state relative-caret-position="1474">
           <caret line="67" column="0" lean-forward="false" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
           <folding />
         </state>
@@ -731,7 +731,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js2/engine.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
+        <state relative-caret-position="3784">
           <caret line="172" column="22" lean-forward="false" selection-start-line="172" selection-start-column="22" selection-end-line="172" selection-end-column="22" />
           <folding />
         </state>
@@ -739,7 +739,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js2/spriteEditor.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
+        <state relative-caret-position="2442">
           <caret line="111" column="71" lean-forward="false" selection-start-line="111" selection-start-column="71" selection-end-line="111" selection-end-column="71" />
           <folding />
         </state>
@@ -754,7 +754,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js2/input.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
+        <state relative-caret-position="616">
           <caret line="28" column="23" lean-forward="false" selection-start-line="28" selection-start-column="23" selection-end-line="28" selection-end-column="23" />
           <folding />
         </state>
@@ -762,32 +762,32 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js2/render.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
+        <state relative-caret-position="3762">
           <caret line="171" column="0" lean-forward="false" selection-start-line="171" selection-start-column="0" selection-end-line="171" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js2/primitives.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="506">
-          <caret line="152" column="39" lean-forward="true" selection-start-line="152" selection-start-column="39" selection-end-line="152" selection-end-column="39" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js2/scene.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
+        <state relative-caret-position="3454">
           <caret line="157" column="56" lean-forward="false" selection-start-line="157" selection-start-column="56" selection-end-line="157" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js2/primitives.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="234" column="8" lean-forward="false" selection-start-line="234" selection-start-column="8" selection-end-line="234" selection-end-column="8" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js2/components.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="678">
-          <caret line="65" column="31" lean-forward="false" selection-start-line="65" selection-start-column="31" selection-end-line="65" selection-end-column="31" />
+        <state relative-caret-position="500">
+          <caret line="72" column="48" lean-forward="true" selection-start-line="72" selection-start-column="48" selection-end-line="72" selection-end-column="48" />
           <folding />
         </state>
       </provider>
