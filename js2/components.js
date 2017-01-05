@@ -220,7 +220,10 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
         }
 
         render(entity, renderer){
-            renderer.addPrimitive(new render.Point(new primitives.Point3D(), this.color, this.drawPointer));
+            let position = entity.getComponent(CameraPositionComponent);
+            if(position){
+                renderer.addPrimitive(new render.Point(position.point, this.color, this.drawPointer));
+            }
         }
     }
 
@@ -240,9 +243,11 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
         }
 
         render(entity, renderer){
+            let position = entity.getComponent(CameraPositionComponent);
             var sprite = entity.getComponent(SpriteComponent);
-            if(sprite && sprite.image){
+            if(position && sprite && sprite.image){
                 this.spritePrimitive.image = sprite.image;
+                this.spritePrimitive.position = position.point;
                 renderer.addPrimitive(this.spritePrimitive);
             }
         }

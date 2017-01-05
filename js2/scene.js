@@ -238,8 +238,30 @@ define(['components', 'primitives'], function(components, primitives){
         }
     }
 
+    class PointEntity extends Entity{
+        constructor(){
+            super();
+            this.addComponent(new components.TransformationComponent());
+            this.addComponent(new components.CombinedTransformationComponent());
+            this.addComponent(new components.PositionComponent());
+            this.addComponent(new components.CameraPositionComponent());
+        }
+    }
+
+    class Camera extends Entity{
+        constructor(renderer){
+            super();
+            this.addComponent(new components.CameraComponent(renderer));
+            this.addComponent(new components.TransformationComponent());
+            this.addComponent(new components.CombinedTransformationComponent());
+            this.addComponent(new components.CameraTransformationComponent());
+        }
+    }
+
     return {
         Entity,
-        SceneManager
+        SceneManager,
+        PointEntity,
+        Camera
     };
 });
