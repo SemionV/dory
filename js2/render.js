@@ -1,37 +1,42 @@
 define(['primitives'], function(primitives){
     class DrawPrimitive{
-        constructor(position = new primitives.Point3D(), color){
+        constructor(color){
             this.color = color;
+        }
+    }
+
+    class PointPrimitive extends DrawPrimitive{
+        constructor(color, position = new primitives.Point3D()){
+            super(color);
             this.position = position;
         }
     }
 
     class Polygon extends DrawPrimitive{
-        constructor(position, polygon, color, wireFrame = true){
-            super(position, color);
+        constructor(polygon, color, wireFrame = true){
+            super(color);
             this.polygon = polygon;
             this.wireFrame = wireFrame;
         }
     }
 
-    class Label extends DrawPrimitive{
+    class Label extends PointPrimitive{
         constructor(position, text, color){
-            super(position, color);
+            super(color, position);
             this.text = text;
         }
     }
 
-    class Point extends DrawPrimitive{
-        constructor(position, point, color, drawPointer = false){
-            super(position, color);
-            this.point = point;
+    class Point extends PointPrimitive{
+        constructor(position, color, drawPointer = false){
+            super(color, position);
             this.drawPointer = drawPointer;
         }
     }
 
-    class Sprite extends DrawPrimitive{
-        constructor(image, position = new primitives.Point3D(), drawBorder = false, color = null){
-            super(position, color);
+    class Sprite extends PointPrimitive{
+        constructor(image, position, drawBorder = false, color = null){
+            super(color, position);
             this.image = image;
             this.drawBorder = drawBorder;
         }
@@ -53,17 +58,11 @@ define(['primitives'], function(primitives){
             this.viewport = viewport;
 
             this.matrixStack = [];
-            this.renderingQueue = [];
+            this.renderingTasks = new Map();
 
-            this.centerPoint = new primitives.Point3D();
-
-            this.labelPoint = new primitives.Point3D();
             this.labelPointIso = new primitives.Point2D();
-
-            this.spritePoint = new primitives.Point3D();
             this.spritePointIso = new primitives.Point2D();
 
-            this.pointPoint = new primitives.Point3D();
             this.pointPointIso = new primitives.Point2D();
             this.pointPointerTop = new primitives.Point3D();
             this.pointPointerTopIso = new primitives.Point3D();
@@ -75,11 +74,19 @@ define(['primitives'], function(primitives){
             this.pointPointerRightIso = new primitives.Point3D();
         }
 
-        addPrimitive(primitive){
-            this.renderingQueue.push(primitive);
+        addPrimitive(entity, primitive){
+            let entityTasks = this.renderingTasks.get(entity);
+            if(!entityTasks){
+                entityTasks = new Set();
+                this.renderingTasks.set(entity, entityTasks);
+            }
+
+            entityTasks.add(primitive);
         }
 
         render() {
+            let queue = this.buildQueue();
+
             this.context.clearRect(this.viewport.x, this.viewport.y , this.viewport.width, this.viewport.height);
 
             this.context.save();
@@ -87,9 +94,7 @@ define(['primitives'], function(primitives){
             var zeroPoint = new primitives.Point2D(this.viewport.width/2 + this.viewport.x, this.viewport.height/2 + this.viewport.y);
             this.context.translate(zeroPoint.x, zeroPoint.y);
 
-            for (var i = 0, l = this.renderingQueue.length; i < l; i++) {
-                var renderingItem = this.renderingQueue[i];
-
+            for (let renderingItem of queue) {
                 if (renderingItem instanceof Point) {
                     this.renderPoint(renderingItem);
                 }
@@ -105,11 +110,17 @@ define(['primitives'], function(primitives){
             }
 
             this.context.restore();
-            this.renderingQueue = [];
+            this.renderingTasks = new Map();
 
             if(this.viewport.showCenter) {
                 this.drawLine(new primitives.Point2D(0, zeroPoint.y), new primitives.Point2D(this.viewport.width, zeroPoint.y));
                 this.drawLine(new primitives.Point2D(zeroPoint.x, 0), new primitives.Point2D(zeroPoint.x, this.viewport.height));
+            }
+        }
+
+        *buildQueue(){
+            for(let [entity, primitives] of this.renderingTasks){
+                yield *primitives;
             }
         }
 
@@ -161,17 +172,16 @@ define(['primitives'], function(primitives){
 
         renderPolygon(renderingItem){
             var polygon = renderingItem.polygon;
-            var matrix = renderingItem.transformation;
 
             if(renderingItem.wireFrame){
                 var color = renderingItem.color ? renderingItem.color.toCanvasColor() : "rgba(200, 200, 200)";
 
                 this.context.beginPath();
-                var pointStart = matrix.transform(polygon[0]).toIsometric();
+                var pointStart = polygon[0].toIsometric();
                 this.context.moveTo(pointStart.x, pointStart.y);
 
                 for (let j = 1, k = polygon.length; j < k; j++) {
-                    let point = matrix.transform(polygon[j]).toIsometric();
+                    let point = polygon[j].toIsometric();
                     this.context.lineTo(point.x, point.y);
                 }
                 this.context.lineTo(pointStart.x, pointStart.y);
@@ -183,29 +193,29 @@ define(['primitives'], function(primitives){
 
         renderPoint(renderingItem) {
             var pointerAxisLength = 100;
-            var point = renderingItem.point;
+            var point = renderingItem.position;
 
             if (renderingItem.drawPointer) {
 
                 this.pointPointerTop.x = point.x;
                 this.pointPointerTop.y = point.y - pointerAxisLength;
                 this.pointPointerTop.z = point.z;
-                renderingItem.transformation.transform(this.pointPointerTop, this.pointPointerTop).toIsometric(this.pointPointerTopIso);
+                this.pointPointerTop.toIsometric(this.pointPointerTopIso);
 
                 this.pointPointerBottom.x = point.x;
                 this.pointPointerBottom.y = point.y + pointerAxisLength;
                 this.pointPointerBottom.z = point.z;
-                renderingItem.transformation.transform(this.pointPointerBottom, this.pointPointerBottom).toIsometric(this.pointPointerBottomIso);
+                this.pointPointerBottom.toIsometric(this.pointPointerBottomIso);
 
                 this.pointPointerLeft.x = point.x - pointerAxisLength;
                 this.pointPointerLeft.y = point.y;
                 this.pointPointerLeft.z = point.z;
-                renderingItem.transformation.transform(this.pointPointerLeft, this.pointPointerLeft).toIsometric(this.pointPointerLeftIso);
+                this.pointPointerLeft.toIsometric(this.pointPointerLeftIso);
 
                 this.pointPointerRight.x = point.x + pointerAxisLength;
                 this.pointPointerRight.y = point.y;
                 this.pointPointerRight.z = point.z;
-                renderingItem.transformation.transform(this.pointPointerRight, this.pointPointerRight).toIsometric(this.pointPointerRightIso);
+                this.pointPointerRight.toIsometric(this.pointPointerRightIso);
 
 
                 this.drawLine(this.pointPointerTopIso, this.pointPointerBottomIso, "rgb(0, 0, 255)");
@@ -220,7 +230,7 @@ define(['primitives'], function(primitives){
                 color = "rgba(250, 0, 0)";
             }
 
-            renderingItem.transformation.transform(point, this.pointPoint).toIsometric(this.pointPointIso);
+            point.toIsometric(this.pointPointIso);
             this.context.strokeStyle = color;
             this.context.strokeRect(this.pointPointIso.x - 2, this.pointPointIso.y - 2, 4, 4);
         }
