@@ -181,6 +181,9 @@ define(['events', 'input'], function(events, input){
                 frameInfo.endTime = Date.now();
             };
 
+            //it is necessary to update scene once before main loop
+            this.update();
+
             this.heartBeat = heartBeat;
             heart.call(window, heartBeat);
         }

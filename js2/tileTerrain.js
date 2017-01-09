@@ -33,7 +33,7 @@ define(['primitives', 'components', 'render', 'algorithms'], function(primitives
                             var position = new primitives.Point3D(j * terrain.tileWidth - halfWidth, i * terrain.tileHeight - halfHeight);
                             if(tileType.image){
                                 var sprite = new render.Sprite(tileType.image, position);
-                                renderer.addPrimitive(sprite);
+                                renderer.addPrimitive(entity, sprite);
                             }
                         }
                     }
@@ -85,7 +85,7 @@ define(['primitives', 'components', 'render', 'algorithms'], function(primitives
 
                             if(tileType.image){
                                 var sprite = new render.Sprite(tileType.image, position);
-                                renderer.addPrimitive(sprite);
+                                renderer.addPrimitive(entity, sprite);
                             }
                         }
                     });

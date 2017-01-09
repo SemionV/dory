@@ -156,13 +156,12 @@ define(['components', 'primitives'], function(components, primitives){
 
             if(cameraComponent){
                 let renderer = cameraComponent.renderer;
-                var visibleEntities = this.getVisibleEntities();
 
-                for(let entity of visibleEntities){
+                for(let entity of this.getVisibleEntities()){
                     entity.processPreRendering(camera);
                 }
 
-                for(let entity of visibleEntities){
+                for(let entity of this.getVisibleEntities()){
                     entity.draw(renderer);
                 }
 
@@ -238,30 +237,48 @@ define(['components', 'primitives'], function(components, primitives){
         }
     }
 
-    class PointEntity extends Entity{
-        constructor(){
+    class TransformableEntity extends Entity{
+        constructor(transformation = new primitives.Matrix3D()){
             super();
-            this.addComponent(new components.TransformationComponent());
+            this.addComponent(new components.TransformationComponent(transformation));
             this.addComponent(new components.CombinedTransformationComponent());
+        }
+
+        get transformation(){
+            return this.getComponent(components.TransformationComponent).transformation;
+        }
+    }
+
+    class PointEntity extends TransformableEntity{
+        constructor(transformation){
+            super(transformation);
             this.addComponent(new components.PositionComponent());
             this.addComponent(new components.CameraPositionComponent());
         }
     }
 
-    class Camera extends Entity{
-        constructor(renderer){
-            super();
+    class Camera extends TransformableEntity{
+        constructor(renderer, transformation){
+            super(transformation);
             this.addComponent(new components.CameraComponent(renderer));
-            this.addComponent(new components.TransformationComponent());
-            this.addComponent(new components.CombinedTransformationComponent());
             this.addComponent(new components.CameraTransformationComponent());
+        }
+    }
+
+    class SpriteEntity extends PointEntity{
+        constructor(sprite, transformation){
+            super(transformation);
+            this.addComponent(new components.SpriteComponent(sprite));
+            this.addComponent(new components.SpriteDrawer());
         }
     }
 
     return {
         Entity,
         SceneManager,
+        TransformableEntity,
         PointEntity,
-        Camera
+        Camera,
+        SpriteEntity
     };
 });

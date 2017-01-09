@@ -93,7 +93,7 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
                 let parents = entity.getParents();
                 let parentCot = null;
                 for(let parent of parents){
-                    let parentCot = parent.getComponent(CombinedTransformation);
+                    let parentCot = parent.getComponent(CombinedTransformationComponent);
                     if(parentCot){
                         break;
                     }
@@ -149,12 +149,12 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
 
         process(entity, camera){
             this.point.reset();
-            let position = camera.getComponent(PositionComponent);
+            let position = entity.getComponent(PositionComponent);
             let cameraTransformation = camera.getComponent(CameraTransformationComponent);
-            if(position){
+            if(position && position.point){
                 position.point.copyTo(this.point);
                 if(cameraTransformation){
-                    cameraTransformation.transformation.transform(this.point);
+                    cameraTransformation.transformation.transform(this.point, this.point);
                 }
             }
         }
@@ -168,10 +168,10 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
     }
 
     class CameraComponent extends Component{
-        constructor(renderer, zAxis = new primitives.Point3D(), yAxis = new primitives.Point3D(), xAxis = new primitives.Point3D()){
+        constructor(renderer, xAxis = new primitives.Point3D(), yAxis = new primitives.Point3D(), zAxis = new primitives.Point3D()){
             super();
             this.renderer = renderer;
-            this.zAxis = zAxis;
+            this.xAxis = xAxis;
             this.yAxis = yAxis;
             this.zAxis = zAxis;
         }
@@ -222,7 +222,7 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
         render(entity, renderer){
             let position = entity.getComponent(CameraPositionComponent);
             if(position){
-                renderer.addPrimitive(new render.Point(position.point, this.color, this.drawPointer));
+                renderer.addPrimitive(entity, new render.Point(position.point, this.color, this.drawPointer));
             }
         }
     }
@@ -248,7 +248,7 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
             if(position && sprite && sprite.image){
                 this.spritePrimitive.image = sprite.image;
                 this.spritePrimitive.position = position.point;
-                renderer.addPrimitive(this.spritePrimitive);
+                renderer.addPrimitive(entity, this.spritePrimitive);
             }
         }
     }
