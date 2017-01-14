@@ -1,4 +1,4 @@
-define(['primitives', 'components', 'render', 'algorithms'], function(primitives, components, render, algorithms){
+define(['primitives', 'components', 'render', 'algorithms', 'scene'], function(primitives, components, render, algorithms, scenes){
     class TileType{
         constructor(image){
             this.image = image;
@@ -93,11 +93,61 @@ define(['primitives', 'components', 'render', 'algorithms'], function(primitives
         }
     }
 
+    class TerrainDefinition{
+        constructor(tiles, columnsCount, tileWidth, tileHeight, tileTypes){
+            this.tileWidth = tileWidth;
+            this.tileHeight = tileHeight;
+            this.coulumnsCount = columnsCount;
+            this.rowsCount = tiles.length / columnsCount;
+            this.tiles = tiles;
+            this.tileTypes = tileTypes;
+            this.width = this.coulumnsCount * tileWidth;
+            this.height = this.rowsCount * tileHeight;
+        }
+    }
+
+    class TerrainFactory{
+        static build(terrainDefinition, terrainEntity, z = 0){
+            let halfWidth = terrainDefinition.width / 2;
+            let halfHeight = terrainDefinition.height / 2;
+            let tileHalfWidth = terrainDefinition.tileWidth / 2;
+            let tileHalfHeight = terrainDefinition.tileHeight / 2;
+
+            let tiles = terrainDefinition.tiles;
+            let columnsCount = terrainDefinition.coulumnsCount;
+            let tileTypes = terrainDefinition.tileTypes;
+            for(let i = 0, l = tiles.length; i < l; i++){
+                let x = i % columnsCount;
+                let y = i / columnsCount;
+                let tileCode = tiles[i];
+                let tileType = tileTypes.get(tileCode);
+
+                if(tileType){
+                    let dx = x * terrainDefinition.tileWidth + tileHalfWidth - halfWidth;
+                    let dy = y * terrainDefinition.tileHeight + tileHalfHeight - halfHeight;
+                    let transformation = primitives.Matrix3D.translate(dx, dy, z);
+                    let entity;
+
+                    if(tileType.image){
+                        entity = new scenes.SpriteEntity(tileType.image, transformation);
+                    }
+                    else {
+                        entity = new scenes.TransformableEntity();
+                    }
+
+                    terrainEntity.addChild(entity);
+                }
+            }
+        }
+    }
+
     return {
         TileType,
         TileTerrainComponent,
         TileTerrainDrawer,
         OneDimensionTileTerrain,
-        OneDimensionTileTerrainDrawer
+        OneDimensionTileTerrainDrawer,
+        TerrainDefinition,
+        TerrainFactory
     }
 });
