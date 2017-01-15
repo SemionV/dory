@@ -201,6 +201,14 @@ define(function(){
         }
     }
 
+    class ThreeDimensions{
+        constructor(dimensionX = new Point3D(), dimensionY = new Point3D(), dimensionZ = new Point3D()){
+            this.dimensionX = dimensionX;
+            this.dimensionY = dimensionY;
+            this.dimensionZ = dimensionZ;
+        }
+    }
+
     /*See http://glmatrix.net/*/
     class Matrix3D extends Array{
         constructor(...parts){
@@ -585,6 +593,7 @@ define(function(){
         Constants,
         Point2D,
         Point3D,
+        ThreeDimensions,
         Matrix3D,
         Polygon,
         Color,

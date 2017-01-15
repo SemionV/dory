@@ -100,18 +100,18 @@ define(['components', 'primitives'], function(components, primitives){
             }
         }
 
-        draw(renderer){
+        draw(view){
             for(let child of this.children){
-                child.draw(renderer);
+                child.draw(view);
             }
 
-            this.drawComponents(renderer);
+            this.drawComponents(view);
         }
 
-        drawComponents(renderer){
+        drawComponents(view){
             var drawComponents = this.getComponents(components.RenderingComponent);
             for(let component of drawComponents){
-                component.render(this, renderer);
+                component.render(this, view);
             }
         }
     }
@@ -120,8 +120,7 @@ define(['components', 'primitives'], function(components, primitives){
         constructor(){
             this.entities = new Map();
             this.eventHandlers = new Map();
-            this.cameraTransformation = new primitives.Matrix3D();
-            this.cameras = new Set();
+            this.views = new Set();
         }
 
         update(events){
@@ -145,36 +144,40 @@ define(['components', 'primitives'], function(components, primitives){
             }
         }
 
+        addView(view){
+            this.views.add(view);
+        }
+
+        removeView(view){
+            this.views.delete(view);
+        }
+
         draw(){
-            for(let camera of this.getActiveCameras()){
-                this.drawFromCamera(camera);
+            for(let view of this.getActiveViews()){
+                this.drawView(view);
             }
         }
 
-        drawFromCamera(camera){
-            let cameraComponent = camera.getComponent(components.CameraComponent);
+        drawView(view){
+            let renderer = view.renderer;
 
-            if(cameraComponent){
-                let renderer = cameraComponent.renderer;
-
-                for(let entity of this.getVisibleEntities()){
-                    entity.processPreRendering(camera);
-                }
-
-                for(let entity of this.getVisibleEntities()){
-                    entity.draw(renderer);
-                }
-
-                renderer.render();
+            for(let entity of this.getVisibleEntities()){
+                entity.processPreRendering(view);
             }
+
+            for(let entity of this.getVisibleEntities()){
+                entity.draw(view);
+            }
+
+            renderer.render();
         }
 
         getVisibleEntities(){
             return this.entities.values();
         }
 
-        getActiveCameras(){
-            return this.cameras;
+        getActiveViews(){
+            return this.views;
         }
 
         addEventHandler(eventType, callback){
@@ -197,43 +200,25 @@ define(['components', 'primitives'], function(components, primitives){
         }
 
         addEntity(key, entity){
-            let cameras = this.lookUpForCameras(entity);
-            for(let camera of cameras){
-                if(!this.cameras.has(camera)){
-                    this.cameras.add(camera);
-                } else {
-                    throw new Error(`The camera was already attached to the scene`);
-                }
-            }
             this.entities.set(key, entity);
-        }
-
-        *lookUpForCameras(entity){
-            var cameraComponent = entity.getComponent(components.CameraComponent);
-            if(cameraComponent){
-                yield entity;
-            }
-
-            for(let child of entity.children){
-                yield *this.lookUpForCameras(child);
-            }
         }
 
         removeEntity(key){
             let entity = this.entities.get(key);
             if(entity){
-                let cameras = this.lookUpForCameras(entity);
-                for(let camera of cameras){
-                    if(this.cameras.has(camera)){
-                        this.cameras.delete(camera);
-                    }
-                }
                 this.entities.delete(key);
             }
         }
 
         getEntity(key){
             return this.entities.get(key);
+        }
+    }
+
+    class View{
+        constructor(renderer, camera){
+            this.renderer = renderer;
+            this.camera = camera;
         }
     }
 
@@ -258,9 +243,9 @@ define(['components', 'primitives'], function(components, primitives){
     }
 
     class Camera extends TransformableEntity{
-        constructor(renderer, transformation){
+        constructor(transformation){
             super(transformation);
-            this.addComponent(new components.CameraComponent(renderer));
+            this.addComponent(new components.CameraComponent());
             this.addComponent(new components.CameraTransformationComponent());
         }
     }
@@ -276,6 +261,7 @@ define(['components', 'primitives'], function(components, primitives){
     return {
         Entity,
         SceneManager,
+        View,
         TransformableEntity,
         PointEntity,
         Camera,

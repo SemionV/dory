@@ -31,7 +31,7 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
             super(name);
         }
 
-        process(entity, camera){
+        process(entity, view){
 
         }
     }
@@ -41,7 +41,7 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
             super(name);
         }
 
-        render(entity, renderer){
+        render(entity, view){
 
         }
     }
@@ -147,10 +147,10 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
             this.point = new primitives.Point3D();
         }
 
-        process(entity, camera){
+        process(entity, view){
             this.point.reset();
             let position = entity.getComponent(PositionComponent);
-            let cameraTransformation = camera.getComponent(CameraTransformationComponent);
+            let cameraTransformation = view.camera.getComponent(CameraTransformationComponent);
             if(position && position.point){
                 position.point.copyTo(this.point);
                 if(cameraTransformation){
@@ -168,9 +168,8 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
     }
 
     class CameraComponent extends Component{
-        constructor(renderer, xAxis = new primitives.Point3D(), yAxis = new primitives.Point3D(), zAxis = new primitives.Point3D()){
+        constructor(xAxis = new primitives.Point3D(), yAxis = new primitives.Point3D(), zAxis = new primitives.Point3D()){
             super();
-            this.renderer = renderer;
             this.xAxis = xAxis;
             this.yAxis = yAxis;
             this.zAxis = zAxis;
@@ -219,10 +218,10 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
             this.drawPointer = drawPointer;
         }
 
-        render(entity, renderer){
+        render(entity, view){
             let position = entity.getComponent(CameraPositionComponent);
             if(position){
-                renderer.addPrimitive(entity, new render.Point(position.point, this.color, this.drawPointer));
+                view.renderer.addPrimitive(entity, new render.Point(position.point, this.color, this.drawPointer));
             }
         }
     }
@@ -242,13 +241,13 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
             this.spritePrimitive = new render.Sprite(null, null, this.drawBorder, this.color);
         }
 
-        render(entity, renderer){
+        render(entity, view){
             let position = entity.getComponent(CameraPositionComponent);
             var sprite = entity.getComponent(SpriteComponent);
             if(position && sprite && sprite.image){
                 this.spritePrimitive.image = sprite.image;
                 this.spritePrimitive.position = position.point;
-                renderer.addPrimitive(entity, this.spritePrimitive);
+                view.renderer.addPrimitive(entity, this.spritePrimitive);
             }
         }
     }
@@ -267,12 +266,12 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
             this.wireFrame = wireFrame;
         }
 
-        render(entity, renderer){
+        render(entity, view){
             if(this.meshComponent){
                 var mesh = this.meshComponent.mesh;
                 if(mesh){
                     for(let polygon of mesh.polygons){
-                        renderer.addPrimitive(new render.Polygon(polygon, polygon[0].color, this.wireFrame));
+                        view.renderer.addPrimitive(new render.Polygon(polygon, polygon[0].color, this.wireFrame));
                     }
                 }
             }
@@ -293,7 +292,7 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
     }
 
     class BoundingBoxBackDrawer extends RenderingComponent{
-        render(entity, renderer){
+        render(entity, view){
             var boundingBox = entity.getComponent(BoundingBoxComponent);
 
             if(boundingBox){
@@ -315,20 +314,20 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
                     let vertex8 = new primitives.Vertex(vertex4.x, vertex4.y, -box.altitude);
 
                     var polygon1 = new primitives.Polygon(vertex1, vertex4, vertex3, vertex2);//bottom
-                    renderer.addPrimitive(new render.Polygon(polygon1, backColor, this.wireFrame));
+                    view.renderer.addPrimitive(new render.Polygon(polygon1, backColor, this.wireFrame));
 
                     var polygon2 = new primitives.Polygon(vertex1, vertex2, vertex6, vertex5);
-                    renderer.addPrimitive(new render.Polygon(polygon2, backColor, this.wireFrame));
+                    view.renderer.addPrimitive(new render.Polygon(polygon2, backColor, this.wireFrame));
 
                     var polygon5 = new primitives.Polygon(vertex4, vertex1, vertex5, vertex8);
-                    renderer.addPrimitive(new render.Polygon(polygon5, backColor, this.wireFrame));
+                    view.renderer.addPrimitive(new render.Polygon(polygon5, backColor, this.wireFrame));
                 }
             }
         }
     }
 
     class BoundingBoxFrontDrawer extends RenderingComponent{
-        render(entity, renderer){
+        render(entity, view){
             var boundingBox = entity.getComponent(BoundingBoxComponent);
 
             if(boundingBox){
@@ -352,13 +351,13 @@ define(['context', 'primitives', 'render', 'stateMachine', 'input', 'events'],
                     let vertex8 = new primitives.Vertex(vertex4.x, vertex4.y, -box.altitude);
 
                     var polygon3 = new primitives.Polygon(vertex2, vertex3, vertex7, vertex6);//front
-                    renderer.addPrimitive(new render.Polygon(polygon3, frontSideColor, this.wireFrame));
+                    view.renderer.addPrimitive(new render.Polygon(polygon3, frontSideColor, this.wireFrame));
 
                     var polygon4 = new primitives.Polygon(vertex3, vertex4, vertex8, vertex7);//left
-                    renderer.addPrimitive(new render.Polygon(polygon4, leftSideColor, this.wireFrame));
+                    view.renderer.addPrimitive(new render.Polygon(polygon4, leftSideColor, this.wireFrame));
 
                     var polygon6 = new primitives.Polygon(vertex5, vertex6, vertex7, vertex8);//top
-                    renderer.addPrimitive(new render.Polygon(polygon6, topSideColor, this.wireFrame));
+                    view.renderer.addPrimitive(new render.Polygon(polygon6, topSideColor, this.wireFrame));
                 }
             }
         }

@@ -24,9 +24,6 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
 
         let scene = new scenes.SceneManager();
 
-        let viewport = new render.Viewport(canvas.width, canvas.height);
-        let renderer = new render.Canvas2DIsometricRenderer(canvasContext, viewport);
-
         //init terrain
         {
             let terrain = new scenes.TransformableEntity();
@@ -52,7 +49,7 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
 
         //init camera
         {
-            let camera = new scenes.Camera(renderer, primitives.Matrix3D.translate(100, 100, -100));
+            let camera = new scenes.Camera(primitives.Matrix3D.translate(100, 100, -100));
             var cameraDirection = new primitives.Point3D(-1, -1, 1);
             camera.addComponent(new components.DirectionComponent(cameraDirection));
             camera.addComponent(new components.RotateCameraComponent());
@@ -64,11 +61,16 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
             cameraFocus.addComponent(new components.PointDrawer());
             cameraFocus.addChild(camera);
             scene.addEntity('cameraFocus', cameraFocus);
-        }
 
-        let center = new scenes.PointEntity();
-        center.addComponent(new components.PointDrawer());
-        scene.addEntity('center', center);
+            let viewport = new render.Viewport(canvas.width, canvas.height);
+            let renderer = new render.Canvas2DIsometricRenderer(canvasContext, viewport);
+            let view = new scenes.View(renderer, camera);
+            scene.addView(view);
+
+            let center = new scenes.PointEntity();
+            center.addComponent(new components.PointDrawer());
+            scene.addEntity('center', center);
+        }
 
         //init pines
         {
