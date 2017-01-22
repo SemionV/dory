@@ -51,14 +51,14 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         {
             let camera = new scenes.Camera(primitives.Matrix3D.translate(100, 100, -100));
             var cameraDirection = new primitives.Point3D(-1, -1, 1);
-            camera.addComponent(new components.DirectionComponent(cameraDirection));
-            camera.addComponent(new components.RotateCameraComponent());
+            camera.addComponent(new components.data.Direction(cameraDirection));
+            camera.addComponent(new components.update.RotateCamera());
 
             let cameraFocus = new scenes.PointEntity();
-            cameraFocus.addComponent(new components.DirectionComponent());
-            cameraFocus.addComponent(new components.KeyboardControllerComponent(cameraDirection));
-            cameraFocus.addComponent(new components.MovementComponent(100));
-            cameraFocus.addComponent(new components.PointDrawer());
+            cameraFocus.addComponent(new components.data.Direction());
+            cameraFocus.addComponent(new components.update.KeyboardController(cameraDirection));
+            cameraFocus.addComponent(new components.update.Movement(100));
+            cameraFocus.addComponent(new components.rendering.PointDrawer());
             cameraFocus.addChild(camera);
             scene.addEntity('cameraFocus', cameraFocus);
 
@@ -68,7 +68,7 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
             scene.addView(view);
 
             let center = new scenes.PointEntity();
-            center.addComponent(new components.PointDrawer());
+            center.addComponent(new components.rendering.PointDrawer());
             scene.addEntity('center', center);
         }
 

@@ -5,7 +5,7 @@ define(['primitives', 'components', 'render', 'algorithms', 'scene'], function(p
         }
     }
 
-    class TileTerrainComponent extends components.Component{
+    class TileTerrain extends components.Component{
         constructor(tileWidth, tileHeight, tiles, tileTypes){
             super();
             this.tileWidth = tileWidth;
@@ -17,9 +17,9 @@ define(['primitives', 'components', 'render', 'algorithms', 'scene'], function(p
         }
     }
 
-    class TileTerrainDrawer extends components.RenderingComponent{
+    class TileTerrainDrawer extends components.rendering.RenderingComponent{
         render(entity, renderer){
-            var terrain = entity.getComponent(TileTerrainComponent);
+            var terrain = entity.getComponent(TileTerrain);
             if(terrain){
                 let halfWidth = terrain.width / 2;
                 let halfHeight = terrain.height / 2;
@@ -56,7 +56,7 @@ define(['primitives', 'components', 'render', 'algorithms', 'scene'], function(p
         }
     }
 
-    class OneDimensionTileTerrainDrawer extends components.RenderingComponent{
+    class OneDimensionTileTerrainDrawer extends components.rendering.RenderingComponent{
         constructor(cameraDirection = new primitives.Point3D(-1, -1, 0)) {
             super();
             this.cameraDirection = cameraDirection;
@@ -143,7 +143,7 @@ define(['primitives', 'components', 'render', 'algorithms', 'scene'], function(p
 
     return {
         TileType,
-        TileTerrainComponent,
+        TileTerrain,
         TileTerrainDrawer,
         OneDimensionTileTerrain,
         OneDimensionTileTerrainDrawer,

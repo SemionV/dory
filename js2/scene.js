@@ -64,7 +64,7 @@ define(['components', 'primitives'], function(components, primitives){
         }
 
         updateComponents(events){
-            var stateComponents = this.getComponents(components.StateComponent);
+            var stateComponents = this.getComponents(components.update.UpdateComponent);
             for(let component of stateComponents){
                 component.update(this, events);
             }
@@ -79,7 +79,7 @@ define(['components', 'primitives'], function(components, primitives){
         }
 
         processPostUpdateComponents(events){
-            var postUpdateComponents = this.getComponents(components.PostUpdateComponent);
+            var postUpdateComponents = this.getComponents(components.postUpdate.PostUpdateComponent);
             for(let component of postUpdateComponents){
                 component.process(this, events);
             }
@@ -94,7 +94,7 @@ define(['components', 'primitives'], function(components, primitives){
         }
 
         processPreRenderingComponents(camera){
-            var preRenderingComponents = this.getComponents(components.PreRenderingComponent);
+            var preRenderingComponents = this.getComponents(components.preRendering.PreRenderingComponent);
             for(let component of preRenderingComponents){
                 component.process(this, camera);
             }
@@ -109,7 +109,7 @@ define(['components', 'primitives'], function(components, primitives){
         }
 
         drawComponents(view){
-            var drawComponents = this.getComponents(components.RenderingComponent);
+            var drawComponents = this.getComponents(components.rendering.RenderingComponent);
             for(let component of drawComponents){
                 component.render(this, view);
             }
@@ -225,36 +225,37 @@ define(['components', 'primitives'], function(components, primitives){
     class TransformableEntity extends Entity{
         constructor(transformation = new primitives.Matrix3D()){
             super();
-            this.addComponent(new components.TransformationComponent(transformation));
-            this.addComponent(new components.CombinedTransformationComponent());
+            this.addComponent(new components.data.Transformation(transformation));
+            this.addComponent(new components.postUpdate.CombinedTransformation());
         }
 
         get transformation(){
-            return this.getComponent(components.TransformationComponent).transformation;
+            return this.getComponent(components.data.Transformation).transformation;
         }
     }
 
     class PointEntity extends TransformableEntity{
         constructor(transformation){
             super(transformation);
-            this.addComponent(new components.PositionComponent());
-            this.addComponent(new components.CameraPositionComponent());
+            let cotComponent = this.getComponent(components.postUpdate.CombinedTransformation);
+            this.addComponent(new components.postUpdate.Position(cotComponent));
+            this.addComponent(new components.preRendering.CameraPosition());
         }
     }
 
     class Camera extends TransformableEntity{
         constructor(transformation){
             super(transformation);
-            this.addComponent(new components.CameraComponent());
-            this.addComponent(new components.CameraTransformationComponent());
+            this.addComponent(new components.data.Camera());
+            this.addComponent(new components.postUpdate.CameraTransformation());
         }
     }
 
     class SpriteEntity extends PointEntity{
         constructor(sprite, transformation){
             super(transformation);
-            this.addComponent(new components.SpriteComponent(sprite));
-            this.addComponent(new components.SpriteDrawer());
+            this.addComponent(new components.data.Sprite(sprite));
+            this.addComponent(new components.rendering.SpriteDrawer());
         }
     }
 
