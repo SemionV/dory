@@ -2,17 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4cbe2f41-d338-4119-8b9c-982abc6ab6d0" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js2/components/component.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js2/components/data.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js2/components/postUpdate.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js2/components/preRendering.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js2/components/rendering.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js2/components/update.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/components.js" afterPath="$PROJECT_DIR$/js2/components.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/doriScene.js" afterPath="$PROJECT_DIR$/js2/doriScene.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/scene.js" afterPath="$PROJECT_DIR$/js2/scene.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js2/tileTerrain.js" afterPath="$PROJECT_DIR$/js2/tileTerrain.js" />
     </list>
     <ignored path="Sandbox.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -35,8 +26,8 @@
       <file leaf-file-name="scene.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js2/scene.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="96" column="84" lean-forward="true" selection-start-line="96" selection-start-column="84" selection-end-line="96" selection-end-column="84" />
+            <state relative-caret-position="765">
+              <caret line="111" column="71" lean-forward="false" selection-start-line="111" selection-start-column="71" selection-end-line="111" selection-end-column="71" />
               <folding />
             </state>
           </provider>
@@ -59,8 +50,8 @@
       <file leaf-file-name="components.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js2/components.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="1" column="60" lean-forward="false" selection-start-line="1" selection-start-column="60" selection-end-line="1" selection-end-column="60" />
+            <state relative-caret-position="119">
+              <caret line="7" column="57" lean-forward="false" selection-start-line="7" selection-start-column="57" selection-end-line="7" selection-end-column="57" />
               <folding />
             </state>
           </provider>
@@ -86,11 +77,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="preRendering.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="preRendering.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js2/components/preRendering.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="23" lean-forward="false" selection-start-line="0" selection-start-column="23" selection-end-line="0" selection-end-column="23" />
+            <state relative-caret-position="408">
+              <caret line="24" column="38" lean-forward="true" selection-start-line="24" selection-start-column="38" selection-end-line="24" selection-end-column="38" />
               <folding />
             </state>
           </provider>
@@ -126,11 +117,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="rendering.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="rendering.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js2/components/rendering.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1717">
-              <caret line="101" column="76" lean-forward="false" selection-start-line="101" selection-start-column="76" selection-end-line="101" selection-end-column="76" />
+            <state relative-caret-position="650">
+              <caret line="137" column="8" lean-forward="false" selection-start-line="137" selection-start-column="8" selection-end-line="137" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -163,8 +154,8 @@
       <find>getComponent</find>
       <find>PositionComponent</find>
       <find>PreRenderingComponent</find>
-      <find>getComponents</find>
       <find>dataComponents</find>
+      <find>getComponents</find>
     </findStrings>
     <dirStrings>
       <dir>C:\MyRepository\dev\HTML5Game\js2</dir>
@@ -194,12 +185,12 @@
         <option value="$PROJECT_DIR$/js2/components/update.js" />
         <option value="$PROJECT_DIR$/js2/components/postUpdate.js" />
         <option value="$PROJECT_DIR$/js2/components/rendering.js" />
-        <option value="$PROJECT_DIR$/js2/components.js" />
         <option value="$PROJECT_DIR$/js2/doriScene.js" />
         <option value="$PROJECT_DIR$/js2/tileTerrain.js" />
         <option value="$PROJECT_DIR$/js2/components/data.js" />
-        <option value="$PROJECT_DIR$/js2/scene.js" />
         <option value="$PROJECT_DIR$/js2/components/preRendering.js" />
+        <option value="$PROJECT_DIR$/js2/components.js" />
+        <option value="$PROJECT_DIR$/js2/scene.js" />
       </list>
     </option>
   </component>
@@ -415,7 +406,7 @@
       <workItem from="1483606556325" duration="17075000" />
       <workItem from="1484375514319" duration="3065000" />
       <workItem from="1484378967078" duration="13880000" />
-      <workItem from="1485072645411" duration="9881000" />
+      <workItem from="1485072645411" duration="10163000" />
     </task>
     <task id="LOCAL-00006" summary="Transformations">
       <created>1472564986086</created>
@@ -449,7 +440,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="173014000" />
+    <option name="totallyTimeSpent" value="173296000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -817,26 +808,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js2/components/rendering.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1717">
-          <caret line="101" column="76" lean-forward="false" selection-start-line="101" selection-start-column="76" selection-end-line="101" selection-end-column="76" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js2/components/postUpdate.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="296">
           <caret line="74" column="10" lean-forward="false" selection-start-line="74" selection-start-column="10" selection-end-line="74" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js2/components.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="60" lean-forward="false" selection-start-line="1" selection-start-column="60" selection-end-line="1" selection-end-column="60" />
           <folding />
         </state>
       </provider>
@@ -877,18 +852,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js2/scene.js">
+    <entry file="file://$PROJECT_DIR$/js2/components/preRendering.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="408">
-          <caret line="96" column="84" lean-forward="true" selection-start-line="96" selection-start-column="84" selection-end-line="96" selection-end-column="84" />
+          <caret line="24" column="38" lean-forward="true" selection-start-line="24" selection-start-column="38" selection-end-line="24" selection-end-column="38" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js2/components/preRendering.js">
+    <entry file="file://$PROJECT_DIR$/js2/components.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="23" lean-forward="false" selection-start-line="0" selection-start-column="23" selection-end-line="0" selection-end-column="23" />
+        <state relative-caret-position="119">
+          <caret line="7" column="57" lean-forward="false" selection-start-line="7" selection-start-column="57" selection-end-line="7" selection-end-column="57" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js2/scene.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="765">
+          <caret line="111" column="71" lean-forward="false" selection-start-line="111" selection-start-column="71" selection-end-line="111" selection-end-column="71" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js2/components/rendering.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="650">
+          <caret line="137" column="8" lean-forward="false" selection-start-line="137" selection-start-column="8" selection-end-line="137" selection-end-column="8" />
           <folding />
         </state>
       </provider>

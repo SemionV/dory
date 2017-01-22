@@ -64,7 +64,7 @@ define(['components', 'primitives'], function(components, primitives){
         }
 
         updateComponents(events){
-            var stateComponents = this.getComponents(components.update.UpdateComponent);
+            var stateComponents = this.getComponents(components.UpdateComponent);
             for(let component of stateComponents){
                 component.update(this, events);
             }
@@ -79,7 +79,7 @@ define(['components', 'primitives'], function(components, primitives){
         }
 
         processPostUpdateComponents(events){
-            var postUpdateComponents = this.getComponents(components.postUpdate.PostUpdateComponent);
+            var postUpdateComponents = this.getComponents(components.PostUpdateComponent);
             for(let component of postUpdateComponents){
                 component.process(this, events);
             }
@@ -94,7 +94,7 @@ define(['components', 'primitives'], function(components, primitives){
         }
 
         processPreRenderingComponents(camera){
-            var preRenderingComponents = this.getComponents(components.preRendering.PreRenderingComponent);
+            var preRenderingComponents = this.getComponents(components.PreRenderingComponent);
             for(let component of preRenderingComponents){
                 component.process(this, camera);
             }
@@ -109,7 +109,7 @@ define(['components', 'primitives'], function(components, primitives){
         }
 
         drawComponents(view){
-            var drawComponents = this.getComponents(components.rendering.RenderingComponent);
+            var drawComponents = this.getComponents(components.RenderingComponent);
             for(let component of drawComponents){
                 component.render(this, view);
             }

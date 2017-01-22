@@ -2,6 +2,10 @@ define(['components/component', 'components/data', 'components/update', 'compone
 function(component, data, update, postUpdate, preRendering, rendering){
     return {
         Component: component.Component,
+        UpdateComponent: update.UpdateComponent,
+        PostUpdateComponent: postUpdate.PostUpdateComponent,
+        PreRenderingComponent: preRendering.PreRenderingComponent,
+        RenderingComponent: rendering.RenderingComponent,
         data,
         update,
         postUpdate,
