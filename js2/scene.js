@@ -131,14 +131,14 @@ define(['components', 'primitives'], function(components, primitives){
         }
     }
 
-    class SceneManagerEntity extends Entity{
+    class SceneManager extends Entity{
         constructor(){
             super();
             this.eventHandlers = new Map();
             this.views = new Set();
         }
 
-        update(){
+        update(events){
             //Process events from previous heart beat
             for(let [type, handlers] of this.eventHandlers){
                 for(let event of events){
@@ -150,7 +150,7 @@ define(['components', 'primitives'], function(components, primitives){
                 }
             }
 
-            super.update();
+            super.update(events);
 
             //post update
             for(let child of this.children){
@@ -228,105 +228,6 @@ define(['components', 'primitives'], function(components, primitives){
 
         getEntity(key){
             return this.findChildByKey(key);
-        }
-    }
-
-    class SceneManager{
-        constructor(){
-            this.entities = new Map();
-            this.eventHandlers = new Map();
-            this.views = new Set();
-        }
-
-        update(events){
-            //Process events from previous heart beat
-            for(let [type, handlers] of this.eventHandlers){
-                for(let event of events){
-                    if(event instanceof type){
-                        for(let handler of handlers){
-                            handler(event);
-                        }
-                    }
-                }
-            }
-
-            for(let entity of this.entities.values()){
-                entity.update(events);
-            }
-
-            for(let entity of this.entities.values()){
-                entity.processPostUpdate(events);
-            }
-        }
-
-        addView(view){
-            this.views.add(view);
-        }
-
-        removeView(view){
-            this.views.delete(view);
-        }
-
-        draw(){
-            for(let view of this.getActiveViews()){
-                this.drawView(view);
-            }
-        }
-
-        drawView(view){
-            let renderer = view.renderer;
-
-            for(let entity of this.getVisibleEntities()){
-                entity.processPreRendering(view);
-            }
-
-            for(let entity of this.getVisibleEntities()){
-                entity.draw(view);
-            }
-
-            renderer.render();
-        }
-
-        getVisibleEntities(){
-            return this.entities.values();
-        }
-
-        getActiveViews(){
-            return this.views;
-        }
-
-        addEventHandler(eventType, callback){
-            var set = this.eventHandlers.get(eventType);
-            if(!set){
-                set = new Set();
-                this.eventHandlers.set(eventType, set);
-            }
-
-            if(!set.has(callback)){
-                set.add(callback);
-            }
-        }
-
-        removeEventHandler(eventType, callback){
-            var set = this.eventHandlers.get(eventType);
-            if(set){
-                set.delete(callback);
-            }
-        }
-
-        addEntity(key, entity){
-            this.entities.set(key, entity);
-        }
-
-        removeEntity(key){
-            let entity = this.entities.get(key);
-            if(entity){
-                this.entities.delete(key);
-            }
-        }
-
-        getEntity(key){
-            return this.entities.get(key);
         }
     }
 
