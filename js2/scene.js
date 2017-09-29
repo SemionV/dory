@@ -3,10 +3,11 @@ define(['components', 'primitives'], function(components, primitives){
     var entityChildrenSymbol = Symbol();
 
     class Entity{
-        constructor(){
+        constructor(key){
             this[entityComponentsSymbol] = new Set();
             this[entityChildrenSymbol] = new Set();
             this.parent = null;
+            this.key = key;
         }
 
         getComponent(type){
@@ -41,6 +42,20 @@ define(['components', 'primitives'], function(components, primitives){
         removeChild(entity){
             entity.parent = null;
             this[entityChildrenSymbol].delete(entity);
+        }
+
+        findChild(predicate){
+            for(let x of this.children){
+                if(predicate(x)){
+                    return x;
+                }
+            }
+
+            return null;
+        }
+
+        findChildByKey(key){
+            return this.findChild((child) => {child.key === key});
         }
 
         get children(){
@@ -113,6 +128,106 @@ define(['components', 'primitives'], function(components, primitives){
             for(let component of drawComponents){
                 component.render(this, view);
             }
+        }
+    }
+
+    class SceneManagerEntity extends Entity{
+        constructor(){
+            super();
+            this.eventHandlers = new Map();
+            this.views = new Set();
+        }
+
+        update(){
+            //Process events from previous heart beat
+            for(let [type, handlers] of this.eventHandlers){
+                for(let event of events){
+                    if(event instanceof type){
+                        for(let handler of handlers){
+                            handler(event);
+                        }
+                    }
+                }
+            }
+
+            super.update();
+
+            //post update
+            for(let child of this.children){
+                child.processPostUpdate(events);
+            }
+        }
+
+        addView(view){
+            this.views.add(view);
+        }
+
+        removeView(view){
+            this.views.delete(view);
+        }
+
+        draw(){
+            for(let view of this.getActiveViews()){
+                this.drawView(view);
+            }
+        }
+
+        drawView(view){
+            let renderer = view.renderer;
+
+            for(let entity of this.getVisibleEntities()){
+                entity.processPreRendering(view);
+            }
+
+            for(let entity of this.getVisibleEntities()){
+                entity.draw(view);
+            }
+
+            this.drawComponents(view);
+
+            renderer.render();
+        }
+
+        getVisibleEntities(){
+            return this.children;
+        }
+
+        getActiveViews(){
+            return this.views;
+        }
+
+        addEventHandler(eventType, callback){
+            var set = this.eventHandlers.get(eventType);
+            if(!set){
+                set = new Set();
+                this.eventHandlers.set(eventType, set);
+            }
+
+            if(!set.has(callback)){
+                set.add(callback);
+            }
+        }
+
+        removeEventHandler(eventType, callback){
+            var set = this.eventHandlers.get(eventType);
+            if(set){
+                set.delete(callback);
+            }
+        }
+
+        addEntity(entity){
+            this.addChild(entity);
+        }
+
+        removeEntity(key){
+            let entity = this.findChildByKey(key);
+            if(entity){
+                this.removeChild(entity);
+            }
+        }
+
+        getEntity(key){
+            return this.findChildByKey(key);
         }
     }
 
