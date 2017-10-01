@@ -61,6 +61,19 @@ define(['./component', 'primitives'], function(component, primitives){
         }
     }
 
+    class Position extends component.Component{
+        constructor(point = new primitives.Point3D()){
+            super();
+            this.point = point;
+        }
+    }
+
+    class ProjectedPosition extends Position{
+        constructor(){
+            super();
+        }
+    }
+
     return {
         Properties,
         Transformation,
@@ -70,6 +83,8 @@ define(['./component', 'primitives'], function(component, primitives){
         BoundingVolume,
         BoundingBox,
         Direction,
-        Camera
+        Camera,
+        Position,
+        ProjectedPosition
     };
 });

@@ -58,7 +58,7 @@ define(['./component', './data', 'primitives'], function(component, dataComponen
         }
 
         process(entity, events){
-           let properties = entity.getComponent(dataComponents.Properties);
+            let properties = entity.getComponent(dataComponents.Properties);
             let isStatic = properties ? properties.isStatic : false;
 
             if(this.cotComponent && (!isStatic || !this.point)){
