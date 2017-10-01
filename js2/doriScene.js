@@ -27,6 +27,7 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
         //init terrain
         {
             let terrain = new scenes.TransformableEntity();
+            terrain.key = 'terrain';
             const tileWidth = 32;
             const tileHeight = 32;
             var imageGrass = resourceManager.getImage('terrain.grass4');
@@ -44,7 +45,7 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
                     [2, new tileTerrain.TileType()]
                 ]));
             tileTerrain.TerrainFactory.build(terrainDefinition, terrain);
-            scene.addEntity('terrain', terrain);
+            scene.addEntity(terrain);
         }
 
         //init camera
@@ -55,12 +56,13 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
             camera.addComponent(new components.update.RotateCamera());
 
             let cameraFocus = new scenes.PointEntity();
+            camera.key = 'cameraFocus';
             cameraFocus.addComponent(new components.data.Direction());
             cameraFocus.addComponent(new components.update.KeyboardController(cameraDirection));
             cameraFocus.addComponent(new components.update.Movement(100));
             cameraFocus.addComponent(new components.rendering.PointDrawer());
             cameraFocus.addChild(camera);
-            scene.addEntity('cameraFocus', cameraFocus);
+            scene.addEntity(cameraFocus);
 
             let viewport = new render.Viewport(canvas.width, canvas.height);
             let renderer = new render.Canvas2DIsometricRenderer(canvasContext, viewport);
@@ -68,8 +70,9 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
             scene.addView(view);
 
             let center = new scenes.PointEntity();
+            center.key = 'center';
             center.addComponent(new components.rendering.PointDrawer());
-            scene.addEntity('center', center);
+            scene.addEntity(center);
         }
 
         //init pines
@@ -78,16 +81,20 @@ require(['context', 'engine', 'resources', 'scene', 'components', 'render', 'pri
             let pineSprite = new primitives.Image(imagePine, 158.07999999999663, 223.99999999999665);
 
             let pine = new scenes.SpriteEntity(pineSprite, primitives.Matrix3D.translate(-74.23999999999982, 144.63999999999834, 0));
-            scene.addEntity('pine', pine);
+            pine.key = 'pine';
+            scene.addEntity(pine);
 
             pine = new scenes.SpriteEntity(pineSprite, primitives.Matrix3D.translate(-139.83999999999844, 115.51999999999896, 0));
-            scene.addEntity('pine2', pine);
+            pine.key = 'pine2';
+            scene.addEntity(pine);
 
             pine = new scenes.SpriteEntity(pineSprite, primitives.Matrix3D.translate(-50, 50, 0));
-            scene.addEntity('pine3', pine);
+            pine.key = 'pine3';
+            scene.addEntity(pine);
 
             pine = new scenes.SpriteEntity(pineSprite, primitives.Matrix3D.translate(84.47999999999962, 338.5599999999942, 0));
-            scene.addEntity('pine4', pine);
+            pine.key = 'pine4';
+            scene.addEntity(pine);
         }
 
         scene.addEventHandler(dori.FpsUpdatedEvent, (e)=>{

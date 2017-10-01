@@ -3,10 +3,11 @@ define(['components', 'primitives'], function(components, primitives){
     var entityChildrenSymbol = Symbol();
 
     class Entity{
-        constructor(){
+        constructor(key){
             this[entityComponentsSymbol] = new Set();
             this[entityChildrenSymbol] = new Set();
             this.parent = null;
+            this.key = key;
         }
 
         getComponent(type){
@@ -41,6 +42,20 @@ define(['components', 'primitives'], function(components, primitives){
         removeChild(entity){
             entity.parent = null;
             this[entityChildrenSymbol].delete(entity);
+        }
+
+        findChild(predicate){
+            for(let x of this.children){
+                if(predicate(x)){
+                    return x;
+                }
+            }
+
+            return null;
+        }
+
+        findChildByKey(key){
+            return this.findChild((child) => {child.key === key});
         }
 
         get children(){
@@ -116,9 +131,9 @@ define(['components', 'primitives'], function(components, primitives){
         }
     }
 
-    class SceneManager{
+    class SceneManager extends Entity{
         constructor(){
-            this.entities = new Map();
+            super();
             this.eventHandlers = new Map();
             this.views = new Set();
         }
@@ -135,12 +150,11 @@ define(['components', 'primitives'], function(components, primitives){
                 }
             }
 
-            for(let entity of this.entities.values()){
-                entity.update(events);
-            }
+            super.update(events);
 
-            for(let entity of this.entities.values()){
-                entity.processPostUpdate(events);
+            //post update
+            for(let child of this.children){
+                child.processPostUpdate(events);
             }
         }
 
@@ -169,11 +183,13 @@ define(['components', 'primitives'], function(components, primitives){
                 entity.draw(view);
             }
 
+            this.drawComponents(view);
+
             renderer.render();
         }
 
         getVisibleEntities(){
-            return this.entities.values();
+            return this.children;
         }
 
         getActiveViews(){
@@ -199,19 +215,19 @@ define(['components', 'primitives'], function(components, primitives){
             }
         }
 
-        addEntity(key, entity){
-            this.entities.set(key, entity);
+        addEntity(entity){
+            this.addChild(entity);
         }
 
         removeEntity(key){
-            let entity = this.entities.get(key);
+            let entity = this.findChildByKey(key);
             if(entity){
-                this.entities.delete(key);
+                this.removeChild(entity);
             }
         }
 
         getEntity(key){
-            return this.entities.get(key);
+            return this.findChildByKey(key);
         }
     }
 
