@@ -1,0 +1,13 @@
+{
+  "name": "dori",
+  "version": "1.0.0",
+  "description": "game engine",
+  "scripts": {
+    "server": "http-server --cors"
+  },
+  "author": "Semion Varennik",
+  "license": "ISC",
+  "devDependencies": {
+    "http-server": "^0.11.1"
+  }
+}
