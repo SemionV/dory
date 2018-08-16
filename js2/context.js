@@ -1,3 +1,9 @@
-define(function(){
-    return {engine: null}
-});
+class Context {
+    constructor() {
+        this.engine = null;
+    }
+}
+
+let context = new Context();
+
+export {context};
