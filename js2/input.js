@@ -1,20 +1,20 @@
-import context from "./context.js" 
+import {context} from "./context.js" 
 import * as events from "./events.js"
 
-class InputEvent extends events.Event{
+export class InputEvent extends events.Event{
     constructor(name, key){
         super(name);
         this.key = key;
     }
 }
 
-class KeydownEvent extends InputEvent{
+export class KeydownEvent extends InputEvent{
 }
 
-class KeyupEvent extends InputEvent{
+export class KeyupEvent extends InputEvent{
 }
 
-class InputManager{
+export class InputManager{
     constructor(){
         this.keyboardState = new Map();
 

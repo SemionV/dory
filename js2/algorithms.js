@@ -1,4 +1,4 @@
-import * as primitives from "./primitives";
+import * as primitives from "./primitives.js";
 
 export class Array2D{
     static getItem(array, x, y){

@@ -1,4 +1,4 @@
-import context from "./context.js";
+import {context} from "./context.js";
 import * as events from "./events.js";
 
 export class State{

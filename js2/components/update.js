@@ -1,6 +1,6 @@
 import {Component} from "./component.js";
 import * as dataComponents from "./data.js";
-import * as context from "../context.js";
+import {context} from "../context.js";
 import * as primitives from "../primitives.js";
 import * as states from "../stateMachine.js";
 import * as input from "../input.js";
