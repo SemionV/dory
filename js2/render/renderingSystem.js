@@ -29,7 +29,7 @@ export class RenderingContext {
         this.primitives = new Set();
     }
 
-    findPrimitive(predicate){
+    findPrimitive(predicate) {
         for(let x of this.primitives){
             if(predicate(x)){
                 return x;
@@ -95,7 +95,7 @@ export class RenderingSystem {
                 }
             }
 
-            if(!genericPrimitive) {
+            if(!existingGenericPrimitive) {
                 primitivesToDelete.add(primitive);
             }
         }
