@@ -5,18 +5,6 @@ export class PrimitivesFactory {
     }
 }
 
-export class GenericPrimitive {
-    constructor(id) {
-        this.id = id;
-    }
-}
-
-export class Primitive {
-    constructor(id) {
-        this.id = id;
-    }
-}
-
 //draw primitive with a supported rendering thechnology(canvas, WebGL, etc)
 export class Drawer {
     draw(primitive) {
@@ -47,16 +35,12 @@ export class Modifier {
     }
 }
 
-let drawersSymbol = Symbol();
-let modifiersSymbol = Symbol();
-let genericPrimitivesSymbol = Symbol();
-
 //generic rendering logic(building, optimization and drawing of rendering queue logic)
 export class RenderingSystem {
     constructor() {
-        this[drawersSymbol] = new Map();
-        this[modifiersSymbol] = new Set();
-        this[genericPrimitivesSymbol] = new Set();//generig primitives
+        this.drawers = new Map();
+        this.modifiers = new Set();
+        this.genericPrimitives = new Set();//generig primitives
     }
 
     getRenderingContext() {
@@ -68,7 +52,7 @@ export class RenderingSystem {
     }
 
     addPrimitive(genericPrimitive) {
-        this[genericPrimitivesSymbol].add(genericPrimitive);
+        this.genericPrimitives.add(genericPrimitive);
     }
 
     render() {
@@ -80,7 +64,7 @@ export class RenderingSystem {
         this.cleanupQueue();
     }
 
-    //go through this[genericsSymbol] and remove/add specific primitives to context
+    //go through generic primitives and remove/add specific primitives to context
     updateRenderingQueue(renderingContext) {
         let primitivesFactory = this.getPrimitivesFactory();
         let primitivesToDelete = new Set();
@@ -88,7 +72,7 @@ export class RenderingSystem {
         for(let primitive of renderingContext.primitives) {
             let existingGenericPrimitive = null;
 
-            for(let genericPrimitive of this[genericPrimitivesSymbol]) {
+            for(let genericPrimitive of this.genericPrimitives) {
                 if(genericPrimitive.id === primitive.id) {
                     existingGenericPrimitive = genericPrimitive;
                     break;
@@ -104,7 +88,7 @@ export class RenderingSystem {
             renderingContext.primitives.delete(primitive);
         }
 
-        for(let genericPrimitive of this[genericPrimitivesSymbol]) {
+        for(let genericPrimitive of this.genericPrimitives) {
             if(!renderingContext.findPrimitive((x) => {x.id == genericPrimitive.id})) {
                 let primitive = primitivesFactory.create(genericPrimitive);
                 renderingContext.primitives.add(primitive);
@@ -113,14 +97,14 @@ export class RenderingSystem {
     }
 
     modificationPipeline(renderingContext) {
-        for(let modifier of this[modifiersSymbol]) {
+        for(let modifier of this.modifiers) {
             modifier.process(renderingContext);
         }
     }
 
     drawQueue(renderingContext) {
         for(let primitve of renderingContext.primitives) {
-            let drawer = this[drawersSymbol].get(primitive);
+            let drawer = this.drawers.get(primitive);
             if(drawer) {
                 drawer.draw(primitve);
             }
@@ -128,6 +112,6 @@ export class RenderingSystem {
     }
 
     cleanupQueue() {
-        this[genericPrimitivesSymbol].clear();
+        this.genericPrimitives.clear();
     }
 }
