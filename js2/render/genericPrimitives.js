@@ -29,7 +29,7 @@ export class Face extends GraphicalPrimitive {
 }
 
 export class Mesh extends GraphicalPrimitive {
-    constructor(id, faces, material) {
+    constructor(id, transformation, faces, material) {
         super(id);
         this.faces = faces;
         this.material = material;
