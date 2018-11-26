@@ -200,6 +200,25 @@ export class Point3D extends Point2D{
     }
 }
 
+/* material of an object */
+export class Material {
+
+}
+
+/* Image will be drown relatively to (0,0,0) point of the object mesh. In fact it is transformation * cameraTransformation * (0, 0, 0) -> screen space */
+export class SpriteMaterial extends Material {
+    constructor(image) {
+        super();
+        this.image = image;
+    }
+}
+
+export class WireframeMaterial extends Material {
+    constructor() {
+        super();
+    }
+}
+
 export class ThreeDimensions{
     constructor(dimensionX = new Point3D(), dimensionY = new Point3D(), dimensionZ = new Point3D()){
         this.dimensionX = dimensionX;
@@ -415,8 +434,8 @@ export class Polygon extends Array{
 }
 
 export class Image{
-    constructor(image, offsetX = 0, offsetY = 0, clipX = 0, clipY = 0, clipWidth = 0, clipHeight = 0){
-        this.image = image;
+    constructor(imageResource, offsetX = 0, offsetY = 0, clipX = 0, clipY = 0, clipWidth = 0, clipHeight = 0){
+        this.image = imageResource;
         this.offsetX = offsetX;
         this.offsetY = offsetY;
         this.clipX = clipX;

@@ -1,30 +1,37 @@
 import * as primitives from "../primitives.js";
 
 export class GraphicalPrimitive {
-    constructor(id, color) {
+    constructor(id) {
         this.id = id;
-        this.color = color;
     }
 }
 
-export class PointPrimitive extends GraphicalPrimitive {
-    constructor(id, color, position = new primitives.Point3D()){
-        super(id, color);
+export class Point extends GraphicalPrimitive {
+    constructor(id, position = new primitives.Point3D()){
+        super(id);
         this.position = position;
     }
 }
 
-export class VisualPolygon extends GraphicalPrimitive {
-    constructor(id, color, polygon, wireFrame = true){
-        super(id, color);
-        this.polygon = polygon;
-        this.wireFrame = wireFrame;
+export class Line extends GraphicalPrimitive {
+    constructor(id, pointA, pointB) {
+        super(id)
+        this.pointA = pointA;
+        this.pointB = pointB;
     }
 }
 
-export class ImageTile extends VisualPolygon {
-    constructor(id, image, color, polygon, wireFrame = true) {
-        super(id, color, polygon, wireFrame);
-        this.image = image;
+export class Face extends GraphicalPrimitive {
+    constructor(id, points){
+        super(id);
+        this.points = points;
+    }
+}
+
+export class Mesh extends GraphicalPrimitive {
+    constructor(id, faces, material) {
+        super(id);
+        this.faces = faces;
+        this.material = material;
     }
 }
