@@ -8,7 +8,12 @@ export class Constants {
     }
 }
 
-export class Point2D{
+// root class for geometrical entities like points and matrices
+export class Point {
+
+}
+
+export class Point2D extends Point{
     constructor(x = 0, y = 0){
         this.x = x;
         this.y = y;
@@ -216,6 +221,86 @@ export class SpriteMaterial extends Material {
 export class WireframeMaterial extends Material {
     constructor() {
         super();
+    }
+}
+
+// generic transformation, it can be a matrix, quaternion or a simple math calculation
+export class Transformation {
+    apply(point, resultPoint) {
+
+    }
+
+    combine(transformation) {
+
+    }
+}
+
+export class Translation extends Transformation {
+    constructor(x = 0, y = 0, z = 0) {
+        this.x = 0;
+        this.y = 0;
+        this.z = 0;
+    }
+
+    apply(point, resultPoint) {
+        resultPoint.x = point.x + this.x;
+        resultPoint.y = point.y + this.y;
+        resultPoint.z = point.z + this.z;
+    }
+
+    combine(transformation) {
+        return new CombinedTransformation(transformation, this);
+    }
+}
+
+export class Rotation extends Transformation {
+    constructor(x = 0, y = 0, z = 0) {
+        this.x = 0;
+        this.y = 0;
+        this.z = 0;
+    }
+
+    apply(point, resultPoint) {
+        //to do: implement via Quaternion
+    }
+
+    combine(transformation) {
+        return new CombinedTransformation(transformation, this);
+    }
+}
+
+export class MatrixTransformation extends Transformation {
+    constructor(matrix = new Matrix3D()) {
+        this.matrix = matrix;
+    }
+
+    apply(point, resultPoint) {
+        this.matrix.transform(point, resultPoint);
+    }
+
+    combine(transformation) {
+        if(transformation instanceof MatrixTransformation) {
+            let combinedMatrix = transformation.matrix.multiply(this.matrix);
+            return new MatrixTransformation(combinedMatrix);
+        } else {
+            return new CombinedTransformation(transformation, this);
+        }
+    }
+}
+
+export class CombinedTransformation extends Transformation {
+    constructor(firstTransformation, secondTransformation) {
+        this.firstTransformation = firstTransformation;
+        this.secondTransformation = secondTransformation;
+    }
+
+    apply(point, resultPoint) {
+        this.firstTransformation.apply(point, resultPoint);
+        this.secondTransformation.apply(resultPoint, resultPoint);
+    }
+
+    combine(transformation) {
+        return new CombinedTransformation(transformation, this);
     }
 }
 

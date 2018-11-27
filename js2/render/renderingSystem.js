@@ -1,24 +1,31 @@
-//convert generic primitive to render specific
-export class PrimitivesFactory {
-    create(genericPrimitive) {
+//convert generic praphical primitive to render specific
+export class RenderingItemsFactory {
+    create(graphicalPrimitive, transformationNode) {
 
     }
 }
 
 //draw primitive with a supported rendering thechnology(canvas, WebGL, etc)
 export class Drawer {
-    draw(primitive) {
+    draw(renderingItem) {
+    }
+}
+
+export class RenderingItem {
+    constructor(graphicalPrimitive, transformationNode) {
+        this.primitive = graphicalPrimitive;
+        this.transformationNode = transformationNode;
     }
 }
 
 //contains set of data specific for rendering(rendering queue)
 export class RenderingContext {
     constructor() {
-        this.primitives = new Set();
+        this.queue = new Set();
     }
 
-    findPrimitive(predicate) {
-        for(let x of this.primitives){
+    findInQueue(predicate) {
+        for(let x of this.queue){
             if(predicate(x)){
                 return x;
             }
@@ -35,24 +42,48 @@ export class Modifier {
     }
 }
 
+// transformation layer. Root node is usually the camera transformation, then Nodes of scene objects with their transformations, their children and so on.
+export class TransformationNode {
+    constructor(transformation) {
+        this.transformation = transformation;
+        this.parentNode = null;
+    }
+}
+
 //generic rendering logic(building, optimization and drawing of rendering queue logic)
 export class RenderingSystem {
     constructor() {
         this.drawers = new Map();
         this.modifiers = new Set();
-        this.genericPrimitives = new Set();//generig primitives
+        this.currentNode = null;//current TransformationNode
+        this.renderingItems = new Set();
     }
 
     getRenderingContext() {
-        //should be implemented in specific renderer
+        //should be implemented in a specific renderer
     }
 
-    getPrimitivesFactory() {
-        //should be implemented in specific renderer
+    getRenderingItemsFactory() {
+        //should be implemented in a specific renderer
     }
 
-    addPrimitive(genericPrimitive) {
-        this.genericPrimitives.add(genericPrimitive);
+    pushTransformation(transformation) {
+        let node = new TransformationNode(transformation);
+        node.parentNode = this.currentNode;
+
+        this.currentNode = node;
+    }
+
+    popTransformation() {
+        if(this.currentNode) {
+            this.currentNode = this.currentNode.parentNode;
+        }
+    }
+
+    addPrimitive(graphicalPrimitive) {
+        let itemsFactory = this.getRenderingItemsFactory();
+        let renderingItem = itemsFactory.create(graphicalPrimitive, this.currentNode);
+        this.renderingItems.add(renderingItem);
     }
 
     render() {
@@ -61,38 +92,18 @@ export class RenderingSystem {
         this.updateRenderingQueue(context);
         this.modificationPipeline(context);
         this.drawQueue(context);
-        this.cleanupQueue();
+        this.cleanup();
     }
 
     //go through generic primitives and remove/add specific primitives to context
     updateRenderingQueue(renderingContext) {
-        let primitivesFactory = this.getPrimitivesFactory();
-        let primitivesToDelete = new Set();
+        let itemsFactory = this.getRenderingItemsFactory();        
 
-        for(let primitive of renderingContext.primitives) {
-            let existingGenericPrimitive = null;
+        renderingContext.queue.clear();
 
-            for(let genericPrimitive of this.genericPrimitives) {
-                if(genericPrimitive.id === primitive.id) {
-                    existingGenericPrimitive = genericPrimitive;
-                    break;
-                }
-            }
-
-            if(!existingGenericPrimitive) {
-                primitivesToDelete.add(primitive);
-            }
-        }
-
-        for(let primitive of genericPrimitive) {
-            renderingContext.primitives.delete(primitive);
-        }
-
-        for(let genericPrimitive of this.genericPrimitives) {
-            if(!renderingContext.findPrimitive((x) => {x.id == genericPrimitive.id})) {
-                let primitive = primitivesFactory.create(genericPrimitive);
-                renderingContext.primitives.add(primitive);
-            }
+        for(let primitive of this.graphicalPrimitives) {
+            let renderingItem = itemsFactory.create(primitive);
+            renderingContext.queue.add(renderingItem);
         }
     }
 
@@ -103,15 +114,15 @@ export class RenderingSystem {
     }
 
     drawQueue(renderingContext) {
-        for(let primitve of renderingContext.primitives) {
-            let drawer = this.drawers.get(primitive);
+        for(let item of renderingContext.queue) {
+            let drawer = this.drawers.get(item);
             if(drawer) {
-                drawer.draw(primitve);
+                drawer.draw(item);
             }
         }
     }
 
-    cleanupQueue() {
-        this.genericPrimitives.clear();
+    cleanup() {
+        this.graphicalPrimitives.clear();
     }
 }
