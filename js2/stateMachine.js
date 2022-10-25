@@ -1,101 +1,96 @@
-define(['context', 'events'], function(context, events){
-    class State{
-        update(events){
-            return this;
+import {context} from "./context.js";
+import * as events from "./events.js";
+
+export class State{
+    update(events){
+        return this;
+    }
+
+    activate(){
+
+    }
+
+    deactivate(){
+
+    }
+}
+
+export class StateChangeEvent extends events.Event{
+    constructor(name, prevState, newState){
+        super(name);
+        this.prevState = prevState;
+        this.newState = newState;
+    }
+}
+
+export class StateStack{
+    constructor(){
+        this.states = [];
+    }
+
+    push(state) {
+        var topState = this.getState();
+        if (topState) {
+            topState.deactivate();
         }
 
-        activate(){
+        state.activate();
+        this.states.unshift(state)
 
+        this.pushStateChangeEvent("state.push", topState, state);
+    }
+
+    pop() {
+        var prevState = null;
+        if (this.states.length > 0) {
+            prevState = this.states[0];
+            prevState.deactivate();
         }
 
-        deactivate(){
+        this.states.shift();
 
+        var state = this.getState();
+        if (state) {
+            state.activate();
+        }
+
+        this.pushStateChangeEvent("state.pop", prevState, state);
+    }
+
+    update(events) {
+        var state = this.getState();
+        if (state) {
+            this.updateState(state, events);
         }
     }
 
-    class StateChangeEvent extends events.Event{
-        constructor(name, prevState, newState){
-            super(name);
-            this.prevState = prevState;
-            this.newState = newState;
-        }
-    }
+    updateState(state, events) {
+        var result = state.update(events);
 
-    class StateStack{
-        constructor(){
-            this.states = [];
+        if (result) {
+            if (state !== result) {
+                this.push(result);
+                this.updateState(result, events);
+            }
         }
-
-        push(state) {
+        else {
+            this.pop();
             var topState = this.getState();
             if (topState) {
-                topState.deactivate();
+                this.updateState(topState, events);
             }
-
-            state.activate();
-            this.states.unshift(state)
-
-            this.pushStateChangeEvent("state.push", topState, state);
-        }
-
-        pop() {
-            var prevState = null;
-            if (this.states.length > 0) {
-                prevState = this.states[0];
-                prevState.deactivate();
-            }
-
-            this.states.shift();
-
-            var state = this.getState();
-            if (state) {
-                state.activate();
-            }
-
-            this.pushStateChangeEvent("state.pop", prevState, state);
-        }
-
-        update(events) {
-            var state = this.getState();
-            if (state) {
-                this.updateState(state, events);
-            }
-        }
-
-        updateState(state, events) {
-            var result = state.update(events);
-
-            if (result) {
-                if (state !== result) {
-                    this.push(result);
-                    this.updateState(result, events);
-                }
-            }
-            else {
-                this.pop();
-                var topState = this.getState();
-                if (topState) {
-                    this.updateState(topState, events);
-                }
-            }
-        }
-
-        getState() {
-            if (this.states.length > 0) {
-                return this.states[0];
-            }
-
-            return null;
-        }
-
-        pushStateChangeEvent(eventName, prevState, newState){
-            context.engine.eventsManager.pushEvent(new StateChangeEvent(eventName, prevState, newState));
         }
     }
 
-    return {
-        State,
-        StateStack,
-        StateChangeEvent
+    getState() {
+        if (this.states.length > 0) {
+            return this.states[0];
+        }
+
+        return null;
     }
-});
+
+    pushStateChangeEvent(eventName, prevState, newState){
+        context.engine.eventsManager.pushEvent(new StateChangeEvent(eventName, prevState, newState));
+    }
+}
