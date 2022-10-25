@@ -1,4 +1,4 @@
-//convert generic praphical primitive to render specific
+//convert generic graphical primitive to render specific
 export class RenderingItemsFactory {
     create(graphicalPrimitive, transformationNode) {
 
@@ -97,12 +97,9 @@ export class RenderingSystem {
 
     //go through generic primitives and remove/add specific primitives to context
     updateRenderingQueue(renderingContext) {
-        let itemsFactory = this.getRenderingItemsFactory();        
-
         renderingContext.queue.clear();
 
-        for(let primitive of this.graphicalPrimitives) {
-            let renderingItem = itemsFactory.create(primitive);
+        for(let renderingItem of this.renderingItems) {
             renderingContext.queue.add(renderingItem);
         }
     }
@@ -123,6 +120,6 @@ export class RenderingSystem {
     }
 
     cleanup() {
-        this.graphicalPrimitives.clear();
+        this.renderingItems.clear();
     }
 }
