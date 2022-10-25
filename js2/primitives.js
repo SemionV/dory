@@ -8,7 +8,6 @@ export class Constants {
     }
 }
 
-//test
 // root class for geometrical entities like points and matrices
 export class Point {
 
