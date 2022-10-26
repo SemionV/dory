@@ -6,12 +6,6 @@ export class Canvas2dRenderingSystem extends rendering.RenderingSystem {
         super();
         this.itemFactory = new Canvas2dRenderingItemFactory();
         this.renderingContext = new Canvas2dRenderingContext();
-
-        this.#registerDrawers();
-    }
-
-    #registerDrawers() {
-
     }
 
     getRenderingContext() {
@@ -28,8 +22,22 @@ export class Canvas2dRenderingContext extends rendering.RenderingContext {
 }
 
 export class Canvas2dRenderingItemFactory extends rendering.RenderingItemsFactory {
-    create(graphicalPrimitive, transformationNode) {
-        return new rendering.RenderingItem(graphicalPrimitive, transformationNode);
+    constructor() {
+        super();
+        this.#registerDrawers();
+    }
+
+    #registerDrawers() {
+
+    }
+
+    #getDrawer(graphicalPrimitive) {
+
+    }
+
+    createRenderingItem(graphicalPrimitive, transformationNode) {
+        let drawer = this.#getDrawer(graphicalPrimitive);
+        return new rendering.RenderingItem(graphicalPrimitive, transformationNode, drawer);
     }
 }
 
@@ -46,6 +54,6 @@ export class LineDrawer extends rendering.Drawer {
     }
 
     draw(renderingItem) {
-        
+
     }
 }

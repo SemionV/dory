@@ -1,7 +1,15 @@
 //convert generic graphical primitive to render specific
 export class RenderingItemsFactory {
-    create(graphicalPrimitive, transformationNode) {
+    constructor() {
+        this.drawers = new Map();//key type: GraphicalPrimitive type(item.constructor) | value type: Drawer object
+    }
 
+    createRenderingItem(graphicalPrimitive, transformationNode) {
+
+    }
+
+    setDrawer(type, drawer) {
+        this.drawers.set(type, drawer);
     }
 }
 
@@ -12,9 +20,10 @@ export class Drawer {
 }
 
 export class RenderingItem {
-    constructor(graphicalPrimitive, transformationNode) {
+    constructor(graphicalPrimitive, transformationNode, drawer) {
         this.primitive = graphicalPrimitive;
         this.transformationNode = transformationNode;
+        this.drawer = drawer;
     }
 }
 
@@ -53,7 +62,6 @@ export class TransformationNode {
 //generic rendering logic(building, optimization and drawing of rendering queue logic)
 export class RenderingSystem {
     constructor() {
-        this.drawers = new Map();//key type: GraphicalPrimitive type(item.constructor) | value type: Drawer object
         this.modifiers = new Set();
         this.currentNode = null;//current TransformationNode
         this.renderingItems = new Set();
@@ -82,7 +90,7 @@ export class RenderingSystem {
 
     addPrimitive(graphicalPrimitive) {
         let itemsFactory = this.getRenderingItemsFactory();
-        let renderingItem = itemsFactory.create(graphicalPrimitive, this.currentNode);
+        let renderingItem = itemsFactory.createRenderingItem(graphicalPrimitive, this.currentNode);
         this.renderingItems.add(renderingItem);
     }
 
@@ -97,6 +105,7 @@ export class RenderingSystem {
 
     //go through generic primitives and remove/add specific primitives to context
     updateRenderingQueue(renderingContext) {
+        //this s a most basic implementation. There can be also some cashing implemented(but in a specific renderer!)
         renderingContext.queue.clear();
 
         for(let renderingItem of this.renderingItems) {
@@ -112,7 +121,7 @@ export class RenderingSystem {
 
     drawQueue(renderingContext) {
         for(let item of renderingContext.queue) {
-            let drawer = this.drawers.get(item.constructor);
+            let drawer = item.drawer;
             if(drawer) {
                 drawer.draw(item);
             }
@@ -121,9 +130,5 @@ export class RenderingSystem {
 
     cleanup() {
         this.renderingItems.clear();
-    }
-
-    setDrawer(type, drawer) {
-        this.drawers.set(type, drawer);
     }
 }
