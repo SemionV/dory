@@ -7,9 +7,10 @@ export class GraphicalPrimitive {
 }
 
 export class Point extends GraphicalPrimitive {
-    constructor(transformation, position = new primitives.Point3D()){
+    constructor(transformation, position = new primitives.Point3D(), color){
         super(transformation);
         this.position = position;
+        this.color = color;
     }
 }
 

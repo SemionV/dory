@@ -1,11 +1,12 @@
 import * as rendering from "../renderingSystem.js"
 import * as graphicalPrimitives from "../graphicalPrimitive.js"
+import * as primitives from "../../primitives.js";
 
 export class Canvas2dRenderingSystem extends rendering.RenderingSystem {
-    constructor(canvasContext) {
+    constructor(itemFactory, renderingContext) {
         super();
-        this.itemFactory = new Canvas2dRenderingItemFactory();
-        this.renderingContext = new Canvas2dRenderingContext();
+        this.itemFactory = itemFactory;
+        this.renderingContext = renderingContext;
     }
 
     getRenderingContext() {
@@ -18,7 +19,10 @@ export class Canvas2dRenderingSystem extends rendering.RenderingSystem {
 }
 
 export class Canvas2dRenderingContext extends rendering.RenderingContext {
-    
+    constructor(canvasContext) {
+        super();
+        this.canvas = canvasContext;
+    }    
 }
 
 export class Canvas2dRenderingItemFactory extends rendering.RenderingItemsFactory {
@@ -28,11 +32,11 @@ export class Canvas2dRenderingItemFactory extends rendering.RenderingItemsFactor
     }
 
     #registerDrawers() {
-
+        this.setDrawer(graphicalPrimitives.Point, new PointDrawer());
     }
 
     #getDrawer(graphicalPrimitive) {
-
+        return this.drawers.get(graphicalPrimitive.constructor);
     }
 
     createRenderingItem(graphicalPrimitive, transformationNode) {
@@ -41,19 +45,18 @@ export class Canvas2dRenderingItemFactory extends rendering.RenderingItemsFactor
     }
 }
 
-export class CanvasDrawer extends rendering.Drawer {
-    constructor(canvasContext) {
-        super();
-        this.canvasContext = canvasContext;
-    }
-}
-
-export class LineDrawer extends rendering.Drawer {
-    constructor(canvasContext) {
-        super(canvasContext);
+export class PointDrawer extends rendering.Drawer {
+    constructor() {
+        this.defaultColor = new  primitives.Color(250, 0, 0);
     }
 
-    draw(renderingItem) {
+    draw(renderingContext, renderingItem) {
+        var gPrimitive = renderingItem.primitive;
+        var color = gPrimitive.color ?? this.defaultColor;
+        var canvas = renderingContext.canvas;
+        var position = gPrimitive.position;
 
+        canvas.strokeStyle = color;
+        canvas.fillRect(position.x - 1, position.y - 1, 2, 2);
     }
 }

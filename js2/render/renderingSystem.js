@@ -15,7 +15,7 @@ export class RenderingItemsFactory {
 
 //draw primitive with a supported rendering thechnology(canvas, WebGL, etc)
 export class Drawer {
-    draw(renderingItem) {
+    draw(renderingContext, renderingItem) {
     }
 }
 
@@ -27,7 +27,7 @@ export class RenderingItem {
     }
 }
 
-//contains set of data specific for rendering(rendering queue)
+//contains set of data specific for rendering(rendering queue) and refers to an underalying graphics framework(webgl, canvas, etc)
 export class RenderingContext {
     constructor() {
         this.queue = new Set();
@@ -123,7 +123,7 @@ export class RenderingSystem {
         for(let item of renderingContext.queue) {
             let drawer = item.drawer;
             if(drawer) {
-                drawer.draw(item);
+                drawer.draw(renderingContext, item);
             }
         }
     }
