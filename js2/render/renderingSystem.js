@@ -53,7 +53,7 @@ export class TransformationNode {
 //generic rendering logic(building, optimization and drawing of rendering queue logic)
 export class RenderingSystem {
     constructor() {
-        this.drawers = new Map();
+        this.drawers = new Map();//key type: GraphicalPrimitive type(item.constructor) | value type: Drawer object
         this.modifiers = new Set();
         this.currentNode = null;//current TransformationNode
         this.renderingItems = new Set();
@@ -112,7 +112,7 @@ export class RenderingSystem {
 
     drawQueue(renderingContext) {
         for(let item of renderingContext.queue) {
-            let drawer = this.drawers.get(item);
+            let drawer = this.drawers.get(item.constructor);
             if(drawer) {
                 drawer.draw(item);
             }
@@ -121,5 +121,9 @@ export class RenderingSystem {
 
     cleanup() {
         this.renderingItems.clear();
+    }
+
+    setDrawer(type, drawer) {
+        this.drawers.set(type, drawer);
     }
 }
