@@ -51,6 +51,22 @@ export class Modifier {
     }
 }
 
+export class TransformationModifier extends Modifier {
+    process(renderingContext) {
+        for(let item of renderingContext.queue) {
+            var transformation = this.#combineTransformations(item.transformationNode);
+        }
+    }
+
+    #combineTransformations(transformationNode) {
+        var parentTransformation = transformationNode.parentNode ? transformationNode.parentNode.transformation : null;
+        if(parentTransformation) {
+            return parentTransformation.combine(transformationNode.transformation);
+        }
+        
+    }
+}
+
 // transformation layer. Root node is usually the camera transformation, then Nodes of scene objects with their transformations, their children and so on.
 export class TransformationNode {
     constructor(transformation) {
