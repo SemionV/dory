@@ -47,6 +47,7 @@ export class Canvas2dRenderingItemFactory extends rendering.RenderingItemsFactor
 
 export class PointDrawer extends rendering.Drawer {
     constructor() {
+        super();
         this.defaultColor = new  primitives.Color(250, 0, 0);
     }
 
@@ -56,7 +57,7 @@ export class PointDrawer extends rendering.Drawer {
         var canvas = renderingContext.canvas;
         var position = gPrimitive.position;
 
-        canvas.strokeStyle = color;
-        canvas.fillRect(position.x - 1, position.y - 1, 2, 2);
+        canvas.fillStyle = color;
+        canvas.fillRect(position.x - 2, position.y - 2, 4, 4);
     }
 }
