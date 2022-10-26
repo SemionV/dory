@@ -130,5 +130,6 @@ export class RenderingSystem {
 
     cleanup() {
         this.renderingItems.clear();
+        this.currentNode = null;
     }
 }

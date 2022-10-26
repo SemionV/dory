@@ -57,7 +57,7 @@ export class PointDrawer extends rendering.Drawer {
         var canvas = renderingContext.canvas;
         var position = gPrimitive.position;
 
-        canvas.fillStyle = color;
-        canvas.fillRect(position.x - 2, position.y - 2, 4, 4);
+        canvas.fillStyle = color.toCanvasColor();
+        canvas.fillRect(position.x - 1, position.y - 1, 2, 2);
     }
 }

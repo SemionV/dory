@@ -9,7 +9,8 @@ let renderItemFactory = new canvas2dRenderSystem.Canvas2dRenderingItemFactory();
 let renderContext = new canvas2dRenderSystem.Canvas2dRenderingContext(canvasContext);
 let renderer = new canvas2dRenderSystem.Canvas2dRenderingSystem(renderItemFactory, renderContext);
 
-let point = new graphicalPrimitives.Point(null, new primitives.Point2D(50, 50));
-renderer.addPrimitive(point);
+renderer.addPrimitive(new graphicalPrimitives.Point(null, new primitives.Point2D(50, 50)));
+renderer.addPrimitive(new graphicalPrimitives.Point(null, new primitives.Point2D(60, 50)));
+renderer.addPrimitive(new graphicalPrimitives.Point(null, new primitives.Point2D(70, 50)));
 
 renderer.render();
