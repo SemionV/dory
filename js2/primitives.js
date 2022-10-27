@@ -238,9 +238,10 @@ export class Transformation {
 
 export class Translation extends Transformation {
     constructor(x = 0, y = 0, z = 0) {
-        this.x = 0;
-        this.y = 0;
-        this.z = 0;
+        super();
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     apply(point, resultPoint) {
@@ -256,9 +257,10 @@ export class Translation extends Transformation {
 
 export class Rotation extends Transformation {
     constructor(x = 0, y = 0, z = 0) {
-        this.x = 0;
-        this.y = 0;
-        this.z = 0;
+        super();
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     apply(point, resultPoint) {
@@ -272,6 +274,7 @@ export class Rotation extends Transformation {
 
 export class MatrixTransformation extends Transformation {
     constructor(matrix = new Matrix3D()) {
+        super();
         this.matrix = matrix;
     }
 
@@ -291,6 +294,7 @@ export class MatrixTransformation extends Transformation {
 
 export class CombinedTransformation extends Transformation {
     constructor(firstTransformation, secondTransformation) {
+        super();
         this.firstTransformation = firstTransformation;
         this.secondTransformation = secondTransformation;
     }
@@ -316,6 +320,7 @@ export class ThreeDimensions{
 /*See http://glmatrix.net/*/
 export class Matrix3D extends Array{
     constructor(...parts){
+        super();
         if(parts.length == 16){
             super(parts[0],parts[1],parts[2],parts[3],
             parts[4],parts[5],parts[6],parts[7],

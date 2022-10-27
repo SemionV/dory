@@ -9,8 +9,17 @@ let renderItemFactory = new canvas2dRenderSystem.Canvas2dRenderingItemFactory();
 let renderContext = new canvas2dRenderSystem.Canvas2dRenderingContext(canvasContext);
 let renderer = new canvas2dRenderSystem.Canvas2dRenderingSystem(renderItemFactory, renderContext);
 
-renderer.addPrimitive(new graphicalPrimitives.Point(null, new primitives.Point2D(50, 50)));
-renderer.addPrimitive(new graphicalPrimitives.Point(null, new primitives.Point2D(60, 50)));
-renderer.addPrimitive(new graphicalPrimitives.Point(null, new primitives.Point2D(70, 50)));
+var translation = new primitives.Translation(300, 300);
+renderer.pushTransformation(translation);
+
+var translation = new primitives.Translation(0, -300);
+renderer.pushTransformation(translation);
+
+renderer.addPrimitive(new graphicalPrimitives.Point(new primitives.Point2D(50, 50)));
+renderer.addPrimitive(new graphicalPrimitives.Point(new primitives.Point2D(60, 50)));
+renderer.addPrimitive(new graphicalPrimitives.Point(new primitives.Point2D(70, 50)));
+
+renderer.popTransformation();
+renderer.popTransformation();
 
 renderer.render();

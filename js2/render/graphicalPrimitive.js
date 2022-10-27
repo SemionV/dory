@@ -1,51 +1,37 @@
 import * as primitives from "../primitives.js";
 
 export class GraphicalPrimitive {
-    constructor(transformation) {
-        this.transformation = transformation;
-        this.points = [];
-        this.transfomedPoints = [];
-    }
+    applyTransformation(transformation) {
 
-    getPoints() {
-        return this.points;
-    }
-
-    getTransformedPoints() {
-        return this.transfomedPoints;
     }
 }
 
 export class Point extends GraphicalPrimitive {
-    constructor(transformation, position = new primitives.Point3D(), color){
-        super(transformation);
-        this.points.push(position);
+    constructor(position = new primitives.Point3D(), color){
+        super();
+        this.position = position;
         this.color = color;
-    }
-
-    get position() {
-        return this.points[0];
     }
 }
 
 export class Line extends GraphicalPrimitive {
-    constructor(transformation, pointA, pointB) {
-        super(transformation)
+    constructor(pointA, pointB) {
+        super()
         this.pointA = pointA;
         this.pointB = pointB;
     }
 }
 
 export class Face extends GraphicalPrimitive {
-    constructor(transformation, points){
-        super(transformation);
+    constructor(points){
+        super();
         this.points = points;
     }
 }
 
 export class Mesh extends GraphicalPrimitive {
-    constructor(transformation, faces, material) {
-        super(transformation);
+    constructor(faces, material) {
+        super();
         this.faces = faces;
         this.material = material;
     }

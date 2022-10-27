@@ -49,6 +49,7 @@ export class PointDrawer extends rendering.Drawer {
     constructor() {
         super();
         this.defaultColor = new  primitives.Color(250, 0, 0);
+        this.transformedPostionCache = new primitives.Point3D();
     }
 
     draw(renderingContext, renderingItem) {
@@ -56,6 +57,14 @@ export class PointDrawer extends rendering.Drawer {
         var color = gPrimitive.color ?? this.defaultColor;
         var canvas = renderingContext.canvas;
         var position = gPrimitive.position;
+
+        if(renderingItem.transformationNode) {
+            var transformation = renderingItem.transformationNode.combineTransformations();
+            if(transformation) {
+                transformation.apply(position, this.transformedPostionCache);
+                position = this.transformedPostionCache;
+            }
+        }
 
         canvas.fillStyle = color.toCanvasColor();
         canvas.fillRect(position.x - 1, position.y - 1, 2, 2);
