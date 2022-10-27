@@ -29,8 +29,9 @@ export class RenderingItem {
 
 //contains set of data specific for rendering(rendering queue) and refers to an underalying graphics framework(webgl, canvas, etc)
 export class RenderingContext {
-    constructor() {
+    constructor(viewport = new Viewport) {
         this.queue = new Set();
+        this.viewport = viewport;
     }
 
     findInQueue(predicate) {
@@ -44,30 +45,18 @@ export class RenderingContext {
     }
 }
 
-//step of rendering context modification pipeline(ordering of rendering queue, optimization, etc)
-export class Modifier {
-    process(renderingContext) {
-
+export class Viewport{
+    constructor(width, height, x = 0, y = 0){
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
     }
 }
 
-export class TransformationModifier extends Modifier {
+//step of rendering context modification pipeline(ordering of rendering queue, optimization, etc)
+export class Modifier {
     process(renderingContext) {
-        for(let item of renderingContext.queue) {
-            var combinedTransformation = this.#combineTransformations(item.transformationNode, item.transformationNode.transformation);
-
-        }
-    }
-
-    #combineTransformations(transformationNode, combinedTransformation) {
-        var parentTransformation = transformationNode.parentNode ? transformationNode.parentNode.transformation : null;
-        if(parentTransformation) {
-            combinedTransformation = parentTransformation.combine(combinedTransformation);
-
-            this.#combineTransformations(parentTransformation, combinedTransformation);
-        }
-        
-        return combinedTransformation;
     }
 }
 
@@ -108,6 +97,11 @@ export class RenderingSystem {
 
     getRenderingItemsFactory() {
         //should be implemented in a specific renderer
+    }
+
+    addModifier(modifier) {
+        this.modifiers.add(modifier
+            );
     }
 
     pushTransformation(transformation) {

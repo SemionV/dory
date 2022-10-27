@@ -320,7 +320,6 @@ export class ThreeDimensions{
 /*See http://glmatrix.net/*/
 export class Matrix3D extends Array{
     constructor(...parts){
-        super();
         if(parts.length == 16){
             super(parts[0],parts[1],parts[2],parts[3],
             parts[4],parts[5],parts[6],parts[7],
@@ -350,10 +349,15 @@ export class Matrix3D extends Array{
     }
 
     transform(point, result = new Point3D()){
-        let x = (point.x * this[0]) + (point.y * this[4]) + (point.z * this[8]) + (point.w * this[12]);
-        let y = (point.x * this[1]) + (point.y * this[5]) + (point.z * this[9]) + (point.w * this[13]);
-        let z = (point.x * this[2]) + (point.y * this[6]) + (point.z * this[10]) + (point.w * this[14]);
-        let w = (point.x * this[3]) + (point.y * this[7]) + (point.z * this[11]) + (point.w * this[15]);
+        const px = point.x ?? 0;        
+        const py = point.y ?? 0;        
+        const pz = point.z ?? 0;        
+        const pw = point.w ?? 0;        
+
+        let x = (px * this[0]) + (py * this[4]) + (pz * this[8]) + (pw * this[12]);
+        let y = (px * this[1]) + (py * this[5]) + (pz * this[9]) + (pw * this[13]);
+        let z = (px * this[2]) + (py * this[6]) + (pz * this[10]) + (pw * this[14]);
+        let w = (px * this[3]) + (py * this[7]) + (pz * this[11]) + (pw * this[15]);
         result.x = x;
         result.y = y;
         result.z = z;

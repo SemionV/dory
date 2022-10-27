@@ -19,10 +19,19 @@ export class Canvas2dRenderingSystem extends rendering.RenderingSystem {
 }
 
 export class Canvas2dRenderingContext extends rendering.RenderingContext {
-    constructor(canvasContext) {
-        super();
+    constructor(viewport, canvasContext) {
+        super(viewport);
         this.canvas = canvasContext;
     }    
+}
+
+export class MoveOriginToCenterModifier extends rendering.Modifier {
+    process(renderingContext) {
+        const viewport = renderingContext.viewport;
+        let xCenter = viewport.width/2 + viewport.x;
+        let yCenter = viewport.height/2 + viewport.y;
+        renderingContext.canvas.translate(xCenter, yCenter);
+    }
 }
 
 export class Canvas2dRenderingItemFactory extends rendering.RenderingItemsFactory {
