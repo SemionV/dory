@@ -3,14 +3,28 @@ import * as primitives from "../primitives.js";
 export class GraphicalPrimitive {
     constructor(transformation) {
         this.transformation = transformation;
+        this.points = [];
+        this.transfomedPoints = [];
+    }
+
+    getPoints() {
+        return this.points;
+    }
+
+    getTransformedPoints() {
+        return this.transfomedPoints;
     }
 }
 
 export class Point extends GraphicalPrimitive {
     constructor(transformation, position = new primitives.Point3D(), color){
         super(transformation);
-        this.position = position;
+        this.points.push(position);
         this.color = color;
+    }
+
+    get position() {
+        return this.points[0];
     }
 }
 

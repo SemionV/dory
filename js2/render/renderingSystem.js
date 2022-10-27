@@ -54,16 +54,20 @@ export class Modifier {
 export class TransformationModifier extends Modifier {
     process(renderingContext) {
         for(let item of renderingContext.queue) {
-            var transformation = this.#combineTransformations(item.transformationNode);
+            var combinedTransformation = this.#combineTransformations(item.transformationNode, item.transformationNode.transformation);
+            
         }
     }
 
-    #combineTransformations(transformationNode) {
+    #combineTransformations(transformationNode, combinedTransformation) {
         var parentTransformation = transformationNode.parentNode ? transformationNode.parentNode.transformation : null;
         if(parentTransformation) {
-            return parentTransformation.combine(transformationNode.transformation);
+            combinedTransformation = parentTransformation.combine(combinedTransformation);
+
+            this.#combineTransformations(parentTransformation, combinedTransformation);
         }
         
+        return combinedTransformation;
     }
 }
 
