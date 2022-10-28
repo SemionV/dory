@@ -34,6 +34,13 @@ export class MoveOriginToCenterModifier extends rendering.Modifier {
     }
 }
 
+export class ClearViewportModifier extends rendering.Modifier {
+    process(renderingContext) {
+        const viewport = renderingContext.viewport;
+        renderingContext.canvas.clearRect(viewport.x, viewport.y , viewport.width, viewport.height);
+    }
+}
+
 export class Canvas2dRenderingItemFactory extends rendering.RenderingItemsFactory {
     constructor() {
         super();

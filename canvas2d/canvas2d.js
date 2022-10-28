@@ -11,6 +11,9 @@ let viewport = new renderingSystem.Viewport(canvas.width, canvas.height);
 let renderContext = new canvas2dRenderSystem.Canvas2dRenderingContext(viewport, canvasContext);
 let renderer = new canvas2dRenderSystem.Canvas2dRenderingSystem(renderItemFactory, renderContext);
 
+let clearCanvasModifier = new canvas2dRenderSystem.ClearViewportModifier();
+renderer.addModifier(clearCanvasModifier);
+
 let centerModifier = new canvas2dRenderSystem.MoveOriginToCenterModifier();
 renderer.addModifier(centerModifier);
 
@@ -25,7 +28,34 @@ renderer.addPrimitive(new graphicalPrimitives.Point(new primitives.Point2D(-20, 
 renderer.addPrimitive(new graphicalPrimitives.Point(new primitives.Point2D(0, 0)));
 renderer.addPrimitive(new graphicalPrimitives.Point(new primitives.Point2D(20, 0)));
 
-renderer.popTransformation();
-renderer.popTransformation();
-
 renderer.render();
+
+/////////////////////////////////////////
+
+import * as doryEngine from "../js2/engine.js"
+import * as scene from "../js2/scene.js"
+
+let engine = new doryEngine.Engine(new doryEngine.EngineConfig(60, false));
+window.engine = engine;
+
+let sceneManager = new scene.SceneManager();
+
+//setup scene
+{
+    //setup camera
+    {
+        
+    }
+
+    //setup visible objects
+    {
+
+    }
+}
+
+sceneManager.addEventHandler(doryEngine.FpsUpdatedEvent, (e)=>{
+    document.getElementById('FPS').innerText = e.fps;
+});
+
+engine.setActiveScene(sceneManager);
+engine.run();

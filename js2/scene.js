@@ -1,5 +1,6 @@
 import * as components from "./components.js";
 import * as primitives from "./primitives.js";
+import * as renderingSystem from "./render/renderingSystem.js";
 
 var entityComponentsSymbol = Symbol();
 var entityChildrenSymbol = Symbol();
@@ -117,12 +118,12 @@ export class Entity{
         }
     }
 
-    draw(view){
+    draw(view = new View()){
+        this.drawComponents(view);
+
         for(let child of this.children){
             child.draw(view);
         }
-
-        this.drawComponents(view);
     }
 
     drawComponents(view){
@@ -174,18 +175,18 @@ export class SceneManager extends Entity{
         }
     }
 
-    drawView(view){
+    drawView(view = new View()){
         let renderer = view.renderer;
 
         for(let entity of this.getVisibleEntities()){
             entity.processPreRendering(view);
         }
 
+        this.drawComponents(view);
+
         for(let entity of this.getVisibleEntities()){
             entity.draw(view);
         }
-
-        this.drawComponents(view);
 
         renderer.render();
     }
@@ -233,8 +234,23 @@ export class SceneManager extends Entity{
     }
 }
 
+export class CameraSceneManager extends SceneManager {
+    drawView(view = new View()){
+        let renderer = view.renderer;
+        let camera =         
+
+        this.drawComponents(view);
+
+        for(let entity of this.getVisibleEntities()){
+            entity.draw(view);
+        }
+
+        renderer.render();
+    }
+}
+
 export class View{
-    constructor(renderer, camera){
+    constructor(renderer = new renderingSystem.RenderingSystem(), camera){
         this.renderer = renderer;
         this.camera = camera;
     }
@@ -249,6 +265,26 @@ export class TransformableEntity extends Entity{
 
     get transformation(){
         return this.getComponent(components.data.Transformation).transformation;
+    }
+}
+
+//a base class for all entities which could have transformation applied(a replacement for TransformableEntity class)
+export class SpatialEntity extends Entity {
+    constructor(transformation) {
+        super();
+        this.transformation = transformation;
+    }
+
+    draw(view = new View()){
+        if(this.transformation){
+            view.renderer.pushTransformation(this.transformation);
+        }
+
+        super.draw(view);
+
+        if(this.transformation){
+            view.renderer.popTransformation();
+        }
     }
 }
 
