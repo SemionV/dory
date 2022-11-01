@@ -17,16 +17,22 @@ renderer.addModifier(clearCanvasModifier);
 let centerModifier = new canvas2dRenderSystem.MoveOriginToCenterModifier();
 renderer.addModifier(centerModifier);
 
-var translation = new primitives.Translation(50, 50);
-renderer.pushTransformation(translation);
+let scale = 100;
+var matrixR = primitives.Matrix3D.rotateZ(primitives.Angle.toRadian(90));
 
-var matrix = new primitives.Matrix3D();
-primitives.Matrix3D.rotateZ(45, matrix);
-renderer.pushTransformation(new primitives.MatrixTransformation(matrix));
+let x1 = (matrixR[0] * scale);
+let y1 = (matrixR[4] * scale);
+let x2 = (matrixR[1] * scale);
+let y2 = (matrixR[5] * scale);
 
-renderer.addPrimitive(new graphicalPrimitives.Point(new primitives.Point2D(-20, 0)));
-renderer.addPrimitive(new graphicalPrimitives.Point(new primitives.Point2D(0, 0)));
-renderer.addPrimitive(new graphicalPrimitives.Point(new primitives.Point2D(20, 0)));
+renderer.addPrimitive(new graphicalPrimitives.Point(new primitives.Point2D(x1, y1), new primitives.Color(255, 0, 0)));
+renderer.addPrimitive(new graphicalPrimitives.Point(new primitives.Point2D(0, 0), new primitives.Color(0, 0, 0)));
+renderer.addPrimitive(new graphicalPrimitives.Point(new primitives.Point2D(x2, y2), new primitives.Color(0, 255, 0)));
+
+let point = new primitives.Point2D(30, 20);
+let tPoint = matrixR.transform(point);
+renderer.addPrimitive(new graphicalPrimitives.Point(point, new primitives.Color(0, 0, 255)));
+renderer.addPrimitive(new graphicalPrimitives.Point(tPoint, new primitives.Color(0, 0, 255)));
 
 renderer.render();
 
@@ -59,3 +65,5 @@ sceneManager.addEventHandler(doryEngine.FpsUpdatedEvent, (e)=>{
 
 engine.setActiveScene(sceneManager);
 engine.run();
+
+window.primitives = primitives;

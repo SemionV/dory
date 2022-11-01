@@ -237,7 +237,7 @@ export class SceneManager extends Entity{
 export class CameraSceneManager extends SceneManager {
     drawView(view = new View()){
         let renderer = view.renderer;
-        let camera =         
+        let camera = view.camera;
 
         this.drawComponents(view);
 
@@ -285,6 +285,10 @@ export class SpatialEntity extends Entity {
         if(this.transformation){
             view.renderer.popTransformation();
         }
+    }
+
+    get combinedTransformation() {
+        
     }
 }
 

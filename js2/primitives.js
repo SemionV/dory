@@ -8,6 +8,12 @@ export class Constants {
     }
 }
 
+export class Angle {
+    static toRadian(degree){
+        return degree * (Math.PI / 180);
+    }
+}
+
 // root class for geometrical entities like points and matrices
 export class Point {
 
