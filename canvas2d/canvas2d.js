@@ -17,6 +17,12 @@ renderer.addModifier(clearCanvasModifier);
 let centerModifier = new canvas2dRenderSystem.MoveOriginToCenterModifier();
 renderer.addModifier(centerModifier);
 
+let projectionMatrix = new primitives.Matrix3D(1, 0, 0, 0,
+                                               0, -1, 0, 0,
+                                               0, 0, 1, 0,
+                                               0, 0, 0, 1);
+renderer.pushTransformation(new primitives.MatrixTransformation(projectionMatrix));
+
 let scale = 100;
 var matrixR = primitives.Matrix3D.rotateZ(primitives.Angle.toRadian(90));
 
