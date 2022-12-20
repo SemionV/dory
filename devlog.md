@@ -6,7 +6,7 @@
 **27.10.22**
 * Working on transformations. As said before, I am trying to implement a Modifier which combines transformations of each renderingItem in the queue and applies transformation on a graphicalPrimitive. So added points array to each graphical primitive, so that I have a generic way to apply a transformation and store the result for any type of graphical primitive. The idea is that any primitive consists of points(it might be a line, a polygon or a sprite, etc) and those points just have to be transformed consequently.
 * I have simplified transformation and do the calculation directly in a Drawer. Caching and optimizations can be implemented aside and in a more clomplex manner. So far this strait forward implementation works well and it is very powerfull. See the demo(canvas2d).
-* I have also realized, that Transformation is not needed in each and every Graphical Primitive, it is enough to push and pop transformations in the Rendering System. They will are tight to the primitives in RenderingItem anyway.
+* I have also realized, that Transformation is not needed in each and every Graphical Primitive, it is enough to push and pop transformations in the Rendering System. They will be assigned to the primitives in RenderingItem anyway.
 * Reworking the engine and scene architecture for the new rendering system. So far the idea is to reduce number of component types just to update and drawing components.
 
 **26.10.22**
