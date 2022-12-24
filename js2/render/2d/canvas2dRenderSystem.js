@@ -27,7 +27,18 @@ export class Canvas2dRenderingContext extends rendering.RenderingContext {
     constructor(viewport, canvasContext) {
         super(viewport);
         this.canvas = canvasContext;
-    }    
+    }
+
+    stackTransformation(parentTransformation, transformation) {
+        let combinedTransformation = transformation;
+        if(parentTransformation) {
+            combinedTransformation = parentTransformation.combine(transformation);
+        }
+
+        this.currentTransformation = combinedTransformation;
+
+        return this.currentTransformation;
+    }
 }
 
 export class MoveOriginToCenterModifier extends rendering.Modifier {
@@ -53,10 +64,11 @@ export class PointDrawer extends rendering.Drawer {
         this.transformedPostionCache = new primitives.Point3D();
     }
 
-    draw(renderingContext, graphicalPrimitive, transformation) {
+    draw(renderingContext, graphicalPrimitive) {
         var color = graphicalPrimitive.color ?? this.defaultColor;
         var canvas = renderingContext.canvas;
         var position = graphicalPrimitive.position;
+        var transformation = renderingContext.currentTransformation;
 
         if(transformation) {
             transformation.apply(position, this.transformedPostionCache);

@@ -1,5 +1,9 @@
 # Development log
 
+**24.12.22**
+* Rendering pipeline reorganized. Now rendering Items are ordered inside transformation Nodes, it is possible now to use different Drawers for each type of graphical primitive.
+* Now it is possible to stack transformations in the rendering context or apply them iundividually to the primitives
+
 **20.12.22**
 * Reorganatzing rendering pipeline. Goals are:
     - Possibility to draw the same graphical primitives with different Drawers. Sometimes I want to draw a point or any other primitive in some different ways. Like a pint as a cross, a point as a dot, a solid line, dashed line, etc. For this I have to reorganize how the rpimitives are created and queued.

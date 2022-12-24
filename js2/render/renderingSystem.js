@@ -2,7 +2,7 @@ import * as primitives from "../primitives.js";
 
 //draw primitive with a supported rendering thechnology(canvas, WebGL, etc)
 export class Drawer {
-    draw(renderingContext, graphicalPrimitive, transformation) {
+    draw(renderingContext, graphicalPrimitive) {
     }
 }
 
@@ -16,18 +16,11 @@ export class RenderingItem {
 //contains set of data specific for rendering(rendering queue) and refers to an underalying graphics framework(webgl, canvas, etc)
 export class RenderingContext {
     constructor(viewport = new Viewport) {
-        this.queue = new Set();
         this.viewport = viewport;
+        this.currentTransformation = null;
     }
 
-    findInQueue(predicate) {
-        for(let x of this.queue){
-            if(predicate(x)){
-                return x;
-            }
-        }
-
-        return null;
+    stackTransformation(parentTransformation, transformation) {
     }
 }
 
@@ -115,28 +108,19 @@ export class RenderingSystem {
     }
 
     renderItems(renderingContext, node, parentTransformation) {
-        let transformation = this.combineNodeTransformation(parentTransformation, node.transformation);
+        var transformation = renderingContext.stackTransformation(parentTransformation, node.transformation);
 
         for(let item of node.renderingItems) {
             let drawer = item.drawer;
 
             if(drawer) {
-                drawer.draw(renderingContext, item.primitive, transformation);
+                drawer.draw(renderingContext, item.primitive);
             }
         }
 
         for(let childNode of node.children) {
             this.renderItems(renderingContext, childNode, transformation);
         }
-    }
-
-    combineNodeTransformation(parentTransformation, nodeTransformation) {
-        let combinedTransformation = nodeTransformation;
-        if(parentTransformation) {
-            combinedTransformation = parentTransformation.combine(nodeTransformation);
-        }
-
-        return combinedTransformation;
     }
 
     reset() {
