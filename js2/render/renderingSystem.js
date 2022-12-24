@@ -1,28 +1,14 @@
-//convert generic graphical primitive to render specific
-export class RenderingItemsFactory {
-    constructor() {
-        this.drawers = new Map();//key type: GraphicalPrimitive type(item.constructor) | value type: Drawer object
-    }
-
-    createRenderingItem(graphicalPrimitive, transformationNode) {
-
-    }
-
-    setDrawer(type, drawer) {
-        this.drawers.set(type, drawer);
-    }
-}
+import * as primitives from "../primitives.js";
 
 //draw primitive with a supported rendering thechnology(canvas, WebGL, etc)
 export class Drawer {
-    draw(renderingContext, renderingItem) {
+    draw(renderingContext, graphicalPrimitive, transformation) {
     }
 }
 
 export class RenderingItem {
-    constructor(graphicalPrimitive, transformationNode, drawer) {
+    constructor(graphicalPrimitive, drawer) {
         this.primitive = graphicalPrimitive;
-        this.transformationNode = transformationNode;
         this.drawer = drawer;
     }
 }
@@ -64,22 +50,20 @@ export class Modifier {
 export class TransformationNode {
     constructor(transformation) {
         this.transformation = transformation;
-        this.parentNode = null;
+        this.renderingItems = new Set();
+        this.childNodes = new Set();
     }
 
-    combineTransformations() {
-        return TransformationNode.combineWithParentTransformations(this, this.transformation);
+    addRenderingItem(renderingItem) {
+        this.renderingItems.add(renderingItem);
     }
 
-    static combineWithParentTransformations(transformationNode, combinedTransformation) {
-        var parentTransformation = transformationNode.parentNode ? transformationNode.parentNode.transformation : null;
-        if(parentTransformation) {
-            combinedTransformation = parentTransformation.combine(combinedTransformation);
+    addChild(node) {
+        this.childNodes.add(node);
+    }
 
-            TransformationNode.combineWithParentTransformations(parentTransformation, combinedTransformation);
-        }
-        
-        return combinedTransformation;
+    get children() {
+        return this.childNodes;
     }
 }
 
@@ -87,59 +71,41 @@ export class TransformationNode {
 export class RenderingSystem {
     constructor() {
         this.modifiers = new Set();
-        this.currentNode = null;//current TransformationNode
-        this.renderingItems = new Set();
+        this.reset();
     }
 
     getRenderingContext() {
         //should be implemented in a specific renderer
     }
 
-    getRenderingItemsFactory() {
-        //should be implemented in a specific renderer
-    }
-
     addModifier(modifier) {
-        this.modifiers.add(modifier
-            );
+        this.modifiers.add(modifier);
     }
 
     pushTransformation(transformation) {
         let node = new TransformationNode(transformation);
-        node.parentNode = this.currentNode;
+        this.currentNode.addChild(node);
 
+        this.parrentNode = this.currentNode;
         this.currentNode = node;
     }
 
     popTransformation() {
-        if(this.currentNode) {
-            this.currentNode = this.currentNode.parentNode;
-        }
+        this.currentNode = this.parrentNode;
     }
 
-    addPrimitive(graphicalPrimitive) {
-        let itemsFactory = this.getRenderingItemsFactory();
-        let renderingItem = itemsFactory.createRenderingItem(graphicalPrimitive, this.currentNode);
-        this.renderingItems.add(renderingItem);
+    addPrimitive(graphicalPrimitive, drawer) {
+        let renderingItem = new RenderingItem(graphicalPrimitive, drawer);
+        this.currentNode.addRenderingItem(renderingItem);
     }
 
     render() {
         let context = this.getRenderingContext();
 
-        this.updateRenderingQueue(context);
-        this.modificationPipeline(context);
-        this.drawQueue(context);
-        this.cleanup();
-    }
+        this.modificationPipeline(context, this.rootNode, null);
+        this.renderItems(context, this.rootNode, null);
 
-    //go through generic primitives and remove/add specific primitives to context
-    updateRenderingQueue(renderingContext) {
-        //this s a most basic implementation. There can be also some cashing implemented(but in a specific renderer!)
-        renderingContext.queue.clear();
-
-        for(let renderingItem of this.renderingItems) {
-            renderingContext.queue.add(renderingItem);
-        }
+        this.reset();
     }
 
     modificationPipeline(renderingContext) {
@@ -148,17 +114,34 @@ export class RenderingSystem {
         }
     }
 
-    drawQueue(renderingContext) {
-        for(let item of renderingContext.queue) {
+    renderItems(renderingContext, node, parentTransformation) {
+        let transformation = this.combineNodeTransformation(parentTransformation, node.transformation);
+
+        for(let item of node.renderingItems) {
             let drawer = item.drawer;
+
             if(drawer) {
-                drawer.draw(renderingContext, item);
+                drawer.draw(renderingContext, item.primitive, transformation);
             }
+        }
+
+        for(let childNode of node.children) {
+            this.renderItems(renderingContext, childNode, transformation);
         }
     }
 
-    cleanup() {
-        this.renderingItems.clear();
-        this.currentNode = null;
+    combineNodeTransformation(parentTransformation, nodeTransformation) {
+        let combinedTransformation = nodeTransformation;
+        if(parentTransformation) {
+            combinedTransformation = parentTransformation.combine(nodeTransformation);
+        }
+
+        return combinedTransformation;
+    }
+
+    reset() {
+        this.rootNode = new TransformationNode(new primitives.IdentityTransformation());
+        this.currentNode = this.rootNode;
+        this.parrentNode = null;
     }
 }

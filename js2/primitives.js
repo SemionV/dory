@@ -242,6 +242,18 @@ export class Transformation {
     }
 }
 
+export class IdentityTransformation {
+    apply(point, resultPoint) {
+        resultPoint.x = point.x;
+        resultPoint.y = point.y;
+        resultPoint.z = point.z;
+    }
+
+    combine(transformation) {
+        return new CombinedTransformation(transformation, null);
+    }
+}
+
 export class Translation extends Transformation {
     constructor(x = 0, y = 0, z = 0) {
         super();
@@ -306,8 +318,13 @@ export class CombinedTransformation extends Transformation {
     }
 
     apply(point, resultPoint) {
-        this.firstTransformation.apply(point, resultPoint);
-        this.secondTransformation.apply(resultPoint, resultPoint);
+        if(this.firstTransformation) {
+            this.firstTransformation.apply(point, resultPoint);
+        }
+
+        if(this.secondTransformation) {
+            this.secondTransformation.apply(resultPoint, resultPoint);
+        }
     }
 
     combine(transformation) {

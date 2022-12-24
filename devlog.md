@@ -1,5 +1,10 @@
 # Development log
 
+**20.12.22**
+* Reorganatzing rendering pipeline. Goals are:
+    - Possibility to draw the same graphical primitives with different Drawers. Sometimes I want to draw a point or any other primitive in some different ways. Like a pint as a cross, a point as a dot, a solid line, dashed line, etc. For this I have to reorganize how the rpimitives are created and queued.
+    - Move combining of transformations out of the Drawers. For this I want to try to organize the rendering queue in a differnt way: assign to each transformation node a list of rendering items. Just an idea, I have ti think about it more.
+
 **01.11.22**
 * Bingo! I am trying to understand how transformation matrices are working under the hood and today I made a breakthrough in this topic. I was investigating how a 2D orthogonal matrix is rotating at a point. There are two things. First off, a rotation matrix is a set of two vectors, where each column of the matrix represents a vector. Second off, multiplying the matrix and a point makes a dot product of the vector, which is representing the point and each vector stored in the matrix. I was thinking, it moves the point somewhere and was confused, because the point moved kind of away from the destination vectors. But the thing is, the point is not moving anywhere, it is that we, as an observer, are moving to the destination coordinate system and see how the point is positioned relative to this coordinate system. If you think like this, the transformation immediately makes sense. Understanding this very small, but crucial detail I can start building my own transformation matrices. So far only orthogonal, but projection matrices are coming as well!
 

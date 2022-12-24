@@ -5,11 +5,9 @@ import * as renderingSystem from "../js2/render/renderingSystem.js"
 
 let canvas = document.getElementById('canvas');
 let canvasContext = canvas.getContext('2d');
-
-let renderItemFactory = new canvas2dRenderSystem.Canvas2dRenderingItemFactory();
 let viewport = new renderingSystem.Viewport(canvas.width, canvas.height);
-let renderContext = new canvas2dRenderSystem.Canvas2dRenderingContext(viewport, canvasContext);
-let renderer = new canvas2dRenderSystem.Canvas2dRenderingSystem(renderItemFactory, renderContext);
+
+let renderer = new canvas2dRenderSystem.Canvas2dRenderingSystem(viewport, canvasContext);
 
 let clearCanvasModifier = new canvas2dRenderSystem.ClearViewportModifier();
 renderer.addModifier(clearCanvasModifier);
@@ -31,14 +29,14 @@ let y1 = (matrixR[4] * scale);
 let x2 = (matrixR[1] * scale);
 let y2 = (matrixR[5] * scale);
 
-renderer.addPrimitive(new graphicalPrimitives.Point(new primitives.Point2D(x1, y1), new primitives.Color(255, 0, 0)));
-renderer.addPrimitive(new graphicalPrimitives.Point(new primitives.Point2D(0, 0), new primitives.Color(0, 0, 0)));
-renderer.addPrimitive(new graphicalPrimitives.Point(new primitives.Point2D(x2, y2), new primitives.Color(0, 255, 0)));
+renderer.addPoint(new graphicalPrimitives.Point(new primitives.Point2D(x1, y1), new primitives.Color(255, 0, 0)));
+renderer.addPoint(new graphicalPrimitives.Point(new primitives.Point2D(0, 0), new primitives.Color(0, 0, 0)));
+renderer.addPoint(new graphicalPrimitives.Point(new primitives.Point2D(x2, y2), new primitives.Color(0, 255, 0)));
 
 let point = new primitives.Point2D(30, 20);
 let tPoint = matrixR.transform(point);
-renderer.addPrimitive(new graphicalPrimitives.Point(point, new primitives.Color(0, 0, 255)));
-renderer.addPrimitive(new graphicalPrimitives.Point(tPoint, new primitives.Color(0, 0, 255)));
+renderer.addPoint(new graphicalPrimitives.Point(point, new primitives.Color(0, 0, 255)));
+renderer.addPoint(new graphicalPrimitives.Point(tPoint, new primitives.Color(0, 0, 255)));
 
 renderer.render();
 

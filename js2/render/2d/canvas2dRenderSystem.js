@@ -1,20 +1,25 @@
 import * as rendering from "../renderingSystem.js"
-import * as graphicalPrimitives from "../graphicalPrimitive.js"
 import * as primitives from "../../primitives.js";
 
 export class Canvas2dRenderingSystem extends rendering.RenderingSystem {
-    constructor(itemFactory, renderingContext) {
+    constructor(viewport, canvasContext) {
         super();
-        this.itemFactory = itemFactory;
-        this.renderingContext = renderingContext;
+        this.viewport = viewport;
+        this.canvasContext = canvasContext;
+
+        this.#registerDrawers();
+    }
+
+    #registerDrawers() {
+        PointDrawer.instance = new PointDrawer();
     }
 
     getRenderingContext() {
-        return this.renderingContext;
+        return new Canvas2dRenderingContext(this.viewport, this.canvasContext);
     }
 
-    getRenderingItemsFactory() {
-        return this.itemFactory;
+    addPoint(pointPrimitive) {
+        this.addPrimitive(pointPrimitive, PointDrawer.instance)
     }
 }
 
@@ -41,26 +46,6 @@ export class ClearViewportModifier extends rendering.Modifier {
     }
 }
 
-export class Canvas2dRenderingItemFactory extends rendering.RenderingItemsFactory {
-    constructor() {
-        super();
-        this.#registerDrawers();
-    }
-
-    #registerDrawers() {
-        this.setDrawer(graphicalPrimitives.Point, new PointDrawer());
-    }
-
-    #getDrawer(graphicalPrimitive) {
-        return this.drawers.get(graphicalPrimitive.constructor);
-    }
-
-    createRenderingItem(graphicalPrimitive, transformationNode) {
-        let drawer = this.#getDrawer(graphicalPrimitive);
-        return new rendering.RenderingItem(graphicalPrimitive, transformationNode, drawer);
-    }
-}
-
 export class PointDrawer extends rendering.Drawer {
     constructor() {
         super();
@@ -68,18 +53,14 @@ export class PointDrawer extends rendering.Drawer {
         this.transformedPostionCache = new primitives.Point3D();
     }
 
-    draw(renderingContext, renderingItem) {
-        var gPrimitive = renderingItem.primitive;
-        var color = gPrimitive.color ?? this.defaultColor;
+    draw(renderingContext, graphicalPrimitive, transformation) {
+        var color = graphicalPrimitive.color ?? this.defaultColor;
         var canvas = renderingContext.canvas;
-        var position = gPrimitive.position;
+        var position = graphicalPrimitive.position;
 
-        if(renderingItem.transformationNode) {
-            var transformation = renderingItem.transformationNode.combineTransformations();
-            if(transformation) {
-                transformation.apply(position, this.transformedPostionCache);
-                position = this.transformedPostionCache;
-            }
+        if(transformation) {
+            transformation.apply(position, this.transformedPostionCache);
+            position = this.transformedPostionCache;
         }
 
         canvas.fillStyle = color.toCanvasColor();
