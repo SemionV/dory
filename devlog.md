@@ -1,5 +1,8 @@
 # Development log
 
+**25.12.22**
+* Implemented transformation stack in Rendering Context. It makes possible to implement different strategies of calculating and stacking transformations. For canvas 2D it is currently combining transformations, for webgl it will be sending them directly to the graphik rendering context.
+
 **24.12.22**
 * Rendering pipeline reorganized. Now rendering Items are ordered inside transformation Nodes, it is possible now to use different Drawers for each type of graphical primitive.
 * Now it is possible to stack transformations in the rendering context or apply them iundividually to the primitives

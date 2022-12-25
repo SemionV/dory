@@ -27,17 +27,33 @@ export class Canvas2dRenderingContext extends rendering.RenderingContext {
     constructor(viewport, canvasContext) {
         super(viewport);
         this.canvas = canvasContext;
+        this.transformationStack = new Array();
     }
 
-    stackTransformation(parentTransformation, transformation) {
+    stackTransformation(transformation) {
+        let parentTransformation = this.currentTransformation;
+
         let combinedTransformation = transformation;
         if(parentTransformation) {
             combinedTransformation = parentTransformation.combine(transformation);
         }
 
-        this.currentTransformation = combinedTransformation;
+        this.transformationStack.push(combinedTransformation);
+    }
 
-        return this.currentTransformation;
+    unstackTransformation() {
+        if(this.transformationStack.length > 0) {
+            this.transformationStack.pop();
+        }
+    }
+
+    get currentTransformation() {
+        let currentTransformation = null;
+        if(this.transformationStack.length > 0) {
+            currentTransformation = this.transformationStack[this.transformationStack.length - 1]
+        }
+
+        return currentTransformation;
     }
 }
 

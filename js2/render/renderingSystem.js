@@ -17,10 +17,15 @@ export class RenderingItem {
 export class RenderingContext {
     constructor(viewport = new Viewport) {
         this.viewport = viewport;
-        this.currentTransformation = null;
     }
 
     stackTransformation(parentTransformation, transformation) {
+    }
+
+    unstackTransformation() {        
+    }
+
+    get currentTransformation() {
     }
 }
 
@@ -96,7 +101,7 @@ export class RenderingSystem {
         let context = this.getRenderingContext();
 
         this.modificationPipeline(context, this.rootNode, null);
-        this.renderItems(context, this.rootNode, null);
+        this.renderItems(context, this.rootNode);
 
         this.reset();
     }
@@ -107,8 +112,8 @@ export class RenderingSystem {
         }
     }
 
-    renderItems(renderingContext, node, parentTransformation) {
-        var transformation = renderingContext.stackTransformation(parentTransformation, node.transformation);
+    renderItems(renderingContext, node) {
+        renderingContext.stackTransformation(node.transformation);
 
         for(let item of node.renderingItems) {
             let drawer = item.drawer;
@@ -119,8 +124,10 @@ export class RenderingSystem {
         }
 
         for(let childNode of node.children) {
-            this.renderItems(renderingContext, childNode, transformation);
+            this.renderItems(renderingContext, childNode);
         }
+
+        renderingContext.unstackTransformation();
     }
 
     reset() {
