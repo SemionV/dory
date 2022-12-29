@@ -6,8 +6,8 @@ import * as renderingSystem from "../js2/render/renderingSystem.js"
 let canvas = document.getElementById('canvas');
 let canvasContext = canvas.getContext('2d');
 let viewport = new renderingSystem.Viewport(canvas.width, canvas.height);
-
-let renderer = new canvas2dRenderSystem.Canvas2dRenderingSystem(viewport, canvasContext);
+let renderingContext = new canvas2dRenderSystem.Canvas2dRenderingContext(viewport, canvasContext);
+let renderer = new canvas2dRenderSystem.Canvas2dRenderingSystem();
 
 let clearCanvasModifier = new canvas2dRenderSystem.ClearViewportModifier();
 renderer.addModifier(clearCanvasModifier);
@@ -38,7 +38,7 @@ let tPoint = matrixR.transform(point);
 renderer.addPoint(new graphicalPrimitives.Point(point, new primitives.Color(0, 0, 255)));
 renderer.addPoint(new graphicalPrimitives.Point(tPoint, new primitives.Color(0, 0, 255)));
 
-renderer.render();
+renderer.render(renderingContext);
 
 /////////////////////////////////////////
 

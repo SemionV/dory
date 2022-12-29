@@ -1,5 +1,9 @@
 # Development log
 
+**29.12.22**
+* Move rendering context management out of Renderer's scope, so that View can customize and control the context
+* Add SceneView class to manage rendering of Scene. Engine will have set of views, each view will render to a specific viewport with a specific Renderer and will manage the order of scene rendering as well as optimizations and logic.
+
 **25.12.22**
 * Implemented transformation stack in Rendering Context. It makes possible to implement different strategies of calculating and stacking transformations. For canvas 2D it is currently combining transformations, for webgl it will be sending them directly to the graphik rendering context.
 

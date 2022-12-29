@@ -15,7 +15,7 @@ export class RenderingItem {
 
 //contains set of data specific for rendering(rendering queue) and refers to an underalying graphics framework(webgl, canvas, etc)
 export class RenderingContext {
-    constructor(viewport = new Viewport) {
+    constructor(viewport) {
         this.viewport = viewport;
     }
 
@@ -72,10 +72,6 @@ export class RenderingSystem {
         this.reset();
     }
 
-    getRenderingContext() {
-        //should be implemented in a specific renderer
-    }
-
     addModifier(modifier) {
         this.modifiers.add(modifier);
     }
@@ -97,11 +93,9 @@ export class RenderingSystem {
         this.currentNode.addRenderingItem(renderingItem);
     }
 
-    render() {
-        let context = this.getRenderingContext();
-
-        this.modificationPipeline(context, this.rootNode, null);
-        this.renderItems(context, this.rootNode);
+    render(renderingContext) {
+        this.modificationPipeline(renderingContext, this.rootNode, null);
+        this.renderItems(renderingContext, this.rootNode);
 
         this.reset();
     }

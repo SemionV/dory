@@ -2,20 +2,13 @@ import * as rendering from "../renderingSystem.js"
 import * as primitives from "../../primitives.js";
 
 export class Canvas2dRenderingSystem extends rendering.RenderingSystem {
-    constructor(viewport, canvasContext) {
+    constructor() {
         super();
-        this.viewport = viewport;
-        this.canvasContext = canvasContext;
-
         this.#registerDrawers();
     }
 
     #registerDrawers() {
         PointDrawer.instance = new PointDrawer();
-    }
-
-    getRenderingContext() {
-        return new Canvas2dRenderingContext(this.viewport, this.canvasContext);
     }
 
     addPoint(pointPrimitive) {
