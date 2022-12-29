@@ -118,7 +118,7 @@ export class Entity{
         }
     }
 
-    draw(view = new View()){
+    draw(view){
         this.drawComponents(view);
 
         for(let child of this.children){
@@ -175,7 +175,7 @@ export class SceneManager extends Entity{
         }
     }
 
-    drawView(view = new View()){
+    drawView(view){
         let renderer = view.renderer;
 
         for(let entity of this.getVisibleEntities()){
@@ -235,7 +235,7 @@ export class SceneManager extends Entity{
 }
 
 export class CameraSceneManager extends SceneManager {
-    drawView(view = new View()){
+    drawView(view){
         let renderer = view.renderer;
         let camera = view.camera;
 
@@ -275,7 +275,7 @@ export class SpatialEntity extends Entity {
         this.transformation = transformation;
     }
 
-    draw(view = new View()){
+    draw(view){
         if(this.transformation){
             view.renderer.pushTransformation(this.transformation);
         }
