@@ -3,6 +3,8 @@ import * as canvas2dRenderSystem from "../js2/render/2d/canvas2dRenderSystem.js"
 import * as graphicalPrimitives from "../js2/render/graphicalPrimitive.js"
 import * as renderingSystem from "../js2/render/renderingSystem.js"
 
+import * as bitecs from "../js2/bitecs/index.js"
+
 let canvas = document.getElementById('canvas');
 let canvasContext = canvas.getContext('2d');
 let viewport = new renderingSystem.Viewport(canvas.width, canvas.height);
@@ -71,3 +73,32 @@ engine.setActiveScene(sceneManager);
 engine.run();
 
 window.primitives = primitives;
+
+
+const Point2 = { x: bitecs.Types.f32, y: bitecs.Types.f32};
+
+const Position = bitecs.defineComponent(Point2);
+
+let world  = bitecs.createWorld();
+
+let entity = bitecs.addEntity(world);
+let entity2 = bitecs.addEntity(world);
+
+bitecs.addComponent(world, Position, entity);
+bitecs.addComponent(world, Position, entity2);
+
+Position.x[entity] = 2;
+Position.y[entity] = 3;
+
+Position.x[entity2] = 5;
+Position.y[entity2] = 1;
+
+const positionQuery = bitecs.defineQuery([Position]);
+
+var entities = positionQuery(world);
+
+for (let i = 0; i < entities.length; i++) {
+    const entityId = entities[i];
+    console.log(`${entityId}.x: ${Position.x[entityId]}`);
+    console.log(`${entityId}.y: ${Position.y[entityId]}`);
+}
