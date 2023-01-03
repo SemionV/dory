@@ -13,6 +13,14 @@ export class RenderingItem {
     }
 }
 
+export class RenderingQueue {
+    constructor() {
+        this.rootNode = new ViewNode(new primitives.IdentityTransformation());
+        this.currentNode = this.rootNode;
+        this.parrentNode = null;
+    }
+}
+
 //contains set of data specific for rendering(rendering queue) and refers to an underalying graphics framework(webgl, canvas, etc)
 export class RenderingContext {
     constructor(viewport) {
@@ -45,7 +53,7 @@ export class Modifier {
 }
 
 // transformation layer. Root node is usually the camera transformation, then Nodes of scene objects with their transformations, their children and so on.
-export class TransformationNode {
+export class ViewNode {
     constructor(transformation) {
         this.transformation = transformation;
         this.renderingItems = new Set();
@@ -65,7 +73,6 @@ export class TransformationNode {
     }
 }
 
-//generic rendering logic(building, optimization and drawing of rendering queue logic)
 export class RenderingSystem {
     constructor() {
         this.modifiers = new Set();
@@ -77,7 +84,7 @@ export class RenderingSystem {
     }
 
     pushTransformation(transformation) {
-        let node = new TransformationNode(transformation);
+        let node = new ViewNode(transformation);
         this.currentNode.addChild(node);
 
         this.parrentNode = this.currentNode;
@@ -125,7 +132,7 @@ export class RenderingSystem {
     }
 
     reset() {
-        this.rootNode = new TransformationNode(new primitives.IdentityTransformation());
+        this.rootNode = new ViewNode(new primitives.IdentityTransformation());
         this.currentNode = this.rootNode;
         this.parrentNode = null;
     }

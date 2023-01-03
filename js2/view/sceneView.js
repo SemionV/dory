@@ -1,9 +1,9 @@
 export class SceneView {
-    constructor(scene, renderer, viewport) {
+    constructor(renderer, viewport) {
 
     }
 
-    draw() {
+    draw(scene) {
 
     }
 }
