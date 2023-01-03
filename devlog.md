@@ -1,5 +1,9 @@
 # Development log
 
+**03.01.22**
+* Start of experimenting with modern game engine architectures. I will try Entity Component System pattern and Data-Oriented programmking practics.
+* Next step is to try a high performance ECS framwork called bitECS
+
 **29.12.22**
 * Move rendering context management out of Renderer's scope, so that View can customize and control the context
 * Add SceneView class to manage rendering of Scene. Engine will have set of views, each view will render to a specific viewport with a specific Renderer and will manage the order of scene rendering as well as optimizations and logic.
