@@ -1,5 +1,7 @@
 import * as bitecs from "../js2/bitecs/index.js"
 import * as di from "../iteration3/serviceRegistry.js"
+import * as mapping from "../iteration3/componentStorage/componentMapping.js"
+import * as fieldTypes from "../iteration3/componentStorage/fieldTypes.js"
 
 let bitEcsSetupTest = window.bitEcsSetupTest = (componentsNumber) => {
     const GameComponentSchema = { id: bitecs.Types.i32, userId: bitecs.Types.i32, amountDue: bitecs.Types.f32};
@@ -152,8 +154,13 @@ class PositionService {
     
 }
 
-class GameService {
+class Service {
+
+}
+
+class GameService extends Service {
     constructor(positionService) {
+        super();
         this.positionService = positionService;
     }
 }
@@ -165,9 +172,32 @@ class ArcadeGameService extends GameService {
 }
 
 let serviceRegistry = window.serviceRegistry = new di.ServiceRegistry();
+window.Service = Service;
 window.GameService = GameService;
+window.ArcadeGameService = ArcadeGameService;
 
 serviceRegistry.registerServiceImplementation(GameService, ArcadeGameService, ...[PositionService]);
 serviceRegistry.registerService(PositionService);
 
 window.gameService = serviceRegistry.getInstance(GameService);
+
+//Component mapping experiment
+
+class EntityId extends fieldTypes.Uint32{
+
+}
+
+let componentSchema = {
+    x: fieldTypes.Float32,
+    y: fieldTypes.Float32,
+    entityId: EntityId,
+    color: {
+        r: fieldTypes.Uint16,
+        g: fieldTypes.Uint16,
+        b: fieldTypes.Uint16,
+        a: fieldTypes.Uint16
+    },
+    matrix: [fieldTypes.Float32, 16]
+}
+
+window.componentMapping = mapping.ComponentMapper.buildMapping(componentSchema);
