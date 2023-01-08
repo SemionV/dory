@@ -1,5 +1,9 @@
 # Development log
 
+**08.01.22**
+* I have successfully gone through the Entity Component System experiment and made a first implementation of doryECS, a ECS framework which was inspired by bitECS, but uses compact packaging of complex components into a single binary buffer instead of spreading properties over many buffers like bitECS does. This brings better performance, since the data is more streamlined and dory has more CPU cache hits than bitECS. Performance tests have shown that access to many components(a million to 100 millions) is working two or sometimes three times faster. I would like to continue development of doryECS and implement the functionality which will be needed in the game engine.
+* I have also implemented a simple dependency injection container for the game engine. So far it supports only singleton instances. I had to make a compromise in order keep service classes clean and without any decorators, but being able to register class dependencies. So the dependencies of any service have to be mentioned together with the class registration.
+
 **03.01.22**
 * Start of experimenting with modern game engine architectures. I will try Entity Component System pattern and Data-Oriented programmking practics.
 * Next step is to try a high performance ECS framwork called bitECS
