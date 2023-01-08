@@ -11,10 +11,6 @@ export class FieldMapping {
         this.fieldName = fieldName;
     }
 
-    build() {   
-        this.size = this.getSize(); 
-    }
-
     getSize() {        
     }
 
