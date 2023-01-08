@@ -190,14 +190,42 @@ class EntityId extends fieldTypes.Uint32{
 let componentSchema = {
     x: fieldTypes.Float32,
     y: fieldTypes.Float32,
-    entityId: EntityId,
     color: {
         r: fieldTypes.Uint16,
         g: fieldTypes.Uint16,
         b: fieldTypes.Uint16,
         a: fieldTypes.Uint16
     },
-    matrix: [fieldTypes.Float32, 16]
+    matrix: [fieldTypes.Float32, 16],
+    entityId: EntityId
 }
 
-window.componentMapping = mapping.ComponentMapper.buildMapping(componentSchema);
+let component = window.component = {
+    x: 21.3,
+    y: 34.2,
+    color: {
+        r: 234,
+        g: 45,
+        b: 96,
+        a: 0
+    },
+    matrix: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1],
+    entityId: 1
+}
+
+let componentMapping = window.componentMapping = mapping.ComponentMapper.buildMapping(componentSchema);
+let componentSize = componentMapping.getSize();
+let componentsNumber = 2;
+
+const buffer = window.buffer = new ArrayBuffer(componentSize * componentsNumber);
+const view = window.view = new DataView(buffer, 0);
+
+let operationContext = new mapping.DataOperationContext();
+operationContext.dataView = view;
+operationContext.endian = true;
+operationContext.offset = 0;
+
+componentMapping.setData(operationContext, component);
+
+operationContext.offset = 0;
+let componentCopy = window.componentCopy = componentMapping.getData(operationContext);
