@@ -1,4 +1,5 @@
 import * as bitecs from "../js2/bitecs/index.js"
+import * as di from "../iteration3/serviceRegistry.js"
 
 let bitEcsSetupTest = window.bitEcsSetupTest = (componentsNumber) => {
     const GameComponentSchema = { id: bitecs.Types.i32, userId: bitecs.Types.i32, amountDue: bitecs.Types.f32};
@@ -47,67 +48,6 @@ let bitEcsAccessTest = window.bitEcsAccessTest = (setup) => {
 
     return end - start
 }
-
-class PositionService {
-    
-}
-
-class GameService {
-    constructor(positionService) {
-        this.positionService = positionService;
-    }
-}
-
-class ArcadeGameService extends GameService {
-    constructor(positionService) {
-        super(positionService);
-    }
-}
-
-class ServiceRegistry {
-    constructor() {
-        this.registry = new Map();
-        this.instancies = new Map();
-    }
-
-    registerService(serviceType, ...dependencies) {
-        this.registerServiceImplementation(serviceType, serviceType, ...dependencies);
-    }
-
-    registerServiceImplementation(serviceType, implementationType, ...dependencies) {
-        this.registry[serviceType] = {implementationType: implementationType, dependencies: dependencies};
-    }
-
-    getInstance(serviceType) {
-        let instance = this.instancies.get(serviceType);
-        if(!instance) {
-            let dependencyInstancies = new Set();
-            let definition = this.registry[serviceType];
-            if(definition) {
-                let dependencies = definition.dependencies;
-                if(dependencies) {
-                    for(let dependency of dependencies){
-                        let dependencyInstance = this.getInstance(dependency);
-                        dependencyInstancies.add(dependencyInstance);
-                    }
-                }
-
-                instance = new definition.implementationType(...dependencyInstancies);
-                this.instancies.set(serviceType, instance);
-            }
-        }
-
-        return instance;
-    }
-}
-
-let serviceRegistry = window.serviceRegistry = new ServiceRegistry();
-window.GameService = GameService;
-
-serviceRegistry.registerServiceImplementation(GameService, ArcadeGameService, ...[PositionService]);
-serviceRegistry.registerService(PositionService);
-
-window.gameService = serviceRegistry.getInstance(GameService);
 
 class GameComponent {
 }
@@ -204,3 +144,30 @@ let doryEcsAccessTest = window.doryEcsAccessTest = (setup) => {
 
     return end - start;
 }
+
+
+//Dependecy Injection experiment
+
+class PositionService {
+    
+}
+
+class GameService {
+    constructor(positionService) {
+        this.positionService = positionService;
+    }
+}
+
+class ArcadeGameService extends GameService {
+    constructor(positionService) {
+        super(positionService);
+    }
+}
+
+let serviceRegistry = window.serviceRegistry = new di.ServiceRegistry();
+window.GameService = GameService;
+
+serviceRegistry.registerServiceImplementation(GameService, ArcadeGameService, ...[PositionService]);
+serviceRegistry.registerService(PositionService);
+
+window.gameService = serviceRegistry.getInstance(GameService);
