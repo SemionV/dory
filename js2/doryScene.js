@@ -22,7 +22,7 @@ resourceManager.loadImages({
     "terrain.grass4": "img/grass32.png",
     "pine-none04.png": "img/pine-none04.png"
 }).then(() =>{
-    let engine = new dori.Engine(new dori.EngineConfig(100, false));
+    let engine = new dori.Engine(new dori.EngineConfig(60, false));
     context.engine = engine;
 
     //engine.heart = () => {};

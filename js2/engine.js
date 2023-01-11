@@ -44,17 +44,16 @@ class Frame{
 
 export class Engine{
     constructor(config){
-        this.isStop = false;
+        this.isDone = false;
 
         this.eventsManager = new events.EventsManager();
         this.inputManager = new input.InputManager();
         this.config = config;
 
-        var deltaTime = 1000 / this.config.fps;
-        this.updateDeltaTime = deltaTime;
-        this.maxDeltaTime = deltaTime * 2;
+        this.updateDeltaTime = 1000 / config.fps;
 
-        this.profile = [];
+        this.frameCount = 0;
+        this.timePassedSinceFrameUpdate = 0;
     }
 
     setHeart(heart){
@@ -85,28 +84,9 @@ export class Engine{
         }
     }
 
-    createHeart(fps) {
-        var raF = window.requestAnimationFrame ||
-            window.webkitRequestAnimationFrame ||
-            window.mozRequestAnimationFrame ||
-            window.oRequestAnimationFrame ||
-            window.msRequestAnimationFrame;
-
-        var timeout = (callback) => {
-            window.setTimeout(callback, this.updateDeltaTime);
-        };
-
-        if (this.heart) {
-            return this.heart;
-        }
-        else if (fps) {
-            return timeout;
-        }
-        else if (raF) {
-            return raF;
-        }
-
-        return timeout;
+    requestFrame() {
+        let context = this;
+        return window.requestAnimationFrame((timestamp) => {context.animationUpdate(timestamp)});
     }
 
     setActiveScene(scene) {
@@ -116,83 +96,42 @@ export class Engine{
     run() {
         this.inputManager.subscribe();
 
-        var heart = this.createHeart();
+        this.requestFrame();
+    }
 
-        var now = Date.now();
-        var last = null;
-        var passed = 0;
-        var accumulator = 0;
-        var dt = this.updateDeltaTime;
-        var frameCount = 0;
-        var frameCountStartDate = now;
+    animationUpdate(timestamp) {
+        this.frameCount++;
+        
+        if(!this.previousTimestamp) {
+            this.previousTimestamp = timestamp;
+        }
 
-        var heartBeat = () => {
-            now = Date.now();
+        let passedTime = timestamp - this.previousTimestamp;
 
-            frameCount++;
-            var frameInfo = new Frame();
-            frameInfo.index = this.profile.length;
-            frameInfo.startTime = now;
+        this.update(passedTime);
+        this.draw();
+        
+        if (this.timePassedSinceFrameUpdate >= 1000) {
+            this.currentFPS = this.frameCount;
+            this.frameCount = 0;
+            this.timePassedSinceFrameUpdate = 0;
 
-            if(!last){
-                last = now;
-            }
-            passed = now - last;
-            frameInfo.passedTime = passed;
-            if (passed > this.maxDeltaTime) {
-                passed = this.maxDeltaTime;
-            }
-            last = now;
-            accumulator += passed;
+            this.eventsManager.pushEvent(new FpsUpdatedEvent('fps.updated', this.currentFPS));
+        }
+        else {
+            this.timePassedSinceFrameUpdate += passedTime;
+        }
 
-            frameInfo.accumulatorValue = accumulator;
+        if (!this.isDone) {
+            this.requestFrame();
+        }
 
-            frameInfo.updateStartTime = Date.now();
-            let numberOfUpdates = 0;
-            while (accumulator >= dt) {
-                this.update();
-                numberOfUpdates++;
-                accumulator -= dt;
-            }
-            frameInfo.updateEndTime = Date.now();
-            frameInfo.numberOfUpdates = numberOfUpdates;
-
-            frameInfo.drawStartTime = Date.now();
-            this.draw();
-            frameInfo.drawEndTime = Date.now()
-
-            if ((now - frameCountStartDate) >= 1000) {
-                frameCountStartDate = now;
-                this.currentFPS = frameCount;
-                frameCount = 0;
-
-                this.eventsManager.pushEvent(new FpsUpdatedEvent('fps.updated', this.currentFPS));
-            }
-
-            if (!this.isStop) {
-                heart.call(window, heartBeat);
-            }
-            else {
-                this.isStop = false;
-            }
-
-            if(this.config.profile){
-                this.profile.push(frameInfo);
-            }
-
-            frameInfo.endTime = Date.now();
-        };
-
-        //it is necessary to update scene once before main loop
-        this.update();
-
-        this.heartBeat = heartBeat;
-        heart.call(window, heartBeat);
+        this.previousTimestamp = timestamp;
     }
 
     stop(){
         this.inputManager.unsubscribe();
-        this.isStop = true;
+        this.isDone = true;
     }
 
     update() {
