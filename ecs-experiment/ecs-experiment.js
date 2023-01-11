@@ -1,7 +1,11 @@
 import * as bitecs from "../js2/bitecs/index.js"
 import * as di from "../iteration3/serviceRegistry.js"
-import * as mapping from "../iteration3/componentStorage/componentMapping.js"
+import * as storages from "../iteration3/componentStorage/componentStorage.js"
 import * as fieldTypes from "../iteration3/componentStorage/fieldTypes.js"
+
+let numberWithCommas = (x) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 let bitEcsSetupTest = window.bitEcsSetupTest = (componentsNumber) => {
     const GameComponentSchema = { id: bitecs.Types.i32, userId: bitecs.Types.i32, amountDue: bitecs.Types.f32};
@@ -35,7 +39,6 @@ let bitEcsAccessTest = window.bitEcsAccessTest = (setup) => {
 
     let entitiesCount = setup.componentsNumber
 
-    console.log(`count: ${entitiesCount}`);
     setup.result = 0;
 
     let start = performance.now();
@@ -43,12 +46,13 @@ let bitEcsAccessTest = window.bitEcsAccessTest = (setup) => {
     for (let i = 0; i < entitiesCount; ++i) {
         const entityId = entities[i];
 
-        setup.result += (GameComponent.id[entityId] + GameComponent.userId[entityId] + GameComponent.amountDue[entityId]) / Math.cos(i);
+        setup.result += (GameComponent.id[entityId] + GameComponent.userId[entityId] + GameComponent.amountDue[entityId]);
+        //setup.result += (GameComponent.id[entityId] + GameComponent.userId[entityId] + GameComponent.amountDue[entityId]) / Math.cos(i);
     }
 
     let end = performance.now();
 
-    return end - start
+    console.log(`bitEcs on ${numberWithCommas(entitiesCount)}: ${end - start}`);
 }
 
 class GameComponent {
@@ -60,46 +64,19 @@ class GameComponentAccess {
         this.view = view;
     }
 
-    readId(index) {
-        let offset = index * this.blockSize + 0;
-        return this.view.getInt32(offset, true);
-    }
-
-    writeId(index, value) {
-        let offset = index * this.blockSize + 0;
-        return this.view.setInt32(offset, value, true);
-    }
-
-    readUserId(index) {
-        let offset = index * this.blockSize + 4;
-        return this.view.getInt32(offset, true);
-    }
-
-    writeUserId(index, value) {
-        let offset = index * this.blockSize + 4;
-        return this.view.setInt32(offset, value, true);
-    }
-
-    readAmountDue(index) {
-        let offset = index * this.blockSize + 8;
-        return this.view.getFloat32(offset, true);
-    }
-
-    writeAmountDue(index, value) {
-        let offset = index * this.blockSize + 8;
-        return this.view.setFloat32(offset, value, true);
-    }
-
     read(index, toInstance) {
-        toInstance.id = this.readId(index);
-        toInstance.userId = this.readUserId(index);
-        toInstance.amountDue = this.readAmountDue(index);
+        let offset = index * this.blockSize;
+        toInstance.id = this.view.getInt32(offset, true);
+        toInstance.userId = this.view.getInt32(offset + 4, true);
+        toInstance.amountDue = this.view.getFloat32(offset + 8, true);
     }
 
     write(index, instance) {
-        this.writeId(index, instance.id);
-        this.writeUserId(index, instance.userId);
-        this.writeAmountDue(index, instance.amountDue);
+        let offset = index * this.blockSize;
+
+        this.view.setInt32(offset, instance.id, true)
+        this.view.setInt32(offset + 4, instance.userId, true)
+        this.view.setFloat32(offset + 8, instance.amountDue, true)
     }
 
     get slotsCount() {
@@ -107,44 +84,162 @@ class GameComponentAccess {
     }
 }
 
+let setupComponentMap = (view, blockSize) => {
+    return {
+        id: (index) => {
+            return view.getInt32(index * blockSize, true);
+        },
+        userId: (index) => {
+            return view.getInt32(index * blockSize + 4, true);
+        },
+        amountDue: (index) => {
+            return view.getFloat32(index * blockSize + 8, true);
+        }
+    };
+}
+
 let doryEcsSetupTest = window.doryEcsSetupTest = (componentsNumber) => {
     const buffer = new ArrayBuffer(12 * componentsNumber);
     const view = new DataView(buffer, 0);
 
+    let start = performance.now();
+
     let access = new GameComponentAccess(view);
+    let map = setupComponentMap(view, 12);
 
     for(let i = 0; i < componentsNumber; ++i) {
-        access.write(0, {id: i, userId: i + 100, amountDue: i + 0.0});
+        access.write(i, {id: i, userId: i + 100, amountDue: i + 0.0});
     }
 
+    let end = performance.now();
+
+    console.log(`doryEcs setup: ${end - start}`);
+
     return {
-        access: access
+        access: access,
+        map: map
     }
 }
 
 let doryEcsAccessTest = window.doryEcsAccessTest = (setup) => {
     let access = setup.access;
-    
+   
     let component = new GameComponent();
     let count = access.slotsCount;
 
     setup.result = 0;
-
-    console.log(`count: ${count}`);
 
     let start = performance.now();
 
     for(let i = 0; i < count; ++i) {
         access.read(i, component);
         
-        //setup.result += component.id + component.userId + component.amountDue;
-        setup.result += (component.id + component.userId + component.amountDue) / Math.cos(i);
+        setup.result += component.id + component.userId + component.amountDue;
+        //setup.result += (component.id + component.userId + component.amountDue) / Math.cos(i);
         //let result = (component.id + component.userId + component.amountDue) / Math.cos(i);
     }
 
     let end = performance.now();
 
-    return end - start;
+    console.log(`doryEcs on ${numberWithCommas(count)}: ${end - start}`);
+}
+
+let doryMapAccessTest = window.doryMapAccessTest = (setup) => {
+    let map = setup.map;
+    let access = setup.access;
+    let count = access.slotsCount;
+
+    setup.result = 0;
+
+    let start = performance.now();
+
+    for(let i = 0; i < count; ++i) {
+        setup.result += map.id(i) + map.userId(i) + map.amountDue(i);
+    }
+
+    let end = performance.now();
+
+    console.log(`doryMap on ${numberWithCommas(count)}: ${end - start}`);
+}
+
+let csSetupTest = window.csSetupTest = (componentsNumber) => {
+    let componentSchema = {
+        id: fieldTypes.Uint32,
+        userId: fieldTypes.Uint32,
+        amountDue: fieldTypes.Float32,
+    };
+
+    let start = performance.now();
+
+    let storage = new storages.ComponentStorage(componentsNumber, componentSchema);
+
+    for(let i = 0; i < componentsNumber; ++i) {
+        storage.saveComponent(i, {id: i, userId: i + 100, amountDue: i + 0.0});
+    }
+
+    let end = performance.now();
+
+    console.log(`cs setup: ${end - start}`);
+
+    return {
+        storage: storage
+    }
+}
+
+let csAccessTest = window.csAccessTest = (setup) => {
+    let storage = setup.storage;    
+    let count = storage.slotsCount;
+    setup.result = 0;
+
+    let start = performance.now();
+
+    storage.forEach((component) => {
+        setup.result += component.id + component.userId + component.amountDue;
+    });
+
+    let end = performance.now();
+
+    console.log(`cs on ${numberWithCommas(count)}: ${end - start}`);
+}
+
+let arraySetupTest = window.arraySetupTest = (componentsNumber) => {
+    let start = performance.now();
+
+
+    let array = new Array(componentsNumber);
+
+    for(let i = 0; i < componentsNumber; ++i) {
+        array[i] = {id: i, userId: i + 100, amountDue: i + 0.0};
+    }
+
+    let end = performance.now();
+
+    console.log(`array setup: ${end - start}`);
+
+    return {
+        array: array
+    }
+}
+
+let arrayAccessTest = window.arrayAccessTest = (setup) => {
+    let array = setup.array;
+    
+    let count = array.length;
+
+    setup.result = 0;
+    setup.counter = 0;
+
+    let start = performance.now();
+
+    for(let i = 0; i < count; ++i) {
+        let component = array[i];
+        setup.result += component.id + component.userId + component.amountDue;
+        setup.counter++;
+    }
+
+    let end = performance.now();
+
+    console.log(`arrays on ${numberWithCommas(count)}: ${end - start}`);
 }
 
 
@@ -212,20 +307,3 @@ let component = window.component = {
     matrix: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1],
     entityId: 1
 }
-
-let componentMapping = window.componentMapping = mapping.ComponentMapper.buildMapping(componentSchema);
-let componentSize = componentMapping.getSize();
-let componentsNumber = 2;
-
-const buffer = window.buffer = new ArrayBuffer(componentSize * componentsNumber);
-const view = window.view = new DataView(buffer, 0);
-
-let operationContext = new mapping.DataOperationContext();
-operationContext.dataView = view;
-operationContext.endian = true;
-operationContext.offset = 0;
-
-componentMapping.setData(operationContext, component);
-
-operationContext.offset = 0;
-let componentCopy = window.componentCopy = componentMapping.getData(operationContext);

@@ -3,6 +3,51 @@
 <head>
     <title>Canvas 2D</title>
     <script src="ecs-experiment.js" type="module"></script>
+    <script type="text/javascript">
+    function getComponentsNumber() {
+        return document.getElementById('componentsCountInput').valueAsNumber;
+    }
+    
+    function setupDoryEcs() {
+        let componentsNumber = getComponentsNumber();
+        window._d = doryEcsSetupTest(componentsNumber);
+    }
+
+    function runDoryEcs() {
+        doryEcsAccessTest(window._d);
+    }
+
+    function runMapEcs() {
+        doryMapAccessTest(window._d);
+    }
+
+    function setupCsEcs() {
+        let componentsNumber = getComponentsNumber();
+        window._c = csSetupTest(componentsNumber);
+    }
+
+    function runCsEcs() {
+        csAccessTest(window._c);
+    }
+
+    function setupBitEcs() {
+        let componentsNumber = getComponentsNumber();
+        window._b = bitEcsSetupTest(componentsNumber);
+    }
+
+    function runBitEcs() {
+        bitEcsAccessTest(window._b);
+    }
+
+    function setupArray() {
+        let componentsNumber = getComponentsNumber();
+        window._a = arraySetupTest(componentsNumber);
+    }
+
+    function runArray() {
+        arrayAccessTest(window._a);
+    }
+    </script>
 </head>
 <body>
 <div>
@@ -11,9 +56,32 @@
         <div id="FPS"></div>
     </div>
     <div style="margin-left: 770px">
-        <input type="text" style="width: 100%"/>
+        <input id="componentsCountInput" type="number" value="100000" style="width: 100%"/>
     </div>
     <div style="clear:both"></div>
+    <br/>
+    <table>
+        <tr>
+            <td><button onclick="setupBitEcs()">Setup bitEcs benchmark</button></td>
+            <td><button onclick="runBitEcs()">Run bitEcs benchmark</button></td>
+        </tr>
+        <tr>
+            <td><button onclick="setupDoryEcs()">Setup dory benchmark</button></td>
+            <td><button onclick="runDoryEcs()">Run dory benchmark</button></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button onclick="runMapEcs()">Run dory Map benchmark</button></td>
+        </tr>
+        <tr>
+            <td><button onclick="setupCsEcs()">Setup cs benchmark</button></td>
+            <td><button onclick="runCsEcs()">Run cs benchmark</button></td>
+        </tr>
+        <tr>
+            <td><button onclick="setupArray()">Setup array benchmark</button></td>
+            <td><button onclick="runArray()">Run array benchmark</button></td>
+        </tr>
+    </table>
 </div>
 </body>
 </html>
