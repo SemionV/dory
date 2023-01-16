@@ -1,9 +1,9 @@
-export class Application {
+export default class Controller {
     constructor(/*inject services*/) {
         
     }
 
-    update() {
+    update(timeStep) {
         //update state
         //output state
     }

@@ -56,34 +56,6 @@ export class Engine{
         this.timePassedSinceFrameUpdate = 0;
     }
 
-    setHeart(heart){
-        this.heart = heart;
-    }
-
-    *getTooLongFrames(){
-        for(let frame of this.profile){
-            if(frame.duration > this.updateDeltaTime){
-                yield frame;
-            }
-        }
-    }
-
-    *getAfterTooLongFrames(){
-        for(let frame of this.profile){
-            if(frame.passedTime > this.updateDeltaTime){
-                yield frame;
-            }
-        }
-    }
-
-    *getMultiUpdateFrames(){
-        for(let frame of this.profile){
-            if(frame.numberOfUpdates > 1){
-                yield frame;
-            }
-        }
-    }
-
     requestFrame() {
         let context = this;
         return window.requestAnimationFrame((timestamp) => {context.animationUpdate(timestamp)});
@@ -101,12 +73,13 @@ export class Engine{
 
     animationUpdate(timestamp) {
         this.frameCount++;
-        
+                
         if(!this.previousTimestamp) {
             this.previousTimestamp = timestamp;
         }
 
         let passedTime = timestamp - this.previousTimestamp;
+        this.timePassedSinceFrameUpdate += passedTime;
 
         this.update(passedTime);
         this.draw();
@@ -117,9 +90,6 @@ export class Engine{
             this.timePassedSinceFrameUpdate = 0;
 
             this.eventsManager.pushEvent(new FpsUpdatedEvent('fps.updated', this.currentFPS));
-        }
-        else {
-            this.timePassedSinceFrameUpdate += passedTime;
         }
 
         if (!this.isDone) {
