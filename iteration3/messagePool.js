@@ -1,26 +1,11 @@
 import Controller from "./controller.js"
 
-export default class MessagePool extends Controller {
+export class MessagePool extends Controller {
     constructor(poolSize = 0) {
         super();
-        this.poolSize = poolSize;//manually 
+        this.poolSize = poolSize;
         this.frontPool = new Array(poolSize);//the pool where the current frame messages added
         this.backPool = new Array(poolSize);//the pool where the message from the previous frame are available
-    }
-
-    update(timeStep) {
-        //swap the buffers(if they are not empty)
-        if(this.backPool.length) {
-            this.frontPool = this.backPool;
-            this.backPool = new Array(this.poolSize);
-        }
-        else if(this.frontPool.length) {
-            this.frontPool = new Array(this.poolSize);
-        }
-    }
-
-    get messages() {
-        return this.frontPool;
     }
 
     forEach(callback, context) {
@@ -44,5 +29,23 @@ export default class MessagePool extends Controller {
 
     pushMessage(message) {
         this.backPool.push(message);
+    }
+}
+
+export class MessagePoolController {
+    constructor(messagePool) {
+        this.messagePool = messagePool;
+    }
+
+    update(timeStep) {
+        let messagePool = this.messagePool;
+        //swap the buffers(if they are not empty)
+        if(messagePool.backPool.length) {
+            messagePool.frontPool = messagePool.backPool;
+            messagePool.backPool = new Array(messagePool.poolSize);
+        }
+        else if(messagePool.frontPool.length) {
+            messagePool.frontPool = new Array(messagePool.poolSize);
+        }
     }
 }

@@ -1,20 +1,21 @@
 import Controller from "../iteration3/controller.js"
-import MessagePool from "../iteration3/messagePool.js"
+import {MessagePool, MessagePoolController} from "../iteration3/messagePool.js"
 import * as input from "../iteration3/inputController.js"
 
 export class SandboxApplication extends Controller{
     activeScene;
 
-    constructor(sceneLoader, messagePool) {
+    constructor(messagePoolController, sceneLoader, messagePool) {
         super();
 
         this.scenes = new Map();
         this.sceneLoader = sceneLoader;
         this.messagePool = messagePool;
+        this.messagePoolController = messagePoolController;
     }
 
     update(timeStep) {
-        this.messagePool.update(timeStep);
+        this.messagePoolController.update(timeStep);
 
         this.messagePool.forEach(this.processMessage, this);
 
@@ -56,6 +57,7 @@ export class SceneLoader {
         let fpsCounter = new FpsCounter(messagePool);
         let fpsOutput = new FpsOutput(messagePool, document.getElementById("framesPerSecond"));
         let moveInputController = new MoveInputController(messagePool, document.getElementById("moveDirection"));
+        let messagePoolController = new MessagePoolController(messagePool);
 
         let inputController = new input.InputController();
         let keyboardController = new input.BrowserKeyboardController(inputController, document.body);
@@ -66,25 +68,25 @@ export class SceneLoader {
         messagePool.pushMessage(new FpsUpdateMessage(0));
         messagePool.pushMessage(new MoveInputMessage(MoveDirection.Stand));
 
-        let scene = new Scene(renderer, messagePool, fpsCounter, fpsOutput, moveInputController);
+        let scene = new Scene(renderer, messagePoolController, fpsCounter, fpsOutput, moveInputController);
 
         return scene;
     }
 }
 
 export class Scene extends Controller  {
-    constructor(sceneRenderer, messagePool, fpsCounter, fpsOutput, moveInputController) {
+    constructor(sceneRenderer, messagePoolController, fpsCounter, fpsOutput, moveInputController) {
         super();
 
         this.sceneRenderer = sceneRenderer;
-        this.messagePool = messagePool;
         this.fpsOutput = fpsOutput;
         this.fpsCounter = fpsCounter;
         this.moveInputController = moveInputController;
+        this.messagePoolController = messagePoolController;
     }
 
     update(timeStep) {
-        this.messagePool.update(timeStep);
+        this.messagePoolController.update(timeStep);
         this.fpsCounter.update(timeStep);
         this.sceneRenderer.update(timeStep);
         this.fpsOutput.update(timeStep);
