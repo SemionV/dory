@@ -1,6 +1,6 @@
 import UpdateController from "./updateController.js"
 
-export class MessagePool extends UpdateController {
+export default class MessagePool extends UpdateController {
     constructor(poolSize = 0) {
         super();
         this.poolSize = poolSize;
@@ -29,23 +29,5 @@ export class MessagePool extends UpdateController {
 
     pushMessage(message) {
         this.backPool.push(message);
-    }
-}
-
-export class MessagePoolController {
-    constructor(messagePool) {
-        this.messagePool = messagePool;
-    }
-
-    swap() {
-        let messagePool = this.messagePool;
-        //swap the buffers(if they are not empty)
-        if(messagePool.backPool.length) {
-            messagePool.frontPool = messagePool.backPool;
-            messagePool.backPool = new Array(messagePool.poolSize);
-        }
-        else if(messagePool.frontPool.length) {
-            messagePool.frontPool = new Array(messagePool.poolSize);
-        }
     }
 }

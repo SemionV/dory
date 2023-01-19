@@ -1,136 +1,96 @@
 import UpdateController from "../iteration3/updateController.js"
-import * as input from "../iteration3/inputController.js"
-
-export class SandboxApplication extends UpdateController{
-    activeScene;
-
-    constructor(sceneLoader) {
-        super();
-        this.sceneLoader = sceneLoader;
-    }
-}
+import * as input from "../iteration3/inputSystem.js"
 
 export class Message {
 }
 
 export class FpsUpdateMessage extends Message {
-    fps;
-    constructor(fps) {
-        super();
-        this.fps = 0;
-    }
 }
 
 export class InputMessage extends Message {
 }
 
-export class SceneLoader {
-    loadScene() {
-    }
-}
-
-export class SceneController extends UpdateController  {
-    constructor(messagePoolController, inputController) {
-        super();
-
-        this.messagePoolController = messagePoolController;
-        this.inputController = inputController;
-    }
-
-    start() {
-        this.inputController.attach();
-        super.start();
-    }
-
-    stop() {
-        this.inputController.detach();
-        super.start();
-    }
-
-    update(timeStep) {
-        this.messagePoolController.swap();
-
-        //message listeners(input, logic)
-        //data updaters(physics, animation)
-        //data output(render)
-        
-        super.update(timeStep);
+export class MessagePoolController extends UpdateController {
+    update(timeStep, context) {
+        let messagePool = context.messagePool;
+        //swap the buffers(if they are not empty)
+        if(messagePool.backPool.length) {
+            messagePool.frontPool = messagePool.backPool;
+            messagePool.backPool = new Array(messagePool.poolSize);
+        }
+        else if(messagePool.frontPool.length) {
+            messagePool.frontPool = new Array(messagePool.poolSize);
+        }
     }
 }
 
 export class SceneRenderer extends UpdateController {
-    update(timeStep) {
+    update(timeStep, context) {
     }
 }
 
 export class FpsOutput extends UpdateController {
-    constructor(messagePool, htmlNode) {
+    constructor(htmlNode) {
         super();
-
         this.htmlNode = htmlNode;
-        this.messagePool = messagePool;
     }
 
-    update(timeStep) {
-        this.messagePool.forEach(this.processMessage, this);
-    }
-
-    processMessage(message) {
-        if(message instanceof FpsUpdateMessage) {
-            this.htmlNode.innerText = message.fps;
-            return true;
-        }
+    update(timeStep, context) {
+        context.messagePool.forEach((message) => {
+            if(message instanceof FpsUpdateMessage) {
+                this.htmlNode.innerText = context.fps;
+                return true;
+            }
+        });
     }
 }
 
 export class FpsCounter extends UpdateController {
-    constructor(messagePool) {
+    constructor() {
         super();
 
         this.frameCount = 0;
         this.timePassedSinceFrameUpdate = 0;
-        this.messagePool = messagePool;
 
         this.fpsUpdateMessage = new FpsUpdateMessage();
     }
 
-    start() {
-        this.fpsUpdateMessage.fps = 0;
-        this.messagePool.pushMessage(this.fpsUpdateMessage);
+    initialize(context) {
+        context.fps = 0;
+        context.messagePool.pushMessage(this.fpsUpdateMessage);
     }
 
-    update(timeStep) {
+    update(timeStep, context) {
         this.frameCount++;
         this.timePassedSinceFrameUpdate += timeStep;
 
         if (this.timePassedSinceFrameUpdate >= 1000) {
-            this.fpsUpdateMessage.fps = this.frameCount;
+            context.fps = this.frameCount;
             this.frameCount = 0;
             this.timePassedSinceFrameUpdate = 0;
 
-            this.messagePool.pushMessage(this.fpsUpdateMessage);
+            context.messagePool.pushMessage(this.fpsUpdateMessage);
         }
     }
 }
 
-export class MoveInputController extends UpdateController {
-    constructor(messagePool, htmlNode) {
+export class MoveCommandController extends UpdateController {
+    constructor(htmlNode) {
         super();
 
-        this.messagePool = messagePool;
         this.htmlNode = htmlNode;
     }
 
-    start() {
+    initialize() {
         this.showDirection(MoveDirection.Stand);
     }
 
-    update(timeStep) {
-        this.messagePool.forEach(this.processMessage, this);
+    update(timeStep, context) {
+        context.messagePool.forEach(this.processMessage, this);
     }
 
     processMessage(message) {
-        if(message instanceof MoveInputMessage) {
+        if(message instanceof MoveCommandMessage) {
             this.showDirection(message.moveDirection);
         }
     }
@@ -181,7 +141,7 @@ export class MoveDirection{
     static West = 8;
 }
 
-export class MoveInputMessage extends InputMessage {
+export class MoveCommandMessage extends InputMessage {
     constructor(moveDirection) {
         super();
         this.moveDirection = moveDirection;
@@ -189,13 +149,8 @@ export class MoveInputMessage extends InputMessage {
 }
 
 export class MoveCommand extends input.Command {
-    constructor(messagePool) {
-        super();
-        this.messagePool = messagePool;
-    }
-
-    trigger(moveDirection) {    
-        this.messagePool.pushMessage(new MoveInputMessage(moveDirection));
+    trigger(moveDirection, context) {    
+        context.messagePool.pushMessage(new MoveCommandMessage(moveDirection));
     }
 }
 

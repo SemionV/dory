@@ -1,4 +1,4 @@
-export class InputController {
+export class InputSystem {
     constructor() {
         this.commandTriggers = new Map();
         this.deviceListeners = new Set();
@@ -12,12 +12,14 @@ export class InputController {
         this.deviceListeners.add(listener);
     }
 
-    attach() {
+    attach(context) {
+        this.context = context;
+
         let deviceEventHandler = (deviceEvent) => {
             for (let [key, value] of this.commandTriggers) {
                 let commandParameters = key.check(deviceEvent);
                 if(commandParameters !== undefined){
-                    value.trigger(commandParameters);
+                    value.trigger(commandParameters, this.context);
                 }
             }
         };
@@ -28,6 +30,8 @@ export class InputController {
     }
 
     detach() {
+        this.context = null;
+
         for(let listener of this.deviceListeners) {
             listener.detach();
         }
@@ -40,7 +44,7 @@ export class CommandTrigger {
 }
 
 export class Command {
-    trigger(parameters) {        
+    trigger(parameters, context) {        
     }
 }
 
