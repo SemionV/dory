@@ -1,19 +1,36 @@
 export class InputController {
     constructor() {
         this.commandTriggers = new Map();
-    }
-
-    onDeviceStateChange(deviceEvent) {
-        for (let [key, value] of this.commandTriggers) {
-            let commandParameters = key.check(deviceEvent);
-            if(commandParameters !== undefined){
-                value.trigger(commandParameters);
-            }
-        }
+        this.deviceListeners = new Set();
     }
 
     addTrigger(trigger, command) {
         this.commandTriggers.set(trigger, command);
+    }
+
+    addDeviceListener(listener) {
+        this.deviceListeners.add(listener);
+    }
+
+    attach() {
+        let deviceEventHandler = (deviceEvent) => {
+            for (let [key, value] of this.commandTriggers) {
+                let commandParameters = key.check(deviceEvent);
+                if(commandParameters !== undefined){
+                    value.trigger(commandParameters);
+                }
+            }
+        };
+
+        for(let listener of this.deviceListeners) {
+            listener.attach(deviceEventHandler);
+        }
+    }
+
+    detach() {
+        for(let listener of this.deviceListeners) {
+            listener.detach();
+        }
     }
 }
 
@@ -27,25 +44,44 @@ export class Command {
     }
 }
 
-export class DeviceController {
-    constructor(inputController) {
-        this.inputController = inputController;
+export class DeviceListener {
+    attach(callback) {
+    }
+
+    detach(){        
     }
 }
 
-export class BrowserKeyboardController extends DeviceController { 
-    constructor(inputController, htmlNode){
-        super(inputController);
-        this.subscribe(htmlNode);
+export class BrowserKeyboardListener extends DeviceListener { 
+    constructor(htmlNode){
+        super();
+        this.htmlNode = htmlNode;
     }
 
-    subscribe(htmlNode) {
-        htmlNode.addEventListener("keydown", (e)=> {
-            this.inputController.onDeviceStateChange(new KeyboardKeydownEvent(e.key));
-        });
-        htmlNode.addEventListener("keyup", (e)=> {
-            this.inputController.onDeviceStateChange(new KeyboardKeyupEvent(e.key));
-        });
+    attach(callback) {
+        if(!this.keydownHandler && !this.keyupHandler) {
+
+            this.keydownHandler = (e)=> {
+                callback(new KeyboardKeydownEvent(e.key));
+            }
+
+            this.keyupHandler = (e)=> {
+                callback(new KeyboardKeyupEvent(e.key));
+            }
+
+            this.htmlNode.addEventListener("keydown", this.keydownHandler);
+            this.htmlNode.addEventListener("keyup", this.keyupHandler);
+        }
+    }
+
+    detach() {
+        if(this.keydownHandler && this.keyupHandler) {
+            this.htmlNode.removeEventListener("keydown", this.keydownHandler);
+            this.htmlNode.removeEventListener("keyup", this.keyupHandler);
+
+            this.keydownHandler = null;
+            this.keyupHandler = null;
+        }
     }
 }
 

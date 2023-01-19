@@ -1,42 +1,16 @@
-import Controller from "../iteration3/controller.js"
-import {MessagePool, MessagePoolController} from "../iteration3/messagePool.js"
+import UpdateController from "../iteration3/updateController.js"
 import * as input from "../iteration3/inputController.js"
 
-export class SandboxApplication extends Controller{
+export class SandboxApplication extends UpdateController{
     activeScene;
 
-    constructor(messagePoolController, sceneLoader, messagePool) {
+    constructor(sceneLoader) {
         super();
-
-        this.scenes = new Map();
         this.sceneLoader = sceneLoader;
-        this.messagePool = messagePool;
-        this.messagePoolController = messagePoolController;
-    }
-
-    update(timeStep) {
-        this.messagePoolController.update(timeStep);
-
-        this.messagePool.forEach(this.processMessage, this);
-
-        if(this.activeScene) {
-            this.activeScene.update(timeStep);
-        }
-    }
-
-    processMessage(message) {
-        if(message instanceof BootstrapMessage) {
-            //here comlicated asynchronous logic can be implemented, which is showing loading screen, showing loading progress, etc
-            this.activeScene = this.sceneLoader.loadScene();
-            return true;
-        }
     }
 }
 
 export class Message {
-}
-
-export class BootstrapMessage extends Message {
 }
 
 export class FpsUpdateMessage extends Message {
@@ -52,54 +26,44 @@ export class InputMessage extends Message {
 
 export class SceneLoader {
     loadScene() {
-        let renderer = new SceneRenderer();
-        let messagePool = new MessagePool();
-        let fpsCounter = new FpsCounter(messagePool);
-        let fpsOutput = new FpsOutput(messagePool, document.getElementById("framesPerSecond"));
-        let moveInputController = new MoveInputController(messagePool, document.getElementById("moveDirection"));
-        let messagePoolController = new MessagePoolController(messagePool);
-
-        let inputController = new input.InputController();
-        let keyboardController = new input.BrowserKeyboardController(inputController, document.body);
-        let moveTrigger = new MoveCommandTrigger();
-        let moveCommand = new MoveCommand(messagePool);
-        inputController.addTrigger(moveTrigger, moveCommand);
-
-        messagePool.pushMessage(new FpsUpdateMessage(0));
-        messagePool.pushMessage(new MoveInputMessage(MoveDirection.Stand));
-
-        let scene = new Scene(renderer, messagePoolController, fpsCounter, fpsOutput, moveInputController);
-
-        return scene;
     }
 }
 
-export class Scene extends Controller  {
-    constructor(sceneRenderer, messagePoolController, fpsCounter, fpsOutput, moveInputController) {
+export class SceneController extends UpdateController  {
+    constructor(messagePoolController, inputController) {
         super();
 
-        this.sceneRenderer = sceneRenderer;
-        this.fpsOutput = fpsOutput;
-        this.fpsCounter = fpsCounter;
-        this.moveInputController = moveInputController;
         this.messagePoolController = messagePoolController;
+        this.inputController = inputController;
+    }
+
+    start() {
+        this.inputController.attach();
+        super.start();
+    }
+
+    stop() {
+        this.inputController.detach();
+        super.start();
     }
 
     update(timeStep) {
-        this.messagePoolController.update(timeStep);
-        this.fpsCounter.update(timeStep);
-        this.sceneRenderer.update(timeStep);
-        this.fpsOutput.update(timeStep);
-        this.moveInputController.update(timeStep);
+        this.messagePoolController.swap();
+
+        //message listeners(input, logic)
+        //data updaters(physics, animation)
+        //data output(render)
+        
+        super.update(timeStep);
     }
 }
 
-export class SceneRenderer extends Controller {
+export class SceneRenderer extends UpdateController {
     update(timeStep) {
     }
 }
 
-export class FpsOutput extends Controller {
+export class FpsOutput extends UpdateController {
     constructor(messagePool, htmlNode) {
         super();
 
@@ -119,7 +83,7 @@ export class FpsOutput extends Controller {
     }
 }
 
-export class FpsCounter extends Controller {
+export class FpsCounter extends UpdateController {
     constructor(messagePool) {
         super();
 
@@ -128,6 +92,11 @@ export class FpsCounter extends Controller {
         this.messagePool = messagePool;
 
         this.fpsUpdateMessage = new FpsUpdateMessage();
+    }
+
+    start() {
+        this.fpsUpdateMessage.fps = 0;
+        this.messagePool.pushMessage(this.fpsUpdateMessage);
     }
 
     update(timeStep) {
@@ -144,12 +113,16 @@ export class FpsCounter extends Controller {
     }
 }
 
-export class MoveInputController extends Controller {
+export class MoveInputController extends UpdateController {
     constructor(messagePool, htmlNode) {
         super();
 
         this.messagePool = messagePool;
         this.htmlNode = htmlNode;
+    }
+
+    start() {
+        this.showDirection(MoveDirection.Stand);
     }
 
     update(timeStep) {
@@ -158,42 +131,45 @@ export class MoveInputController extends Controller {
 
     processMessage(message) {
         if(message instanceof MoveInputMessage) {
-            let direction;
-            if(message.moveDirection == MoveDirection.East){
-                direction = "→";
-            }
-            if(message.moveDirection == MoveDirection.SouthEast){
-                direction = "↘";
-            }
-            else if(message.moveDirection == MoveDirection.South){
-                direction = "↓";
-            }
-            else if(message.moveDirection == MoveDirection.West){
-                direction = "←";
-            }
-            else if(message.moveDirection == MoveDirection.North){
-                direction = "↑";
-            }
-            if(message.moveDirection == MoveDirection.NorthEast){
-                direction = "↗";
-            }
-            if(message.moveDirection == MoveDirection.NortWest){
-                direction = "↖";
-            }
-            if(message.moveDirection == MoveDirection.SouthWest){
-                direction = "↙";
-            }
-            if(message.moveDirection == MoveDirection.Stand){
-                direction = "⚓";
-            }
-
-
-            this.htmlNode.innerText = "🧭:" + direction;
+            this.showDirection(message.moveDirection);
         }
+    }
+
+    showDirection(moveDirection) {
+        let message;
+            if(moveDirection == MoveDirection.East){
+                message = "→";
+            }
+            if(moveDirection == MoveDirection.SouthEast){
+                message = "↘";
+            }
+            else if(moveDirection == MoveDirection.South){
+                message = "↓";
+            }
+            else if(moveDirection == MoveDirection.West){
+                message = "←";
+            }
+            else if(moveDirection == MoveDirection.North){
+                message = "↑";
+            }
+            if(moveDirection == MoveDirection.NorthEast){
+                message = "↗";
+            }
+            if(moveDirection == MoveDirection.NortWest){
+                message = "↖";
+            }
+            if(moveDirection == MoveDirection.SouthWest){
+                message = "↙";
+            }
+            if(moveDirection == MoveDirection.Stand){
+                message = "⚓";
+            }
+
+            this.htmlNode.innerText = "🧭:" + message;
     }
 }
 
-class MoveDirection{
+export class MoveDirection{
     static Stand = 0;
     static North = 1;
     static NortWest = 2;
@@ -212,7 +188,7 @@ export class MoveInputMessage extends InputMessage {
     }
 }
 
-class MoveCommand extends input.Command {
+export class MoveCommand extends input.Command {
     constructor(messagePool) {
         super();
         this.messagePool = messagePool;
@@ -223,7 +199,7 @@ class MoveCommand extends input.Command {
     }
 }
 
-class MoveCommandTrigger extends input.CommandTrigger {
+export class MoveCommandTrigger extends input.CommandTrigger {
     constructor() {
         super();
         this.left = false;

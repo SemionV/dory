@@ -1,6 +1,6 @@
-import Controller from "./controller.js"
+import UpdateController from "./updateController.js"
 
-export class MessagePool extends Controller {
+export class MessagePool extends UpdateController {
     constructor(poolSize = 0) {
         super();
         this.poolSize = poolSize;
@@ -37,7 +37,7 @@ export class MessagePoolController {
         this.messagePool = messagePool;
     }
 
-    update(timeStep) {
+    swap() {
         let messagePool = this.messagePool;
         //swap the buffers(if they are not empty)
         if(messagePool.backPool.length) {
