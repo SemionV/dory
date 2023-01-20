@@ -22,6 +22,8 @@ export class ObjectFieldMapping extends FieldMapping {
     compile(fieldOffset) {
         fieldOffset = fieldOffset ? fieldOffset : 0;
 
+        this.fieldOffset = fieldOffset;
+
         let count = this.fieldMappings.length;
 
         for(let i = 0; i < count; ++i) {
@@ -33,12 +35,13 @@ export class ObjectFieldMapping extends FieldMapping {
 
     setData(dataView, originOffset, data) {
         let count = this.fieldMappings.length;
+        let fieldOffset = originOffset + this.fieldOffset;
 
         for(let i = 0; i < count; ++i) {
             let fieldMapping = this.fieldMappings[i];
 
             let value = data ? data[fieldMapping.fieldName] : null;
-            fieldMapping.setData(dataView, originOffset, value);
+            fieldMapping.setData(dataView, fieldOffset, value);
         }
     }
 
@@ -52,10 +55,12 @@ export class ObjectFieldMapping extends FieldMapping {
             instance = {};
         }
 
+        let fieldOffset = originOffset + this.fieldOffset;
+
         let count = this.fieldMappings.length;
         for(let i = 0; i < count; ++i) {
             let fieldMapping = this.fieldMappings[i];
-            instance[fieldMapping.fieldName] = fieldMapping.getData(dataView, originOffset, instance);
+            instance[fieldMapping.fieldName] = fieldMapping.getData(dataView, fieldOffset, instance);
         }
 
         return instance;
@@ -63,26 +68,28 @@ export class ObjectFieldMapping extends FieldMapping {
 }
 
 export class ArrayFieldMapping extends FieldMapping {
-    constructor(fieldName, itemsType, length) {
+    constructor(fieldName, itemFieldMapping, length) {
         super(fieldName);
-        this.itemsType = itemsType;
+        this.itemFieldMapping = itemFieldMapping;
         this.length = length;
     }
 
     compile(fieldOffset) {
+        fieldOffset = fieldOffset ? fieldOffset : 0;
+
         this.fieldOffset = fieldOffset;
-        return fieldOffset + this.itemsType.size * this.length;
+
+        return fieldOffset + this.itemFieldMapping.compile(0) * this.length;
     }
 
     setData(dataView, originOffset, data) {
         let count = this.length;
         let itemOffset = originOffset + this.fieldOffset;
-        let dataSetter = this.itemsType.dataSetter;
-        let itemSize = this.itemsType.size;
+        let itemSize = this.itemFieldMapping.fieldType.size;
 
         for(let i = 0; i < count; ++i) {
             let value = data ? data[i] : 0;
-            dataSetter(dataView, itemOffset, value);
+            this.itemFieldMapping.setData(dataView, itemOffset, value);
             itemOffset += itemSize;
         }
     }
@@ -94,11 +101,10 @@ export class ArrayFieldMapping extends FieldMapping {
 
         let count = this.length;
         let itemOffset = originOffset + this.fieldOffset;
-        let dataGetter = this.itemsType.dataGetter;
-        let itemSize = this.itemsType.size;
+        let itemSize = this.itemFieldMapping.fieldType.size;
 
         for(let i = 0; i < count; ++i) {
-            dataInstance[i] = dataGetter(dataView, itemOffset);
+            dataInstance[i] = this.itemFieldMapping.getData(dataView, itemOffset);
             itemOffset += itemSize;
         }
 

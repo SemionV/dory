@@ -24,7 +24,10 @@ export class MessagePoolController extends UpdateController {
     }
 }
 
-export class SceneRenderer extends UpdateController {
+export class CanvasSceneRenderer extends UpdateController {
+    constructor(canvasContext) {        
+    }
+
     update(timeStep, context) {
     }
 }

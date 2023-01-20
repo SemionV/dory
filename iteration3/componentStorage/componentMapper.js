@@ -4,7 +4,7 @@ import * as mappings from "./mappings.js";
 
 export class ComponentMapper {
     static buildMapping(componentSchema) {
-        return this.#buildObjectFieldMapping(null, componentSchema);
+        return this.#buildFieldMapping(null, componentSchema);
     }
 
     static #buildFieldMapping(fieldName, fieldTypeValue) {
@@ -42,7 +42,8 @@ export class ComponentMapper {
         let fieldMapping;
 
         if (fieldTypeValue.length == 2) {
-            fieldMapping = new mappings.ArrayFieldMapping(fieldName, fieldTypeValue[0], fieldTypeValue[1]);
+            let itemFieldMapping = this.#buildPrimitiveFieldMapping(null, fieldTypeValue[0]);
+            fieldMapping = new mappings.ArrayFieldMapping(fieldName, itemFieldMapping, fieldTypeValue[1]);
         }
 
         return fieldMapping;

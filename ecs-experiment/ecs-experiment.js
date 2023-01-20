@@ -1,6 +1,6 @@
 import * as bitecs from "../js2/bitecs/index.js"
 import * as di from "../iteration3/serviceRegistry.js"
-import * as storages from "../iteration3/componentStorage/componentStorage.js"
+import ComponentStorage from "../iteration3/componentStorage/componentStorage.js"
 import * as fieldTypes from "../iteration3/componentStorage/fieldTypes.js"
 
 let numberWithCommas = (x) => {
@@ -171,7 +171,7 @@ let csSetupTest = window.csSetupTest = (componentsNumber) => {
 
     let start = performance.now();
 
-    let storage = new storages.ComponentStorage(componentsNumber, componentSchema);
+    let storage = new ComponentStorage(componentsNumber, componentSchema);
 
     for(let i = 0; i < componentsNumber; ++i) {
         storage.saveComponent(i, {id: i, userId: i + 100, amountDue: i + 0.0});
@@ -204,7 +204,6 @@ let csAccessTest = window.csAccessTest = (setup) => {
 
 let arraySetupTest = window.arraySetupTest = (componentsNumber) => {
     let start = performance.now();
-
 
     let array = new Array(componentsNumber);
 

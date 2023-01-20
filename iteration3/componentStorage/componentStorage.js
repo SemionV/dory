@@ -1,6 +1,6 @@
 import * as mapping from "./componentMapper.js"
 
-export class ComponentStorage {
+export default class ComponentStorage {
     constructor(slotsCount, componentSchema) {
         this.componentMapping = mapping.ComponentMapper.buildMapping(componentSchema);
         this.slotSize = this.componentMapping.compile();
@@ -18,13 +18,12 @@ export class ComponentStorage {
         return this.componentMapping.getData(this.view, slotIndex * this.slotSize, componentInstance);
     }
 
-    forEach(delegate) {
+    forEach(delegate, componentInstance) {
         let count = this.slotsCount;
-        let component = {};
         let offset = 0;
 
         for(let i = 0; i < count; i++) {
-            this.componentMapping.getData(this.view, offset, component);
+            let component = this.componentMapping.getData(this.view, offset, componentInstance);
 
             delegate(component);
 
