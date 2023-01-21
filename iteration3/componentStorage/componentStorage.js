@@ -8,10 +8,21 @@ export default class ComponentStorage {
 
         this.buffer = new ArrayBuffer(this.slotSize * slotsCount);
         this.view = new DataView(this.buffer, 0);
+
+        this.nextAvailableSlot = -1;
     }
 
-    saveComponent(slotIndex, component) {
+    getNextAvailableSlotIndex() {
+        return ++this.nextAvailableSlot;
+    }
+
+    saveComponent(component, slotIndex) {
+        if(slotIndex === undefined) {
+            slotIndex = this.getNextAvailableSlotIndex();
+        }
         this.componentMapping.setData(this.view, slotIndex * this.slotSize, component);
+
+        return slotIndex;
     }
 
     loadComponent(slotIndex, componentInstance) {

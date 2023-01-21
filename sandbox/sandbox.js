@@ -24,14 +24,6 @@ export class MessagePoolController extends UpdateController {
     }
 }
 
-export class CanvasSceneRenderer extends UpdateController {
-    constructor(canvasContext) {        
-    }
-
-    update(timeStep, context) {
-    }
-}
-
 export class FpsOutput extends UpdateController {
     constructor(htmlNode) {
         super();

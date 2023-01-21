@@ -174,7 +174,7 @@ let csSetupTest = window.csSetupTest = (componentsNumber) => {
     let storage = new ComponentStorage(componentsNumber, componentSchema);
 
     for(let i = 0; i < componentsNumber; ++i) {
-        storage.saveComponent(i, {id: i, userId: i + 100, amountDue: i + 0.0});
+        storage.saveComponent({id: i, userId: i + 100, amountDue: i + 0.0}, i);
     }
 
     let end = performance.now();

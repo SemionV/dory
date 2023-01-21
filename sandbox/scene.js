@@ -6,4 +6,6 @@ export let pointSchema = {
     z: fieldTypes.Float32
 }
 
-export let matrix4x4Schema = [fieldTypes.Float32, 16]
+export let transformationSchema = {
+    matrix: [fieldTypes.Float32, 16]
+}
