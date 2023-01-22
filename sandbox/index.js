@@ -26,7 +26,7 @@ let mainCameraId = 1;
 camerasStorage.set(mainCameraId, {
     transformation: new transformations.MatrixTransformation(new math.Matrix3D()),
     velocity: new primitives.Point3D(),
-    direction: new primitives.Point2D(0, 1).rotateUnit(-45),
+    direction: new primitives.Point2D(1, 0).rotateUnit(45),
     projection: new transformations.IsometricProjection()//matrix form: [1, -1, 0, 0,  0.5, 0.5, 1, 0,  0, 0, 0, 0,  0, 0, 0, 0]
 });
 
