@@ -19,10 +19,11 @@ export default class CanvasSceneRenderer extends UpdateController {
     }
 
     update(timeStep, context) {
+        let viewport = this.view.viewport;
         let camera = context.cameras.get(this.view.cameraId);
         let cameraTransformation;
         let cameraProjection;
-        let viewportTransformation = this.view.viewport.transformation;
+        let viewportTransformation = viewport.transformation;
 
         if(camera) {
             cameraTransformation = camera.transformation;
@@ -38,8 +39,10 @@ export default class CanvasSceneRenderer extends UpdateController {
         }
 
         if(cameraTransformation) {
-            this.renderingContext.stackTransformation(cameraTransformation);
+            this.renderingContext.stackTransformation(cameraTransformation.invert());
         }
+
+        this.canvas.clearRect(viewport.x, viewport.y , viewport.width, viewport.height);
 
         let points = context.points;
         if(points) {

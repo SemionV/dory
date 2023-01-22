@@ -9,6 +9,10 @@ export class Transformation {
     combine(transformation) {
 
     }
+
+    invert() {
+
+    }
 }
 
 export class IdentityTransformation {
@@ -39,6 +43,10 @@ export class Translation extends Transformation {
 
     combine(transformation) {
         return new CombinedTransformation(transformation, this);
+    }
+
+    invert() {
+        return new Translation(this.x * -1, this.y * -1, this.z * -1);
     }
 }
 
@@ -77,6 +85,10 @@ export class MatrixTransformation extends Transformation {
             return new CombinedTransformation(transformation, this);
         }
     }
+
+    invert() {
+        return new MatrixTransformation(this.matrix.invert());
+    }
 }
 
 export class CombinedTransformation extends Transformation {
@@ -98,6 +110,13 @@ export class CombinedTransformation extends Transformation {
 
     combine(transformation) {
         return new CombinedTransformation(transformation, this);
+    }
+
+    invert() {
+        let firstTransformation = this.firstTransformation ? this.firstTransformation.invert() : null;
+        let secondTransformation = this.secondTransformation ? this.secondTransformation.invert() : null;
+
+        return new CombinedTransformation(firstTransformation, secondTransformation);
     }
 }
 

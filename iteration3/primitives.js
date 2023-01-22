@@ -1,3 +1,5 @@
+import { Angle } from "./math.js";
+
 export class Color{
     constructor(r, g, b, a = 'undefined'){
         this.r = r;
@@ -58,6 +60,14 @@ export class Point2D{
     reset(){
         this.x = 0;
         this.y = 0;
+    }
+
+    rotateUnit(degree, result = new Point2D()) {
+        let rad = Angle.toRadian(degree);
+        result.x = Math.cos(rad) * this.x + (-1 * Math.sin(rad)) * this.y;
+        result.y = Math.sin(rad) * this.x + Math.cos(rad) * this.y;
+
+        return result;
     }
 
     rotate45Degrees(result = new Point2D()){

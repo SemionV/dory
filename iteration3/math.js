@@ -135,10 +135,9 @@ export class Matrix3D extends Array{
     }
 
     addTranslation(dx, dy, dz){
-        result[12] = result[12] + dx; 
-        result[13] = result[13] + dy; 
-        result[14] = result[14] + dz;
-        return result;
+        this[12] = this[12] + dx; 
+        this[13] = this[13] + dy; 
+        this[14] = this[14] + dz;
     }
 
     toString(){

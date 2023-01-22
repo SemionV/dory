@@ -96,42 +96,55 @@ export class MoveCommandController extends UpdateController {
         let messageTip;
         let camera = context.cameras.get(this.cameraId);
         let speed = 50;
-        let velocity = new primitives.Point2D();
+        let velocity = new primitives.Point3D();
 
 
         if(camera) {
             let cameraDirection = camera.direction;
 
             if(moveDirection == MoveDirection.East){
-                messageTip = "→";
-    
-                cameraDirection.rotate270Degrees(velocity);
-                velocity.multiply(speed);
+                messageTip = "→";    
+                cameraDirection.rotateUnit(270, velocity);
             }
             if(moveDirection == MoveDirection.SouthEast){
                 messageTip = "↘";
+                cameraDirection.rotateUnit(225, velocity);
             }
             else if(moveDirection == MoveDirection.South){
                 messageTip = "↓";
+                cameraDirection.rotateUnit(180, velocity);
             }
             else if(moveDirection == MoveDirection.West){
                 messageTip = "←";
+                cameraDirection.rotateUnit(90, velocity);
             }
             else if(moveDirection == MoveDirection.North){
                 messageTip = "↑";
+                velocity.x = cameraDirection.x;
+                velocity.y = cameraDirection.y;
             }
             if(moveDirection == MoveDirection.NorthEast){
                 messageTip = "↗";
+                cameraDirection.rotateUnit(315, velocity);
             }
             if(moveDirection == MoveDirection.NortWest){
                 messageTip = "↖";
+                cameraDirection.rotateUnit(45, velocity);
             }
             if(moveDirection == MoveDirection.SouthWest){
                 messageTip = "↙";
+                cameraDirection.rotateUnit(135, velocity);
             }
             if(moveDirection == MoveDirection.Stand){
                 messageTip = "⚓";
+                velocity.x = 0;
+                velocity.y = 0;
             }
+
+            velocity.x = velocity.x * speed;
+            velocity.y = velocity.y * speed;
+
+            camera.velocity = velocity;
         }
 
         this.htmlNode.innerText = "🧭:" + messageTip;
@@ -149,12 +162,14 @@ export class CameraController extends UpdateController {
         let velocity;
 
         if(camera) {
-            velocity = camera.Velocity;
+            velocity = camera.velocity;
 
             if(velocity && (velocity.x || velocity.y || velocity.z)) {
-                let dx = velocity.x * timeStep;
-                let dy = velocity.y * timeStep ;
-                let dz = velocity.z * timeStep;
+                let timeStepSeconds = timeStep / 1000;
+
+                let dx = velocity.x * timeStepSeconds;
+                let dy = velocity.y * timeStepSeconds;
+                let dz = velocity.z * timeStepSeconds;
     
                 if(camera.transformation.matrix) {
                     camera.transformation.matrix.addTranslation(dx, dy, dz);
