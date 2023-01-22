@@ -16,20 +16,25 @@ export default class CanvasSceneRenderer extends UpdateController {
         this.renderingContext = new Canvas2dRenderingContext(this.view.viewport, this.canvas);
 
         this.pointDrawer = new drawers.PointDrawer();
-
-        let viewportHalfWidth = view.viewport.width / 2;
-        let viewportHalfHeight = view.viewport.height / 2;
-        this.viewportTransformation = new transformations.MatrixTransformation(new math.Matrix3D(1, 0, 0, 0,  0, -1, 0, 0,  0, 0, 1, 0,  viewportHalfWidth, viewportHalfHeight, 0, 1));
     }
 
     update(timeStep, context) {
-        let projectionTransformation = this.view.projectionTransformation;
-        let cameraTransformation = context.cameraTransformation;
+        let camera = context.cameras.get(this.view.cameraId);
+        let cameraTransformation;
+        let cameraProjection;
+        let viewportTransformation = this.view.viewport.transformation;
 
-        this.renderingContext.stackTransformation(this.viewportTransformation);
+        if(camera) {
+            cameraTransformation = camera.transformation;
+            cameraProjection = camera.projection;
+        }
 
-        if(projectionTransformation) {
-            this.renderingContext.stackTransformation(projectionTransformation);
+        if(viewportTransformation) {
+            this.renderingContext.stackTransformation(viewportTransformation);
+        }
+
+        if(cameraProjection) {
+            this.renderingContext.stackTransformation(cameraProjection);
         }
 
         if(cameraTransformation) {
@@ -50,15 +55,17 @@ export default class CanvasSceneRenderer extends UpdateController {
             this.renderingContext.unstackTransformation();
         }
 
-        if(projectionTransformation) {
+        if(cameraProjection) {
             this.renderingContext.unstackTransformation();
         }
 
-        this.renderingContext.unstackTransformation();
+        if(viewportTransformation) {
+            this.renderingContext.unstackTransformation();
+        }
     }
 }
 
-export class Canvas2dRenderingContext extends renderingSystem.RenderingContext {
+class Canvas2dRenderingContext extends renderingSystem.RenderingContext {
     constructor(viewport, canvasContext) {
         super(viewport);
         this.canvas = canvasContext;

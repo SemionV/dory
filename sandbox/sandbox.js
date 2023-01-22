@@ -1,5 +1,8 @@
 import UpdateController from "../iteration3/updateController.js"
 import * as input from "../iteration3/inputSystem.js"
+import * as transformations from "../iteration3/transformation.js"
+import * as math from "../iteration3/math.js"
+import * as primitives from "../iteration3/primitives.js"
 
 export class Message {
 }
@@ -70,57 +73,98 @@ export class FpsCounter extends UpdateController {
 }
 
 export class MoveCommandController extends UpdateController {
-    constructor(htmlNode) {
+    constructor(cameraId, htmlNode) {
         super();
 
+        this.cameraId = cameraId;
         this.htmlNode = htmlNode;
     }
 
-    initialize() {
-        this.showDirection(MoveDirection.Stand);
+    initialize(context) {
+        this.showDirection(context, MoveDirection.Stand);
     }
 
     update(timeStep, context) {
-        context.messagePool.forEach(this.processMessage, this);
+        context.messagePool.forEach((message) => {
+            if(message instanceof MoveCommandMessage) {
+                this.showDirection(context, message.moveDirection);
+            }
+        });
     }
 
-    processMessage(message) {
-        if(message instanceof MoveCommandMessage) {
-            this.showDirection(message.moveDirection);
-        }
-    }
+    showDirection(context, moveDirection) {
+        let messageTip;
+        let camera = context.cameras.get(this.cameraId);
+        let speed = 50;
+        let velocity = new primitives.Point2D();
 
-    showDirection(moveDirection) {
-        let message;
+
+        if(camera) {
+            let cameraDirection = camera.direction;
+
             if(moveDirection == MoveDirection.East){
-                message = "→";
+                messageTip = "→";
+    
+                cameraDirection.rotate270Degrees(velocity);
+                velocity.multiply(speed);
             }
             if(moveDirection == MoveDirection.SouthEast){
-                message = "↘";
+                messageTip = "↘";
             }
             else if(moveDirection == MoveDirection.South){
-                message = "↓";
+                messageTip = "↓";
             }
             else if(moveDirection == MoveDirection.West){
-                message = "←";
+                messageTip = "←";
             }
             else if(moveDirection == MoveDirection.North){
-                message = "↑";
+                messageTip = "↑";
             }
             if(moveDirection == MoveDirection.NorthEast){
-                message = "↗";
+                messageTip = "↗";
             }
             if(moveDirection == MoveDirection.NortWest){
-                message = "↖";
+                messageTip = "↖";
             }
             if(moveDirection == MoveDirection.SouthWest){
-                message = "↙";
+                messageTip = "↙";
             }
             if(moveDirection == MoveDirection.Stand){
-                message = "⚓";
+                messageTip = "⚓";
             }
+        }
 
-            this.htmlNode.innerText = "🧭:" + message;
+        this.htmlNode.innerText = "🧭:" + messageTip;
+    }
+}
+
+export class CameraController extends UpdateController {
+    constructor(cameraId) {
+        super();
+        this.cameraId = cameraId;
+    }
+
+    update(timeStep, context) {
+        let camera = context.cameras.get(this.cameraId);
+        let velocity;
+
+        if(camera) {
+            velocity = camera.Velocity;
+
+            if(velocity && (velocity.x || velocity.y || velocity.z)) {
+                let dx = velocity.x * timeStep;
+                let dy = velocity.y * timeStep ;
+                let dz = velocity.z * timeStep;
+    
+                if(camera.transformation.matrix) {
+                    camera.transformation.matrix.addTranslation(dx, dy, dz);
+                }
+                else {
+                    let matrix = math.Matrix3D.translate(dx, dy, dz);
+                    camera.transformation = new transformations.MatrixTransformation(matrix)
+                }
+            }
+        }
     }
 }
 

@@ -9,8 +9,10 @@ export class Constants {
 }
 
 export class Angle {
+    static radDegree = Math.PI / 180;
+
     static toRadian(degree){
-        return degree * (Math.PI / 180);
+        return degree * Angle.radDegree;
     }
 }
 
@@ -64,23 +66,36 @@ export class Point2D extends Point{
         this.y = 0;
     }
 
-    perpendicularLeft(result = new Point2D()){
+    rotate45Degrees(result = new Point2D()){
+        let px = this.y;
+        let py = -this.x;
+
+        let x = this.x + px;
+        let y = this.y + py;
+
+        result.x = x != 0 ? x / Math.abs(x) : 0;
+        result.y = y != 0 ? y / Math.abs(y) : 0;
+
+        return result;
+    }
+
+    rotate90Degrees(result = new Point2D()){
         result.x = this.y;
         result.y = -this.x;
 
         return result;
     }
 
-    perpendicularRight(result = new Point2D()){
-        result.x = -this.y;
-        result.y = this.x;
+    rotate180Degrees(result = new Point2D()){
+        result.x = -this.x;
+        result.y = -this.y;
 
         return result;
     }
 
-    inverse(result = new Point2D()){
-        result.x = -this.x;
-        result.y = -this.y;
+    rotate270Degrees(result = new Point2D()){
+        result.x = -this.y;
+        result.y = this.x;
 
         return result;
     }
@@ -96,19 +111,6 @@ export class Point2D extends Point{
             result.x = this.x * len;
             result.y = this.y * len;
         }
-        return result;
-    }
-
-    rotate45DegreesNormal(result = new Point2D()){
-        let px = this.y;
-        let py = -this.x;
-
-        let x = this.x + px;
-        let y = this.y + py;
-
-        result.x = x != 0 ? x / Math.abs(x) : 0;
-        result.y = y != 0 ? y / Math.abs(y) : 0;
-
         return result;
     }
 

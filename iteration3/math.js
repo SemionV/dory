@@ -134,6 +134,13 @@ export class Matrix3D extends Array{
         return result;
     }
 
+    addTranslation(dx, dy, dz){
+        result[12] = result[12] + dx; 
+        result[13] = result[13] + dy; 
+        result[14] = result[14] + dz;
+        return result;
+    }
+
     toString(){
         return `${this[0]} ${this[1]} ${this[2]} ${this[3]}
 ${this[4]} ${this[5]} ${this[6]} ${this[7]}
@@ -179,5 +186,13 @@ ${this[12]} ${this[13]} ${this[14]} ${this[15]}`;
         result[8] = 0; result[9] = 0; result[10] = 1; result[11] = 0;
         result[12] = 0; result[13] = 0; result[14] = 0; result[15] = 1;
         return result;
+    }
+}
+
+export class Angle {
+    static radDegree = Math.PI / 180;
+
+    static toRadian(degree){
+        return degree * Angle.radDegree;
     }
 }

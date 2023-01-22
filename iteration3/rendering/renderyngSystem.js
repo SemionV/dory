@@ -19,11 +19,19 @@ export class RenderingContext {
     }
 }
 
-export class Viewport{
-    constructor(width, height, x = 0, y = 0){
+export class Viewport {
+    constructor(width, height, x = 0, y = 0, transformation){
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.transformation = transformation;
+    }
+}
+
+export class View {
+    constructor(viewport, cameraId) {
+        this.viewport = viewport;
+        this.cameraId = cameraId;
     }
 }

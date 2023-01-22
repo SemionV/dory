@@ -105,25 +105,25 @@ export class KeyboardController extends Controller{
                 moveDirection = new primitives.Point2D(this.axis.x, this.axis.y);//NW
             }
             else if (left && !bottom && !right && !top) {
-                moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).perpendicularLeft();//SW
+                moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).rotate90Degrees();//SW
             }
             else if (left && !bottom && !right && top) {
-                moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).rotate45DegreesNormal();//W
+                moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).rotate45Degrees();//W
             }
             else if (left && bottom && !right && !top) {
-                moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).perpendicularLeft().rotate45DegreesNormal();//S
+                moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).rotate90Degrees().rotate45Degrees();//S
             }
             else if (!left && !bottom && right && top) {
-                moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).perpendicularRight().rotate45DegreesNormal();//N
+                moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).rotate270Degrees().rotate45Degrees();//N
             }
             else if (!left && bottom && right && !top) {
-                moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).inverse().rotate45DegreesNormal();//E
+                moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).rotate180Degrees().rotate45Degrees();//E
             }
             else if (!left && bottom && !right && !top) {
-                moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).inverse();//SE
+                moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).rotate180Degrees();//SE
             }
             else if (!left && !bottom && right && !top) {
-                moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).perpendicularRight();//NE
+                moveDirection = new primitives.Point2D(this.axis.x, this.axis.y).rotate270Degrees();//NE
             }
 
             let eventsSet = new eventsModel.EventsSet();
