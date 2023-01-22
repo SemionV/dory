@@ -13,6 +13,9 @@ import CanvasSceneRenderer from "../iteration3/rendering/canvas2d/sceneRenderer.
 let canvas = document.getElementById('canvas');
 let canvasContext = canvas.getContext('2d');
 
+let canvasTop = document.getElementById('canvasTopProjection');
+let canvasContextTop = canvasTop.getContext('2d');
+
 let pointsStorage = new ComponentStorage(4, scene.pointSchema);
 pointsStorage.saveComponent({x: -50, y: -50, z: 0});
 pointsStorage.saveComponent({x: 50, y: -50, z: 0});
@@ -28,6 +31,14 @@ camerasStorage.set(mainCameraId, {
     velocity: new primitives.Point3D(),
     direction: new primitives.Point2D(1, 0).rotateUnit(45),
     projection: new transformations.IsometricProjection()//matrix form: [1, -1, 0, 0,  0.5, 0.5, 1, 0,  0, 0, 0, 0,  0, 0, 0, 0]
+});
+
+let topCameraId = 2;
+camerasStorage.set(topCameraId, {
+    transformation: new transformations.MatrixTransformation(new math.Matrix3D()),
+    velocity: new primitives.Point3D(),
+    direction: new primitives.Point2D(0, 1),
+    projection: new transformations.IdentityTransformation()//matrix form: [1, -1, 0, 0,  0.5, 0.5, 1, 0,  0, 0, 0, 0,  0, 0, 0, 0]
 });
 
 let sceneContext = {
@@ -47,8 +58,15 @@ let viewportX = 0;
 let viewportY = 0;
 let viewportTransformation = new transformations.MatrixTransformation(new math.Matrix3D(1, 0, 0, 0,  0, -1, 0, 0,  0, 0, 1, 0,  viewportWidth / 2 + viewportX, viewportHeight / 2 + viewportY, 0, 1))
 let viewport = new renderingSystem.Viewport(viewportWidth, viewportHeight, viewportX, viewportY, viewportTransformation);
-
 let view = new renderingSystem.View(viewport, mainCameraId);
+
+viewportWidth = canvasTop.width;
+viewportHeight = canvasTop.height;
+viewportX = 0;
+viewportY = 0;
+viewportTransformation = new transformations.MatrixTransformation(new math.Matrix3D(1, 0, 0, 0,  0, -1, 0, 0,  0, 0, 1, 0,  viewportWidth / 2 + viewportX, viewportHeight / 2 + viewportY, 0, 1))
+let viewportTopPojection = new renderingSystem.Viewport(viewportWidth, viewportHeight, viewportX, viewportY, viewportTransformation);
+let viewTopProjection = new renderingSystem.View(viewportTopPojection, topCameraId);
 
 let inputSystem = new input.InputSystem();
 let keyboardController = new input.BrowserKeyboardListener(document.body);
@@ -61,9 +79,15 @@ engine.addController(new sandbox.MessagePoolController());
 
 engine.addController(new sandbox.MoveCommandController(mainCameraId, document.getElementById("moveDirection")));
 engine.addController(new sandbox.CameraController(mainCameraId));
+
+engine.addController(new sandbox.MoveCommandController(topCameraId, null));
+engine.addController(new sandbox.CameraController(topCameraId));
+
 engine.addController(new sandbox.FpsCounter());
 
 engine.addController(new CanvasSceneRenderer(canvasContext, view));
+engine.addController(new CanvasSceneRenderer(canvasContextTop, viewTopProjection));
+
 engine.addController(new sandbox.FpsOutput(document.getElementById("framesPerSecond")));
 
 engine.run(sceneContext);

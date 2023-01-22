@@ -147,7 +147,9 @@ export class MoveCommandController extends UpdateController {
             camera.velocity = velocity;
         }
 
-        this.htmlNode.innerText = "🧭:" + messageTip;
+        if(this.htmlNode) {
+            this.htmlNode.innerText = "🧭:" + messageTip;
+        }
     }
 }
 
