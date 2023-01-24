@@ -30,8 +30,22 @@ export class Viewport {
 }
 
 export class View {
-    constructor(viewport, cameraId) {
+    constructor(viewport, camera) {
         this.viewport = viewport;
-        this.cameraId = cameraId;
+        this.camera = camera;
+    }
+}
+
+export class Camera {
+    constructor(id, transformation, projectionTransformation, velocity, direction) {
+        this.id = id;
+        this.transformation = transformation;
+        this.projectionTransformation = projectionTransformation;
+        this.velocity = velocity;
+        this.direction = direction;
+    }
+
+    getTransformation() {
+        return this.projectionTransformation.combine(this.transformation.invert());
     }
 }

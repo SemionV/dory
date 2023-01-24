@@ -73,29 +73,26 @@ export class FpsCounter extends UpdateController {
 }
 
 export class MoveCommandController extends UpdateController {
-    constructor(cameraId, htmlNode) {
+    constructor(camera, speed) {
         super();
-
-        this.cameraId = cameraId;
-        this.htmlNode = htmlNode;
+        this.camera = camera;
+        this.speed = speed;
     }
 
     initialize(context) {
-        this.showDirection(context, MoveDirection.Stand);
+        this.setVelocity(context, MoveDirection.Stand);
     }
 
     update(timeStep, context) {
         context.messagePool.forEach((message) => {
             if(message instanceof MoveCommandMessage) {
-                this.showDirection(context, message.moveDirection);
+                this.setVelocity(context, message.moveDirection);
             }
         });
     }
 
-    showDirection(context, moveDirection) {
-        let messageTip;
-        let camera = context.cameras.get(this.cameraId);
-        let speed = 50;
+    setVelocity(context, moveDirection) {
+        let camera = this.camera;
         let velocity = new primitives.Point3D();
 
 
@@ -103,48 +100,90 @@ export class MoveCommandController extends UpdateController {
             let cameraDirection = camera.direction;
 
             if(moveDirection == MoveDirection.East){
-                messageTip = "→";    
                 cameraDirection.rotateUnit(270, velocity);
             }
             if(moveDirection == MoveDirection.SouthEast){
-                messageTip = "↘";
                 cameraDirection.rotateUnit(225, velocity);
             }
             else if(moveDirection == MoveDirection.South){
-                messageTip = "↓";
                 cameraDirection.rotateUnit(180, velocity);
             }
             else if(moveDirection == MoveDirection.West){
-                messageTip = "←";
                 cameraDirection.rotateUnit(90, velocity);
             }
             else if(moveDirection == MoveDirection.North){
-                messageTip = "↑";
                 velocity.x = cameraDirection.x;
                 velocity.y = cameraDirection.y;
             }
             if(moveDirection == MoveDirection.NorthEast){
-                messageTip = "↗";
                 cameraDirection.rotateUnit(315, velocity);
             }
             if(moveDirection == MoveDirection.NortWest){
-                messageTip = "↖";
                 cameraDirection.rotateUnit(45, velocity);
             }
             if(moveDirection == MoveDirection.SouthWest){
-                messageTip = "↙";
                 cameraDirection.rotateUnit(135, velocity);
             }
             if(moveDirection == MoveDirection.Stand){
-                messageTip = "⚓";
                 velocity.x = 0;
                 velocity.y = 0;
             }
 
-            velocity.x = velocity.x * speed;
-            velocity.y = velocity.y * speed;
+            velocity.x = velocity.x * this.speed;
+            velocity.y = velocity.y * this.speed;
 
             camera.velocity = velocity;
+        }
+    }
+}
+
+export class MoveCommandOutput extends UpdateController {
+    constructor(htmlNode) {
+        super();
+        this.htmlNode = htmlNode;
+    }
+
+    initialize(context) {
+        this.showDirection(MoveDirection.Stand);
+    }
+
+    update(timeStep, context) {
+        context.messagePool.forEach((message) => {
+            if(message instanceof MoveCommandMessage) {
+                this.showDirection(message.moveDirection);
+            }
+        });
+    }
+
+    showDirection(moveDirection) {
+        let messageTip;
+
+        if(moveDirection == MoveDirection.East){
+            messageTip = "→";
+        }
+        if(moveDirection == MoveDirection.SouthEast){
+            messageTip = "↘";
+        }
+        else if(moveDirection == MoveDirection.South){
+            messageTip = "↓";
+        }
+        else if(moveDirection == MoveDirection.West){
+            messageTip = "←";
+        }
+        else if(moveDirection == MoveDirection.North){
+            messageTip = "↑";
+        }
+        if(moveDirection == MoveDirection.NorthEast){
+            messageTip = "↗";
+        }
+        if(moveDirection == MoveDirection.NortWest){
+            messageTip = "↖";
+        }
+        if(moveDirection == MoveDirection.SouthWest){
+            messageTip = "↙";
+        }
+        if(moveDirection == MoveDirection.Stand){
+            messageTip = "⚓";
         }
 
         if(this.htmlNode) {
@@ -154,13 +193,13 @@ export class MoveCommandController extends UpdateController {
 }
 
 export class CameraController extends UpdateController {
-    constructor(cameraId) {
+    constructor(camera) {
         super();
-        this.cameraId = cameraId;
+        this.camera = camera;
     }
 
     update(timeStep, context) {
-        let camera = context.cameras.get(this.cameraId);
+        let camera = this.camera;
         let velocity;
 
         if(camera) {
@@ -220,9 +259,13 @@ export class MoveCommandTrigger extends input.CommandTrigger {
     }
 
     static arrowLeftKey = "ArrowLeft";
+    static aKey = "a";
     static arrowRightKey = "ArrowRight";
+    static dKey = "d";
     static arrowUpKey = "ArrowUp";
+    static wKey = "w";
     static arrowDownKey = "ArrowDown";
+    static sKey = "s";
 
     check(deviceEvent) {
         let moveDerectionCurrent = this.getMoveDirection();
@@ -241,16 +284,16 @@ export class MoveCommandTrigger extends input.CommandTrigger {
     }
 
     updateKeyState(key, state) {
-        if(key == MoveCommandTrigger.arrowLeftKey) {
+        if(key == MoveCommandTrigger.arrowLeftKey || key == MoveCommandTrigger.aKey) {
             this.left = state;
         }
-        else if(key == MoveCommandTrigger.arrowRightKey) {
+        else if(key == MoveCommandTrigger.arrowRightKey || key == MoveCommandTrigger.dKey) {
             this.right = state;
         }
-        else if(key == MoveCommandTrigger.arrowUpKey) {
+        else if(key == MoveCommandTrigger.arrowUpKey || key == MoveCommandTrigger.wKey) {
             this.up = state;
         }
-        else if(key == MoveCommandTrigger.arrowDownKey) {
+        else if(key == MoveCommandTrigger.arrowDownKey || key == MoveCommandTrigger.sKey) {
             this.down = state;
         }
     }

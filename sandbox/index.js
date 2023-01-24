@@ -8,7 +8,7 @@ import * as primitives from "../iteration3/primitives.js"
 import * as math from "../iteration3/math.js"
 import ComponentStorage from "../iteration3/componentStorage/componentStorage.js"
 import * as renderingSystem from "../iteration3/rendering/renderyngSystem.js"
-import CanvasSceneRenderer from "../iteration3/rendering/canvas2d/sceneRenderer.js"
+import * as canvasRendering from "../iteration3/rendering/canvas2d/sceneRenderer.js"
 
 let canvas = document.getElementById('canvas');
 let canvasContext = canvas.getContext('2d');
@@ -16,78 +16,56 @@ let canvasContext = canvas.getContext('2d');
 let canvasTop = document.getElementById('canvasTopProjection');
 let canvasContextTop = canvasTop.getContext('2d');
 
-let pointsStorage = new ComponentStorage(4, scene.pointSchema);
-pointsStorage.saveComponent({x: -50, y: -50, z: 0});
-pointsStorage.saveComponent({x: 50, y: -50, z: 0});
-pointsStorage.saveComponent({x: 50, y: 50, z: 0});
-pointsStorage.saveComponent({x: -50, y: 50, z: 0});
+let isoViewCamera = new renderingSystem.Camera(1, 
+    new transformations.MatrixTransformation(),
+    new transformations.IsometricProjection(),
+    new primitives.Point3D(),
+    new primitives.Point2D(1, 0).rotateUnit(45));
 
-let transformationsStorage = new Map();
-let camerasStorage = new Map();
+let topViewCamera = new renderingSystem.Camera(1, 
+    new transformations.MatrixTransformation(),
+    new transformations.IdentityTransformation(),
+    new primitives.Point3D(),
+    new primitives.Point2D(0, 1));
 
-let mainCameraId = 1;
-camerasStorage.set(mainCameraId, {
-    transformation: new transformations.MatrixTransformation(new math.Matrix3D()),
-    velocity: new primitives.Point3D(),
-    direction: new primitives.Point2D(1, 0).rotateUnit(45),
-    projection: new transformations.IsometricProjection()//matrix form: [1, -1, 0, 0,  0.5, 0.5, 1, 0,  0, 0, 0, 0,  0, 0, 0, 0]
-});
+let isoView = new canvasRendering.CanvasView(canvas, isoViewCamera);
+let topView = new canvasRendering.CanvasView(canvasTop, topViewCamera);
 
-let topCameraId = 2;
-camerasStorage.set(topCameraId, {
-    transformation: new transformations.MatrixTransformation(new math.Matrix3D()),
-    velocity: new primitives.Point3D(),
-    direction: new primitives.Point2D(0, 1),
-    projection: new transformations.IdentityTransformation()//matrix form: [1, -1, 0, 0,  0.5, 0.5, 1, 0,  0, 0, 0, 0,  0, 0, 0, 0]
-});
+let worldLayer = new scene.Layer(new transformations.IdentityTransformation);
+worldLayer.addPoint({x: -50, y: -50, z: 0, r: 255, g: 0, b: 0});
+worldLayer.addPoint({x: 50, y: -50, z: 0, r: 0, g: 150, b: 0});
+worldLayer.addPoint({x: 50, y: 50, z: 0, r: 0, g: 0, b: 255});
+worldLayer.addPoint({x: -50, y: 50, z: 0, r: 150, g: 150, b: 0});
+
 
 let sceneContext = {
     messagePool: new MessagePool(),
-    viewport: {
-        width: canvas.width,
-        height: canvas.height
-    },
-    points: pointsStorage,
-    transformations: transformationsStorage,
-    cameras: camerasStorage
+    worldLayer: worldLayer
 }
-
-let viewportWidth = canvas.width;
-let viewportHeight = canvas.height;
-let viewportX = 0;
-let viewportY = 0;
-let viewportTransformation = new transformations.MatrixTransformation(new math.Matrix3D(1, 0, 0, 0,  0, -1, 0, 0,  0, 0, 1, 0,  viewportWidth / 2 + viewportX, viewportHeight / 2 + viewportY, 0, 1))
-let viewport = new renderingSystem.Viewport(viewportWidth, viewportHeight, viewportX, viewportY, viewportTransformation);
-let view = new renderingSystem.View(viewport, mainCameraId);
-
-viewportWidth = canvasTop.width;
-viewportHeight = canvasTop.height;
-viewportX = 0;
-viewportY = 0;
-viewportTransformation = new transformations.MatrixTransformation(new math.Matrix3D(1, 0, 0, 0,  0, -1, 0, 0,  0, 0, 1, 0,  viewportWidth / 2 + viewportX, viewportHeight / 2 + viewportY, 0, 1))
-let viewportTopPojection = new renderingSystem.Viewport(viewportWidth, viewportHeight, viewportX, viewportY, viewportTransformation);
-let viewTopProjection = new renderingSystem.View(viewportTopPojection, topCameraId);
 
 let inputSystem = new input.InputSystem();
 let keyboardController = new input.BrowserKeyboardListener(document.body);
 inputSystem.addDeviceListener(keyboardController);
 inputSystem.addTrigger(new sandbox.MoveCommandTrigger(), new sandbox.MoveCommand());
 
+let cameraMovementSpeed = 50;//pixels per second
+
 let engine = new Engine(inputSystem);
 
 engine.addController(new sandbox.MessagePoolController());
 
-engine.addController(new sandbox.MoveCommandController(mainCameraId, document.getElementById("moveDirection")));
-engine.addController(new sandbox.CameraController(mainCameraId));
-
-engine.addController(new sandbox.MoveCommandController(topCameraId, null));
-engine.addController(new sandbox.CameraController(topCameraId));
-
 engine.addController(new sandbox.FpsCounter());
 
-engine.addController(new CanvasSceneRenderer(canvasContext, view));
-engine.addController(new CanvasSceneRenderer(canvasContextTop, viewTopProjection));
+engine.addController(new sandbox.MoveCommandController(isoViewCamera, cameraMovementSpeed));
+engine.addController(new sandbox.CameraController(isoViewCamera));
+
+engine.addController(new sandbox.MoveCommandController(topViewCamera, cameraMovementSpeed));
+engine.addController(new sandbox.CameraController(topViewCamera));
+
+engine.addController(new canvasRendering.CanvasSceneRenderer(canvasContext, isoView));
+engine.addController(new canvasRendering.CanvasSceneRenderer(canvasContextTop, topView));
 
 engine.addController(new sandbox.FpsOutput(document.getElementById("framesPerSecond")));
+engine.addController(new sandbox.MoveCommandOutput(document.getElementById("moveDirection")));
 
 engine.run(sceneContext);
