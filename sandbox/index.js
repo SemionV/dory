@@ -2,13 +2,13 @@ import * as sandbox from "./sandbox.js"
 import * as scene from "./scene.js"
 import Engine from "../iteration3/engine.js"
 import MessagePool from "../iteration3/messagePool.js"
-import * as input from "../iteration3/inputSystem.js"
 import * as transformations from "../iteration3/transformation.js"
 import * as primitives from "../iteration3/primitives.js"
 import * as math from "../iteration3/math.js"
-import ComponentStorage from "../iteration3/componentStorage/componentStorage.js"
 import * as renderingSystem from "../iteration3/rendering/renderyngSystem.js"
 import * as canvasRendering from "../iteration3/rendering/canvas2d/sceneRenderer.js"
+
+let cameraMovementSpeed = 50;//pixels per second
 
 let canvas = document.getElementById('canvas');
 let canvasContext = canvas.getContext('2d');
@@ -22,9 +22,14 @@ let isoViewCamera = new renderingSystem.Camera(1,
     new primitives.Point3D(),
     new primitives.Point2D(1, 0).rotateUnit(45));
 
-let topViewCamera = new renderingSystem.Camera(1, 
+let zRotation = new transformations.MatrixTransformation(math.Matrix3D.rotateZ(math.Angle.toRadian(-45)));
+let xRotation = new transformations.MatrixTransformation(math.Matrix3D.rotateX(math.Angle.toRadian(60)));
+let topProjection = new transformations.CombinedTransformation(zRotation, xRotation);
+
+let topViewCamera = new renderingSystem.Camera(2, 
     new transformations.MatrixTransformation(),
-    new transformations.IdentityTransformation(),
+    /*new transformations.IdentityTransformation()*/
+    topProjection,
     new primitives.Point3D(),
     new primitives.Point2D(0, 1));
 
@@ -43,12 +48,7 @@ let sceneContext = {
     worldLayer: worldLayer
 }
 
-let inputSystem = new input.InputSystem();
-let keyboardController = new input.BrowserKeyboardListener(document.body);
-inputSystem.addDeviceListener(keyboardController);
-inputSystem.addTrigger(new sandbox.MoveCommandTrigger(), new sandbox.MoveCommand());
-
-let cameraMovementSpeed = 50;//pixels per second
+let inputSystem = new sandbox.InputSystem();
 
 let engine = new Engine(inputSystem);
 

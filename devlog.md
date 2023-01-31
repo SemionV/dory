@@ -1,5 +1,11 @@
 # Development log
 
+**31.01.23**
+* Current tasks are:
+    - Move keyboard input into message queue, because input command triggers need access to scene context. The new flow can look like this: InputSystem is triggered by an event from a device -> InputController sends a message to a message queue -> InputController is checking for messages in the queue every frame and if there is a message from InputSystem -> check all the triggers with the scene context included -> trigger command
+    - Move Point3D, Matrix and other math into statical functions and operate on structures of data(like poits)
+    - Create data access service, which are providing access to the data in scene context and use them instead of direct access to the data. It will provide an easy way for optimisation of data and access to it, like using ECS instead of simple arrays.
+
 **11.01.23**
 * I have made a very detailed investigation of memory management in EcmaScript and the ways to store and access game components in memory. The are following ways, which I have discovered and investigated with their pros and cons accordingly:
     - TypedArrays with dynamic binding and mapping(see iteration3/componentStorage/componentStorage.js). This approach is based on TypedArrays and works well for writing data and rewriting, because the slots for the components have fixed size and it is easy to find an address in memory to access/write. Mass access though is the slowest of all methods, primarily because of dynamical property search on an object, while reading and setting its properties. Another advantage is that this approach is pretty good for quick and lean development, as it has a minimum of hardcoding(better is only storage based on dynamic Arrays). It uses ComponentSchema to generate the mappings.

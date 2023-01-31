@@ -22,18 +22,24 @@ export class CanvasSceneRenderer extends UpdateController {
         let viewport = this.view.viewport;
         let camera = this.view.camera;
         let cameraTransformation;
+        let cameraProjection;
         let viewportTransformation = viewport.transformation;
 
         if(camera) {
-            cameraTransformation = camera.getTransformation();
+            cameraProjection = camera.projection;
+            cameraTransformation = camera.transformation;
         }
 
         if(viewportTransformation) {
             this.renderingContext.stackTransformation(viewportTransformation);
         }
 
+        if(cameraProjection) {
+            this.renderingContext.stackTransformation(cameraProjection);
+        }
+
         if(cameraTransformation) {
-            this.renderingContext.stackTransformation(cameraTransformation);
+            this.renderingContext.stackTransformation(cameraTransformation.invert());
         }
 
         this.canvas.clearRect(viewport.x, viewport.y , viewport.width, viewport.height);
@@ -43,6 +49,10 @@ export class CanvasSceneRenderer extends UpdateController {
         }
 
         if(cameraTransformation) {
+            this.renderingContext.unstackTransformation();
+        }
+
+        if(cameraProjection) {
             this.renderingContext.unstackTransformation();
         }
 
@@ -125,7 +135,7 @@ export class CanvasView extends renderingSystem.View {
         let viewportHeight = canvasNode.height;
         let viewportX = 0;
         let viewportY = 0;
-        let deviceTransformation = new transformations.MatrixTransformation(new math.Matrix3D(1, 0, 0, 0,  0, -1, 0, 0,  0, 0, 1, 0,  viewportWidth / 2 + viewportX, viewportHeight / 2 + viewportY, 0, 1))
+        let deviceTransformation = new transformations.MatrixTransformation(new math.Matrix3D(1, 0, 0, 0,  0, -1, 0, 0,  0, 0, -1, 0,  viewportWidth / 2 + viewportX, viewportHeight / 2 + viewportY, 0, 1))
         let viewport = new renderingSystem.Viewport(viewportWidth, viewportHeight, viewportX, viewportY, deviceTransformation);
 
         super(viewport, camera);

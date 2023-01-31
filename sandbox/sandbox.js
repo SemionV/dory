@@ -329,3 +329,13 @@ export class MoveCommandTrigger extends input.CommandTrigger {
         return moveDirection;
     }
 }
+
+export class InputSystem extends input.InputSystem{
+    constructor() {
+        super();
+
+        let keyboardController = new input.BrowserKeyboardListener(document.body);
+        this.addDeviceListener(keyboardController);
+        this.addTrigger(new MoveCommandTrigger(), new MoveCommand());
+    }
+}
