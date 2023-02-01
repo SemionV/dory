@@ -1,19 +1,14 @@
-import UpdateController from "../iteration3/updateController.js"
+import * as controllers from "../iteration3/controller.js"
 import * as input from "../iteration3/inputSystem.js"
 import * as transformations from "../iteration3/transformation.js"
 import * as math from "../iteration3/math.js"
 import * as primitives from "../iteration3/primitives.js"
+import * as messages from "../iteration3/messages.js"
 
-export class Message {
+export class FpsUpdateMessage extends messages.Message {
 }
 
-export class FpsUpdateMessage extends Message {
-}
-
-export class InputMessage extends Message {
-}
-
-export class MessagePoolController extends UpdateController {
+export class MessagePoolSwapController extends controllers.UpdateController {
     update(timeStep, context) {
         let messagePool = context.messagePool;
         //swap the buffers(if they are not empty)
@@ -27,7 +22,7 @@ export class MessagePoolController extends UpdateController {
     }
 }
 
-export class FpsOutput extends UpdateController {
+export class FpsOutput extends controllers.UpdateController {
     constructor(htmlNode) {
         super();
         this.htmlNode = htmlNode;
@@ -43,7 +38,7 @@ export class FpsOutput extends UpdateController {
     }
 }
 
-export class FpsCounter extends UpdateController {
+export class FpsCounter extends controllers.UpdateController {
     constructor() {
         super();
 
@@ -72,26 +67,58 @@ export class FpsCounter extends UpdateController {
     }
 }
 
-export class MoveCommandController extends UpdateController {
+export class CameraController extends controllers.UpdateController {
+    constructor(camera) {
+        super();
+        this.camera = camera;
+    }
+
+    update(timeStep, context) {
+        let camera = this.camera;
+        let velocity;
+
+        if(camera) {
+            velocity = camera.velocity;
+
+            if(velocity && (velocity.x || velocity.y || velocity.z)) {
+                let timeStepSeconds = timeStep / 1000;
+
+                let dx = velocity.x * timeStepSeconds;
+                let dy = velocity.y * timeStepSeconds;
+                let dz = velocity.z * timeStepSeconds;
+    
+                if(camera.transformation.matrix) {
+                    camera.transformation.matrix.addTranslation(dx, dy, dz);
+                }
+                else {
+                    let matrix = math.Matrix3D.translate(dx, dy, dz);
+                    camera.transformation = new transformations.MatrixTransformation(matrix)
+                }
+            }
+        }
+    }
+}
+
+export class MoveDirection{
+    static Stand = 0;
+    static North = 1;
+    static NortWest = 2;
+    static NorthEast = 3;
+    static East = 4;
+    static SouthEast = 5;
+    static South = 6;
+    static SouthWest = 7;
+    static West = 8;
+}
+
+export class MoveCameraCommand extends input.Command {
     constructor(camera, speed) {
         super();
         this.camera = camera;
         this.speed = speed;
     }
 
-    initialize(context) {
-        this.setVelocity(context, MoveDirection.Stand);
-    }
-
-    update(timeStep, context) {
-        context.messagePool.forEach((message) => {
-            if(message instanceof MoveCommandMessage) {
-                this.setVelocity(context, message.moveDirection);
-            }
-        });
-    }
-
-    setVelocity(context, moveDirection) {
+    execute(moveDirection, context) {    
         let camera = this.camera;
         let velocity = new primitives.Point3D();
 
@@ -137,118 +164,6 @@ export class MoveCommandController extends UpdateController {
     }
 }
 
-export class MoveCommandOutput extends UpdateController {
-    constructor(htmlNode) {
-        super();
-        this.htmlNode = htmlNode;
-    }
-
-    initialize(context) {
-        this.showDirection(MoveDirection.Stand);
-    }
-
-    update(timeStep, context) {
-        context.messagePool.forEach((message) => {
-            if(message instanceof MoveCommandMessage) {
-                this.showDirection(message.moveDirection);
-            }
-        });
-    }
-
-    showDirection(moveDirection) {
-        let messageTip;
-
-        if(moveDirection == MoveDirection.East){
-            messageTip = "→";
-        }
-        if(moveDirection == MoveDirection.SouthEast){
-            messageTip = "↘";
-        }
-        else if(moveDirection == MoveDirection.South){
-            messageTip = "↓";
-        }
-        else if(moveDirection == MoveDirection.West){
-            messageTip = "←";
-        }
-        else if(moveDirection == MoveDirection.North){
-            messageTip = "↑";
-        }
-        if(moveDirection == MoveDirection.NorthEast){
-            messageTip = "↗";
-        }
-        if(moveDirection == MoveDirection.NortWest){
-            messageTip = "↖";
-        }
-        if(moveDirection == MoveDirection.SouthWest){
-            messageTip = "↙";
-        }
-        if(moveDirection == MoveDirection.Stand){
-            messageTip = "⚓";
-        }
-
-        if(this.htmlNode) {
-            this.htmlNode.innerText = "🧭:" + messageTip;
-        }
-    }
-}
-
-export class CameraController extends UpdateController {
-    constructor(camera) {
-        super();
-        this.camera = camera;
-    }
-
-    update(timeStep, context) {
-        let camera = this.camera;
-        let velocity;
-
-        if(camera) {
-            velocity = camera.velocity;
-
-            if(velocity && (velocity.x || velocity.y || velocity.z)) {
-                let timeStepSeconds = timeStep / 1000;
-
-                let dx = velocity.x * timeStepSeconds;
-                let dy = velocity.y * timeStepSeconds;
-                let dz = velocity.z * timeStepSeconds;
-    
-                if(camera.transformation.matrix) {
-                    camera.transformation.matrix.addTranslation(dx, dy, dz);
-                }
-                else {
-                    let matrix = math.Matrix3D.translate(dx, dy, dz);
-                    camera.transformation = new transformations.MatrixTransformation(matrix)
-                }
-            }
-        }
-    }
-}
-
-export class MoveDirection{
-    static Stand = 0;
-    static North = 1;
-    static NortWest = 2;
-    static NorthEast = 3;
-    static East = 4;
-    static SouthEast = 5;
-    static South = 6;
-    static SouthWest = 7;
-    static West = 8;
-}
-
-export class MoveCommandMessage extends InputMessage {
-    constructor(moveDirection) {
-        super();
-        this.moveDirection = moveDirection;
-    }
-}
-
-export class MoveCommand extends input.Command {
-    trigger(moveDirection, context) {    
-        context.messagePool.pushMessage(new MoveCommandMessage(moveDirection));
-    }
-}
-
 export class MoveCommandTrigger extends input.CommandTrigger {
     constructor() {
         super();
@@ -267,8 +182,8 @@ export class MoveCommandTrigger extends input.CommandTrigger {
     static arrowDownKey = "ArrowDown";
     static sKey = "s";
 
-    check(deviceEvent) {
-        let moveDerectionCurrent = this.getMoveDirection();
+    checkTrigger(deviceEvent, context) {
+        let moveDirectionCurrent = this.getMoveDirection();
 
         if(deviceEvent instanceof input.KeyboardKeydownEvent) {
             this.updateKeyState(deviceEvent.key, true);
@@ -278,7 +193,7 @@ export class MoveCommandTrigger extends input.CommandTrigger {
         }
 
         let moveDirectionNew = this.getMoveDirection();
-        if(moveDirectionNew != moveDerectionCurrent) {
+        if(moveDirectionNew != moveDirectionCurrent) {
             return moveDirectionNew;
         }
     }
@@ -331,11 +246,10 @@ export class MoveCommandTrigger extends input.CommandTrigger {
 }
 
 export class InputSystem extends input.InputSystem{
-    constructor() {
-        super();
+    constructor(messagePool) {
+        super(messagePool);
 
         let keyboardController = new input.BrowserKeyboardListener(document.body);
         this.addDeviceListener(keyboardController);
-        this.addTrigger(new MoveCommandTrigger(), new MoveCommand());
     }
 }

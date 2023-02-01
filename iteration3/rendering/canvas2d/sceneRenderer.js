@@ -1,12 +1,12 @@
 import * as drawers from "./drawers.js"
 import * as renderingSystem from "../renderyngSystem.js"
 import * as graphicalPrimitives from "../graphicalPrimitive.js"
-import UpdateController from "../../updateController.js"
+import * as controllers from "../../controller.js"
 import * as primitives from "../../primitives.js"
 import * as transformations from "../../transformation.js"
 import * as math from "../../math.js"
 
-export class CanvasSceneRenderer extends UpdateController {
+export class CanvasSceneRenderer extends controllers.UpdateController {
     constructor(canvas, view) {        
         super();
 

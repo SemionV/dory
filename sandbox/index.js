@@ -1,7 +1,8 @@
 import * as sandbox from "./sandbox.js"
 import * as scene from "./scene.js"
 import Engine from "../iteration3/engine.js"
-import MessagePool from "../iteration3/messagePool.js"
+import * as controllers from "../iteration3/controller.js"
+import * as messages from "../iteration3/messages.js"
 import * as transformations from "../iteration3/transformation.js"
 import * as primitives from "../iteration3/primitives.js"
 import * as math from "../iteration3/math.js"
@@ -42,30 +43,34 @@ worldLayer.addPoint({x: 50, y: -50, z: 0, r: 0, g: 150, b: 0});
 worldLayer.addPoint({x: 50, y: 50, z: 0, r: 0, g: 0, b: 255});
 worldLayer.addPoint({x: -50, y: 50, z: 0, r: 150, g: 150, b: 0});
 
+let mainMessagePool = new messages.MessagePool();
 
 let sceneContext = {
-    messagePool: new MessagePool(),
+    messagePool: mainMessagePool,
     worldLayer: worldLayer
 }
 
-let inputSystem = new sandbox.InputSystem();
+let inputSystem = new sandbox.InputSystem(mainMessagePool);
 
 let engine = new Engine(inputSystem);
 
-engine.addController(new sandbox.MessagePoolController());
+engine.addController(new sandbox.MessagePoolSwapController());
+
+let inputController = new controllers.InputController(mainMessagePool);
+let moveTrigger = new sandbox.MoveCommandTrigger();
+let moveIsoCameraCommand = new sandbox.MoveCameraCommand(isoViewCamera, cameraMovementSpeed);
+let moveTopCameraCommand = new sandbox.MoveCameraCommand(topViewCamera, cameraMovementSpeed);
+inputController.addTrigger(moveTrigger, [moveIsoCameraCommand, moveTopCameraCommand]);
+engine.addController(inputController);
 
 engine.addController(new sandbox.FpsCounter());
-
-engine.addController(new sandbox.MoveCommandController(isoViewCamera, cameraMovementSpeed));
 engine.addController(new sandbox.CameraController(isoViewCamera));
 
-engine.addController(new sandbox.MoveCommandController(topViewCamera, cameraMovementSpeed));
 engine.addController(new sandbox.CameraController(topViewCamera));
 
 engine.addController(new canvasRendering.CanvasSceneRenderer(canvasContext, isoView));
 engine.addController(new canvasRendering.CanvasSceneRenderer(canvasContextTop, topView));
 
 engine.addController(new sandbox.FpsOutput(document.getElementById("framesPerSecond")));
-engine.addController(new sandbox.MoveCommandOutput(document.getElementById("moveDirection")));
 
 engine.run(sceneContext);

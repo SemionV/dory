@@ -1,11 +1,9 @@
-export class InputSystem {
-    constructor() {
-        this.commandTriggers = new Map();
-        this.deviceListeners = new Set();
-    }
+import * as messages from "./messages.js"
 
-    addTrigger(trigger, command) {
-        this.commandTriggers.set(trigger, command);
+export class InputSystem {
+    constructor(messagePool) {
+        this.deviceListeners = new Set();
+        this.messagePool = messagePool;
     }
 
     addDeviceListener(listener) {
@@ -16,12 +14,7 @@ export class InputSystem {
         this.context = context;
 
         let deviceEventHandler = (deviceEvent) => {
-            for (let [key, value] of this.commandTriggers) {
-                let commandParameters = key.check(deviceEvent);
-                if(commandParameters !== undefined){
-                    value.trigger(commandParameters, this.context);
-                }
-            }
+            this.messagePool.pushMessage(new messages.DeviceInputMessage(deviceEvent));
         };
 
         for(let listener of this.deviceListeners) {
@@ -39,12 +32,12 @@ export class InputSystem {
 }
 
 export class CommandTrigger {
-    check(deviceEvent) {
+    checkTrigger(deviceEvent, context) {
     }
 }
 
 export class Command {
-    trigger(parameters, context) {        
+    execute(parameters, context) {        
     }
 }
 
@@ -52,7 +45,7 @@ export class DeviceListener {
     attach(callback) {
     }
 
-    detach(){        
+    detach() {        
     }
 }
 
