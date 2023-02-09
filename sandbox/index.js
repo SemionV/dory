@@ -46,7 +46,6 @@ worldLayer.addPoint({x: -50, y: 50, z: 0, r: 150, g: 150, b: 0});
 let mainMessagePool = new messages.MessagePool();
 
 let sceneContext = {
-    messagePool: mainMessagePool,
     worldLayer: worldLayer
 }
 
@@ -54,7 +53,7 @@ let inputSystem = new sandbox.InputSystem(mainMessagePool);
 
 let engine = new Engine(inputSystem);
 
-engine.addController(new sandbox.MessagePoolSwapController());
+engine.addController(new sandbox.MessagePoolSwapController([mainMessagePool]));
 
 let inputController = new controllers.InputController(mainMessagePool);
 let moveTrigger = new sandbox.MoveCommandTrigger();
@@ -63,7 +62,7 @@ let moveTopCameraCommand = new sandbox.MoveCameraCommand(topViewCamera, cameraMo
 inputController.addTrigger(moveTrigger, [moveIsoCameraCommand, moveTopCameraCommand]);
 engine.addController(inputController);
 
-engine.addController(new sandbox.FpsCounter());
+engine.addController(new sandbox.FpsCounter(mainMessagePool));
 engine.addController(new sandbox.CameraController(isoViewCamera));
 
 engine.addController(new sandbox.CameraController(topViewCamera));
@@ -71,6 +70,6 @@ engine.addController(new sandbox.CameraController(topViewCamera));
 engine.addController(new canvasRendering.CanvasSceneRenderer(canvasContext, isoView));
 engine.addController(new canvasRendering.CanvasSceneRenderer(canvasContextTop, topView));
 
-engine.addController(new sandbox.FpsOutput(document.getElementById("framesPerSecond")));
+engine.addController(new sandbox.FpsOutput(mainMessagePool, document.getElementById("framesPerSecond")));
 
 engine.run(sceneContext);

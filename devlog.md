@@ -5,6 +5,7 @@
     - Move keyboard input into message queue, because input command triggers need access to scene context. The new flow can look like this: InputSystem is triggered by an event from a device -> InputController sends a message to a message queue -> InputController is checking for messages in the queue every frame and if there is a message from InputSystem -> check all the triggers with the scene context included -> trigger command
     - Move Point3D, Matrix and other math into statical functions and operate on structures of data(like poits)
     - Create data access service, which are providing access to the data in scene context and use them instead of direct access to the data. It will provide an easy way for optimisation of data and access to it, like using ECS instead of simple arrays.
+    - Move MessagePool out of scene context
 
 **11.01.23**
 * I have made a very detailed investigation of memory management in EcmaScript and the ways to store and access game components in memory. The are following ways, which I have discovered and investigated with their pros and cons accordingly:

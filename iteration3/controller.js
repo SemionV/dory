@@ -24,7 +24,7 @@ export class InputController extends UpdateController {
     }
 
     update(timeStep, context) {
-        context.messagePool.forEach((message) => {
+        this.messagePool.forEach((message) => {
             if(message instanceof messages.DeviceInputMessage) {
                 let deviceEvent = message.deviceEvent;
                 for (let [trigger, commands] of this.commandTriggers) {

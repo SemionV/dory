@@ -9,8 +9,25 @@ export class FpsUpdateMessage extends messages.Message {
 }
 
 export class MessagePoolSwapController extends controllers.UpdateController {
+    constructor(messagePools) {
+        super();
+        this.messagePools = messagePools;
+    }
+
     update(timeStep, context) {
-        let messagePool = context.messagePool;
+        let count = this.messagePools.length;
+        
+        if(count) {
+            for(let i = 0; i < count; ++i) {
+                this.swapBuffers(this.messagePools[i]);
+            }
+        }
+        else {
+            this.swapBuffers(this.messagePools);
+        }
+    }
+
+    swapBuffers(messagePool) {
         //swap the buffers(if they are not empty)
         if(messagePool.backPool.length) {
             messagePool.frontPool = messagePool.backPool;
@@ -23,13 +40,14 @@ export class MessagePoolSwapController extends controllers.UpdateController {
 }
 
 export class FpsOutput extends controllers.UpdateController {
-    constructor(htmlNode) {
+    constructor(messagePool, htmlNode) {
         super();
         this.htmlNode = htmlNode;
+        this.messagePool = messagePool;
     }
 
     update(timeStep, context) {
-        context.messagePool.forEach((message) => {
+        this.messagePool.forEach((message) => {
             if(message instanceof FpsUpdateMessage) {
                 this.htmlNode.innerText = context.fps;
                 return true;
@@ -39,8 +57,10 @@ export class FpsOutput extends controllers.UpdateController {
 }
 
 export class FpsCounter extends controllers.UpdateController {
-    constructor() {
+    constructor(messagePool) {
         super();
+
+        this.messagePool = messagePool;
 
         this.frameCount = 0;
         this.timePassedSinceFrameUpdate = 0;
@@ -50,7 +70,7 @@ export class FpsCounter extends controllers.UpdateController {
 
     initialize(context) {
         context.fps = 0;
-        context.messagePool.pushMessage(this.fpsUpdateMessage);
+        this.messagePool.pushMessage(this.fpsUpdateMessage);
     }
 
     update(timeStep, context) {
@@ -62,7 +82,7 @@ export class FpsCounter extends controllers.UpdateController {
             this.frameCount = 0;
             this.timePassedSinceFrameUpdate = 0;
 
-            context.messagePool.pushMessage(this.fpsUpdateMessage);
+            this.messagePool.pushMessage(this.fpsUpdateMessage);
         }
     }
 }
