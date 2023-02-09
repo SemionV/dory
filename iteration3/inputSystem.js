@@ -49,6 +49,18 @@ export class DeviceListener {
     }
 }
 
+export class KeyboardKeys {
+    static arrowLeft = "ArrowLeft";
+    static arrowRight = "ArrowRight";
+    static arrowUp = "ArrowUp";
+    static arrowDown = "ArrowDown";
+    static w = "w";
+    static a = "a";
+    static s = "s";
+    static d = "d";
+    
+}
+
 export class BrowserKeyboardListener extends DeviceListener { 
     constructor(htmlNode){
         super();
@@ -59,12 +71,22 @@ export class BrowserKeyboardListener extends DeviceListener {
         if(!this.keydownHandler && !this.keyupHandler) {
 
             this.keydownHandler = (e)=> {
-                callback(new KeyboardKeydownEvent(e.key));
+                let key = this.mapBrowserKey(e.key);
+                if(!this.keyboardState[key]) {
+                    this.keyboardState[key] = true;
+                    callback(new KeyboardKeydownEvent(key, this.keyboardState));
+                }
             }
 
             this.keyupHandler = (e)=> {
-                callback(new KeyboardKeyupEvent(e.key));
+                let key = this.mapBrowserKey(e.key);
+                if(this.keyboardState[key]) {
+                    this.keyboardState[key] = false;
+                    callback(new KeyboardKeyupEvent(key, this.keyboardState));
+                }
             }
+
+            this.keyboardState = new Map();
 
             this.htmlNode.addEventListener("keydown", this.keydownHandler);
             this.htmlNode.addEventListener("keyup", this.keyupHandler);
@@ -80,26 +102,31 @@ export class BrowserKeyboardListener extends DeviceListener {
             this.keyupHandler = null;
         }
     }
+
+    mapBrowserKey(browserKey) {
+        return browserKey;
+    }
 }
 
 export class DeviceEvent {
 }
 
 export class KeyboardKeyEvent extends DeviceEvent {
-    constructor(key) {
+    constructor(key, keyboardState) {
         super();
         this.key = key;
+        this.keyboardState = keyboardState;
     }
 }
 
 export class KeyboardKeydownEvent extends KeyboardKeyEvent {
-    constructor(key) {
-        super(key);
+    constructor(key, keyboardState) {
+        super(key, keyboardState);
     }
 }
 
 export class KeyboardKeyupEvent extends KeyboardKeyEvent {
-    constructor(key) {
-        super(key);
+    constructor(key, keyboardState) {
+        super(key, keyboardState);
     }
 }

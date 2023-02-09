@@ -165,79 +165,42 @@ export class MoveCameraCommand extends input.Command {
 }
 
 export class MoveCommandTrigger extends input.CommandTrigger {
-    constructor() {
-        super();
-        this.left = false;
-        this.right = false;
-        this.up = false;
-        this.down = false;
-    }
-
-    static arrowLeftKey = "ArrowLeft";
-    static aKey = "a";
-    static arrowRightKey = "ArrowRight";
-    static dKey = "d";
-    static arrowUpKey = "ArrowUp";
-    static wKey = "w";
-    static arrowDownKey = "ArrowDown";
-    static sKey = "s";
-
     checkTrigger(deviceEvent, context) {
-        let moveDirectionCurrent = this.getMoveDirection();
-
-        if(deviceEvent instanceof input.KeyboardKeydownEvent) {
-            this.updateKeyState(deviceEvent.key, true);
-        }
-        else if(deviceEvent instanceof input.KeyboardKeyupEvent) {
-            this.updateKeyState(deviceEvent.key, false);
-        }
-
-        let moveDirectionNew = this.getMoveDirection();
-        if(moveDirectionNew != moveDirectionCurrent) {
-            return moveDirectionNew;
+        if(deviceEvent instanceof input.KeyboardKeydownEvent || deviceEvent instanceof input.KeyboardKeyupEvent) {
+            return this.getMoveDirection(deviceEvent.keyboardState);
         }
     }
 
-    updateKeyState(key, state) {
-        if(key == MoveCommandTrigger.arrowLeftKey || key == MoveCommandTrigger.aKey) {
-            this.left = state;
-        }
-        else if(key == MoveCommandTrigger.arrowRightKey || key == MoveCommandTrigger.dKey) {
-            this.right = state;
-        }
-        else if(key == MoveCommandTrigger.arrowUpKey || key == MoveCommandTrigger.wKey) {
-            this.up = state;
-        }
-        else if(key == MoveCommandTrigger.arrowDownKey || key == MoveCommandTrigger.sKey) {
-            this.down = state;
-        }
-    }
-
-    getMoveDirection() {
+    getMoveDirection(keyboarState) {
         let moveDirection = MoveDirection.Stand;
 
-        if (!this.left && !this.down && !this.right && this.up) {
+        let left = keyboarState[input.KeyboardKeys.arrowLeft] || keyboarState[input.KeyboardKeys.a];
+        let right = keyboarState[input.KeyboardKeys.arrowRight] || keyboarState[input.KeyboardKeys.d];
+        let up = keyboarState[input.KeyboardKeys.arrowUp] || keyboarState[input.KeyboardKeys.w];
+        let down = keyboarState[input.KeyboardKeys.arrowDown] || keyboarState[input.KeyboardKeys.s];
+
+        if (!left && !down && !right && up) {
             moveDirection = MoveDirection.North;
         }
-        else if (this.left && !this.down && !this.right && !this.up) {
+        else if (left && !down && !right && !up) {
             moveDirection = MoveDirection.West;
         }
-        else if (this.left && !this.down && !this.right && this.up) {
+        else if (left && !down && !right && up) {
             moveDirection = MoveDirection.NortWest;
         }
-        else if (this.left && this.down && !this.right && !this.up) {
+        else if (left && down && !right && !up) {
             moveDirection = MoveDirection.SouthWest;
         }
-        else if (!this.left && !this.down && this.right && this.up) {
+        else if (!left && !down && right && up) {
             moveDirection = MoveDirection.NorthEast;
         }
-        else if (!this.left && this.down && this.right && !this.up) {
+        else if (!left && down && right && !up) {
             moveDirection = MoveDirection.SouthEast;
         }
-        else if (!this.left && this.down && !this.right && !this.up) {
+        else if (!left && down && !right && !up) {
             moveDirection = MoveDirection.South;
         }
-        else if (!this.left && !this.down && this.right && !this.tupp) {
+        else if (!left && !down && right && !up) {
             moveDirection = MoveDirection.East;
         }
 
