@@ -44,7 +44,8 @@ worldLayer.addPoint({label: "3", x: 50, y: 50, z: 0, r: 0, g: 0, b: 255});
 worldLayer.addPoint({label: "4", x: -50, y: 50, z: 0, r: 150, g: 150, b: 0});
 
 let mainMessagePool = new messages.MessagePool();
-let debugMessagePool = new messages.MessagePool();
+let isoDebugMessagePool = new messages.MessagePool();
+let topDebugMessagePool = new messages.MessagePool();
 
 let sceneContext = {
     worldLayer: worldLayer
@@ -54,7 +55,7 @@ let inputSystem = new sandbox.InputSystem(mainMessagePool);
 
 let engine = new Engine(inputSystem);
 
-engine.addController(new sandbox.MessagePoolSwapController([mainMessagePool, debugMessagePool]));
+engine.addController(new sandbox.MessagePoolSwapController([mainMessagePool, isoDebugMessagePool, topDebugMessagePool]));
 
 let inputController = new controllers.InputController(mainMessagePool);
 let moveTrigger = new sandbox.MoveCommandTrigger();
@@ -68,10 +69,11 @@ engine.addController(new sandbox.CameraController(isoViewCamera));
 
 engine.addController(new sandbox.CameraController(topViewCamera));
 
-engine.addController(new canvasRendering.CanvasSceneRenderer(canvasContext, isoView, debugMessagePool));
-engine.addController(new canvasRendering.CanvasSceneRenderer(canvasContextTop, topView, debugMessagePool));
+engine.addController(new canvasRendering.CanvasSceneRenderer(canvasContext, isoView, isoDebugMessagePool));
+engine.addController(new canvasRendering.CanvasSceneRenderer(canvasContextTop, topView, topDebugMessagePool));
 
 engine.addController(new sandbox.FpsOutput(mainMessagePool, document.getElementById("framesPerSecond")));
-engine.addController(new sandbox.DebugOutput(debugMessagePool, document.getElementById("debugOutput")));
+engine.addController(new sandbox.DebugOutput(isoDebugMessagePool, document.getElementById("isoDebug")));
+engine.addController(new sandbox.DebugOutput(topDebugMessagePool, document.getElementById("topDebug")));
 
 engine.run(sceneContext);
