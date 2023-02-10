@@ -1,6 +1,7 @@
 import * as primitives from "../../primitives.js"
 import * as renderingSystem from "../renderyngSystem.js"
 import * as messages from "../../messages.js"
+import * as transformations from "../../transformation.js"
 
 export class PointDrawer extends renderingSystem.Drawer {
     constructor(debugMessagePool) {
@@ -17,7 +18,7 @@ export class PointDrawer extends renderingSystem.Drawer {
         var transformation = renderingContext.currentTransformation;
 
         if(transformation) {
-            transformation.apply(position, this.transformedPostionCache);
+            transformations.Transformer.apply(transformation, position, this.transformedPostionCache, this.debugMessagePool);
             position = this.transformedPostionCache;
         }
 

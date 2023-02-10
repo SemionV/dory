@@ -1,4 +1,5 @@
 import * as math from "./math.js"
+import * as messages from "./messages.js"
 
 // generic transformation, it can be a matrix, quaternion or a simple math calculation
 export class Transformation {
@@ -133,5 +134,43 @@ export class IsometricProjection extends Transformation{
 
     combine(transformation) {
         return new CombinedTransformation(transformation, this);
+    }
+}
+
+export class Transformer {
+    static apply(transformation, point, resultPoint = {}, debugMessagePool) {
+        if(transformation instanceof CombinedTransformation) {
+            let firstTransformation = transformation.firstTransformation;
+            let secondTransformation = transformation.secondTransformation;
+
+            if(firstTransformation) {
+                this.apply(firstTransformation, point, resultPoint, debugMessagePool);
+            }
+            if(secondTransformation) {
+                this.apply(secondTransformation, resultPoint, resultPoint, debugMessagePool);
+            }
+        }
+        else {
+            let debugMessage;
+            if(debugMessagePool) {
+                debugMessage = `${this.debugMessagePoint(point)} -> `;
+            }
+            transformation.apply(point, resultPoint);
+
+            if(debugMessagePool) {
+                debugMessage += `${this.debugMessagePoint(resultPoint)}`;
+            }
+
+            if(debugMessage) {
+                debugMessagePool.pushMessage(new messages.DebugMessage(debugMessage));
+            }
+        }
+    }
+
+    static debugMessagePoint(point) {
+        let x = point.x !== undefined ? point.x : 0;
+        let y = point.y !== undefined ? point.y : 0;
+        let z = point.z !== undefined ? point.z : 0;
+        return `(${x.toFixed(2)}, ${y.toFixed(2)}, ${z.toFixed(2)})`;
     }
 }
