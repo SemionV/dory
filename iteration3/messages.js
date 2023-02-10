@@ -32,6 +32,12 @@ export class MessagePool {
 export class Message {
 }
 
+export class DebugMessage {
+    constructor(message) {
+        this.message = message;
+    }
+}
+
 export class DeviceInputMessage extends Message {
     constructor(deviceEvent) {
         super();

@@ -1,5 +1,9 @@
 //draw primitive with a supported rendering thechnology(canvas, WebGL, etc)
 export class Drawer {
+    constructor(debugMessagePool) {
+        this.debugMessagePool = debugMessagePool;
+    }
+
     draw(renderingContext, graphicalPrimitive) {
     }
 }

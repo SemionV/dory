@@ -236,3 +236,26 @@ export class InputSystem extends input.InputSystem{
         this.addDeviceListener(keyboardController);
     }
 }
+
+export class DebugOutput extends controllers.UpdateController {
+    constructor(debugMessagePool, htmlNode) {
+        super();
+
+        this.htmlNode = htmlNode;
+        this.debugMessagePool = debugMessagePool;
+    }
+
+    update(timeStep, context) {
+        let html = "";
+        this.debugMessagePool.forEach((message) => {
+            if(message instanceof messages.DebugMessage) {
+                let messageNode = `<div><span>${message.message}</span></div>`;
+                html += messageNode;
+            }
+        });
+
+        if(html.length) {
+            this.htmlNode.innerHTML = html;
+        }
+    }
+}

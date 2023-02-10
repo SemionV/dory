@@ -1,9 +1,11 @@
 import * as primitives from "../../primitives.js"
 import * as renderingSystem from "../renderyngSystem.js"
+import * as messages from "../../messages.js"
 
 export class PointDrawer extends renderingSystem.Drawer {
-    constructor() {
-        super();
+    constructor(debugMessagePool) {
+        super(debugMessagePool);
+
         this.defaultColor = new  primitives.Color(250, 0, 0);
         this.transformedPostionCache = new primitives.Point3D();
     }
@@ -21,5 +23,10 @@ export class PointDrawer extends renderingSystem.Drawer {
 
         canvas.fillStyle = color.toCanvasColor();
         canvas.fillRect(position.x - 1, position.y - 1, 2, 2);
+
+        if(this.debugMessagePool) {
+            let message = new messages.DebugMessage(`.(${graphicalPrimitive.label}) x=${Math.trunc(position.x)}, y=${Math.trunc(position.y)}`);
+            this.debugMessagePool.pushMessage(message);
+        }
     }
 }

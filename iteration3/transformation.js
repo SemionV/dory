@@ -78,7 +78,7 @@ export class MatrixTransformation extends Transformation {
     }
 
     combine(transformation) {
-        if(transformation instanceof MatrixTransformation) {
+        if(transformation instanceof MatrixTransformation && transformation.mergeMatrix) {
             let combinedMatrix = transformation.matrix.multiply(this.matrix);
             return new MatrixTransformation(combinedMatrix);
         } else {

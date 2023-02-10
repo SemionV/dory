@@ -7,15 +7,17 @@ import * as transformations from "../../transformation.js"
 import * as math from "../../math.js"
 
 export class CanvasSceneRenderer extends controllers.UpdateController {
-    constructor(canvas, view) {        
+    constructor(canvas, view, debugMessagePool) {        
         super();
+
+        this.debugMessagePool = debugMessagePool;
 
         this.canvas = canvas;
         this.view = view;
 
         this.renderingContext = new Canvas2dRenderingContext(this.view.viewport, this.canvas);
 
-        this.pointDrawer = new drawers.PointDrawer();
+        this.pointDrawer = new drawers.PointDrawer(debugMessagePool);
     }
 
     update(timeStep, context) {
@@ -79,6 +81,8 @@ export class CanvasSceneRenderer extends controllers.UpdateController {
             renderingPrimitive.color.r = point.r;
             renderingPrimitive.color.g = point.g;
             renderingPrimitive.color.b = point.b;
+
+            renderingPrimitive.label = point.label;
 
             this.pointDrawer.draw(this.renderingContext, renderingPrimitive);
         }

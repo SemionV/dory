@@ -38,12 +38,13 @@ let isoView = new canvasRendering.CanvasView(canvas, isoViewCamera);
 let topView = new canvasRendering.CanvasView(canvasTop, topViewCamera);
 
 let worldLayer = new scene.Layer(new transformations.IdentityTransformation);
-worldLayer.addPoint({x: -50, y: -50, z: 0, r: 255, g: 0, b: 0});
-worldLayer.addPoint({x: 50, y: -50, z: 0, r: 0, g: 150, b: 0});
-worldLayer.addPoint({x: 50, y: 50, z: 0, r: 0, g: 0, b: 255});
-worldLayer.addPoint({x: -50, y: 50, z: 0, r: 150, g: 150, b: 0});
+worldLayer.addPoint({label: "1", x: -50, y: -50, z: 0, r: 255, g: 0, b: 0});
+worldLayer.addPoint({label: "2", x: 50, y: -50, z: 0, r: 0, g: 150, b: 0});
+worldLayer.addPoint({label: "3", x: 50, y: 50, z: 0, r: 0, g: 0, b: 255});
+worldLayer.addPoint({label: "4", x: -50, y: 50, z: 0, r: 150, g: 150, b: 0});
 
 let mainMessagePool = new messages.MessagePool();
+let debugMessagePool = new messages.MessagePool();
 
 let sceneContext = {
     worldLayer: worldLayer
@@ -53,7 +54,7 @@ let inputSystem = new sandbox.InputSystem(mainMessagePool);
 
 let engine = new Engine(inputSystem);
 
-engine.addController(new sandbox.MessagePoolSwapController([mainMessagePool]));
+engine.addController(new sandbox.MessagePoolSwapController([mainMessagePool, debugMessagePool]));
 
 let inputController = new controllers.InputController(mainMessagePool);
 let moveTrigger = new sandbox.MoveCommandTrigger();
@@ -67,9 +68,10 @@ engine.addController(new sandbox.CameraController(isoViewCamera));
 
 engine.addController(new sandbox.CameraController(topViewCamera));
 
-engine.addController(new canvasRendering.CanvasSceneRenderer(canvasContext, isoView));
-engine.addController(new canvasRendering.CanvasSceneRenderer(canvasContextTop, topView));
+engine.addController(new canvasRendering.CanvasSceneRenderer(canvasContext, isoView, debugMessagePool));
+engine.addController(new canvasRendering.CanvasSceneRenderer(canvasContextTop, topView, debugMessagePool));
 
 engine.addController(new sandbox.FpsOutput(mainMessagePool, document.getElementById("framesPerSecond")));
+engine.addController(new sandbox.DebugOutput(debugMessagePool, document.getElementById("debugOutput")));
 
 engine.run(sceneContext);
