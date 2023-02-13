@@ -65,15 +65,15 @@ inputController.addTrigger(moveTrigger, [moveIsoCameraCommand, moveTopCameraComm
 engine.addController(inputController);
 
 engine.addController(new sandbox.FpsCounter(mainMessagePool));
-engine.addController(new sandbox.CameraController(isoViewCamera));
 
-engine.addController(new sandbox.CameraController(topViewCamera));
+engine.addController(new sandbox.CameraController(isoViewCamera, mainMessagePool));
+engine.addController(new sandbox.CameraController(topViewCamera, mainMessagePool));
 
 engine.addController(new canvasRendering.CanvasSceneRenderer(canvasContext, isoView, isoDebugMessagePool));
 engine.addController(new canvasRendering.CanvasSceneRenderer(canvasContextTop, topView, topDebugMessagePool));
 
 engine.addController(new sandbox.FpsOutput(mainMessagePool, document.getElementById("framesPerSecond")));
-engine.addController(new sandbox.DebugOutput(isoDebugMessagePool, document.getElementById("isoDebug")));
-engine.addController(new sandbox.DebugOutput(topDebugMessagePool, document.getElementById("topDebug")));
+engine.addController(new sandbox.DebugOutput(mainMessagePool, isoDebugMessagePool, document.getElementById("isoDebug")));
+engine.addController(new sandbox.DebugOutput(mainMessagePool, topDebugMessagePool, document.getElementById("topDebug")));
 
 engine.run(sceneContext);

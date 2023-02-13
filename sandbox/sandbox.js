@@ -8,6 +8,9 @@ import * as messages from "../iteration3/messages.js"
 export class FpsUpdateMessage extends messages.Message {
 }
 
+export class CameraUpdateMessage extends messages.Message {
+}
+
 export class MessagePoolSwapController extends controllers.UpdateController {
     constructor(messagePools) {
         super();
@@ -88,9 +91,10 @@ export class FpsCounter extends controllers.UpdateController {
 }
 
 export class CameraController extends controllers.UpdateController {
-    constructor(camera) {
+    constructor(camera, messagePool) {
         super();
         this.camera = camera;
+        this.messagePool = messagePool;
     }
 
     update(timeStep, context) {
@@ -113,6 +117,10 @@ export class CameraController extends controllers.UpdateController {
                 else {
                     let matrix = math.Matrix3D.translate(dx, dy, dz);
                     camera.transformation = new transformations.MatrixTransformation(matrix)
+                }
+
+                if(this.messagePool) {
+                    this.messagePool.pushMessage(new CameraUpdateMessage());
                 }
             }
         }
@@ -238,24 +246,35 @@ export class InputSystem extends input.InputSystem{
 }
 
 export class DebugOutput extends controllers.UpdateController {
-    constructor(debugMessagePool, htmlNode) {
+    constructor(mainMessagePool, debugMessagePool, htmlNode) {
         super();
 
         this.htmlNode = htmlNode;
         this.debugMessagePool = debugMessagePool;
+        this.mainMessagePool = mainMessagePool;
     }
 
     update(timeStep, context) {
-        let html = "";
-        this.debugMessagePool.forEach((message) => {
-            if(message instanceof messages.DebugMessage) {
-                let messageNode = `<div><span>${message.message}</span></div>`;
-                html += messageNode;
+        let cameraUpdated;
+        this.mainMessagePool.forEach((message) => {
+            if(message instanceof CameraUpdateMessage) {
+                cameraUpdated = true;
+                return true;
             }
         });
 
-        if(html.length) {
-            this.htmlNode.innerHTML = html;
+        if(cameraUpdated || !this.htmlNode.childNodes.length) {
+            let html = "";
+            this.debugMessagePool.forEach((message) => {
+                if(message instanceof messages.DebugMessage) {
+                    let messageNode = `<div><span>${message.message}</span></div>`;
+                    html += messageNode;
+                }
+            });
+
+            if(html.length) {
+                this.htmlNode.innerHTML = html;
+            }
         }
     }
 }
