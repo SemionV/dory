@@ -130,3 +130,84 @@ export class KeyboardKeyupEvent extends KeyboardKeyEvent {
         super(key, keyboardState);
     }
 }
+
+export class MousedButtons {
+    static mainButton = 0;
+    static auxiliaryButton = 1;
+    static secondaryButton = 2;
+    
+}
+
+export class BrowserMouseListener extends DeviceListener {
+    constructor(htmlNode){
+        super();
+        this.htmlNode = htmlNode;
+    }
+
+    attach(callback) {
+        if(!this.mouseDownHandler && !this.mouseUpHandler) {
+
+            this.mouseDownHandler = (e)=> {
+                let button = this.mapMouseButton(e.button);
+                if(!this.mouseState[button]) {
+                    this.mouseState[button] = true;
+                    callback(new MouseDownEvent(button, e.offsetX, e.offsetY, this.mouseState, this.htmlNode));
+                }
+            }
+
+            this.mouseUpHandler = (e)=> {
+                let button = this.mapMouseButton(e.button);
+                if(this.mouseState[button]) {
+                    this.mouseState[button] = false;
+                    callback(new MouseUpEvent(button, e.offsetX, e.offsetY, this.mouseState, this.htmlNode));
+                }
+            }
+
+            this.mouseState = new Map();
+
+            this.htmlNode.addEventListener("mousedown", this.mouseDownHandler);
+            this.htmlNode.addEventListener("mouseup", this.mouseUpHandler);
+        }
+    }
+
+    detach() {
+        if(this.mouseDownHandler && this.mouseUpHandler) {
+            this.htmlNode.removeEventListener("mousedown", this.mouseDownHandler);
+            this.htmlNode.removeEventListener("mouseup", this.mouseUpHandler);
+
+            this.mouseDownHandler = null;
+            this.mouseUpHandler = null;
+        }
+    }
+
+    mapMouseButton(browserMouseButton) {
+        return browserMouseButton;
+    }
+}
+
+export class MouseEvent extends DeviceEvent {
+    constructor(button, mouseState, htmlNode) {
+        super();
+        this.button = button;
+        this.mouseState = mouseState;
+        this.htmlNode = htmlNode;
+    }
+}
+
+export class MouseDownEvent extends MouseEvent {
+    constructor(button, x, y, mouseState, htmlNode) {
+        super(button, mouseState, htmlNode);
+
+        this.x = x;
+        this.y = y;
+    }
+}
+
+export class MouseUpEvent extends MouseEvent {
+    constructor(button, x, y, mouseState, htmlNode) {
+        super(button, mouseState, htmlNode);
+
+        this.x = x;
+        this.y = y;
+    }
+}

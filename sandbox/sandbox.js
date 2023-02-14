@@ -236,12 +236,24 @@ export class MoveCommandTrigger extends input.CommandTrigger {
     }
 }
 
-export class InputSystem extends input.InputSystem{
-    constructor(messagePool) {
-        super(messagePool);
+export class MouseClickCommandTrigger extends input.CommandTrigger {
+    constructor(view) {
+        super();
+        this.view = view;
+    }
 
-        let keyboardController = new input.BrowserKeyboardListener(document.body);
-        this.addDeviceListener(keyboardController);
+    checkTrigger(deviceEvent, context) {
+        if(deviceEvent instanceof input.MouseDownEvent 
+            && deviceEvent.button == input.MousedButtons.mainButton
+            && this.view.canvasNode == deviceEvent.htmlNode) {
+            return {x: deviceEvent.x, y: deviceEvent.y};
+        }
+    }
+}
+
+export class MouseClickCommand extends input.Command {
+    execute(click, context) {    
+        console.log(click);
     }
 }
 

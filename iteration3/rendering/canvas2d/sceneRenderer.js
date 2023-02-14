@@ -143,5 +143,7 @@ export class CanvasView extends renderingSystem.View {
         let viewport = new renderingSystem.Viewport(viewportWidth, viewportHeight, viewportX, viewportY, deviceTransformation);
 
         super(viewport, camera);
+
+        this.canvasNode = canvasNode;
     }
 }

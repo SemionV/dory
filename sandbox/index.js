@@ -2,6 +2,7 @@ import * as sandbox from "./sandbox.js"
 import * as scene from "./scene.js"
 import Engine from "../iteration3/engine.js"
 import * as controllers from "../iteration3/controller.js"
+import * as input from "../iteration3/inputSystem.js"
 import * as messages from "../iteration3/messages.js"
 import * as transformations from "../iteration3/transformation.js"
 import * as primitives from "../iteration3/primitives.js"
@@ -51,17 +52,27 @@ let sceneContext = {
     worldLayer: worldLayer
 }
 
-let inputSystem = new sandbox.InputSystem(mainMessagePool);
+let inputSystem = new input.InputSystem(mainMessagePool);
+let keyboardController = new input.BrowserKeyboardListener(document.body);
+inputSystem.addDeviceListener(keyboardController);
+let mouseController = new input.BrowserMouseListener(canvasTop);
+inputSystem.addDeviceListener(mouseController);
 
 let engine = new Engine(inputSystem);
 
 engine.addController(new sandbox.MessagePoolSwapController([mainMessagePool, isoDebugMessagePool, topDebugMessagePool]));
 
 let inputController = new controllers.InputController(mainMessagePool);
+
 let moveTrigger = new sandbox.MoveCommandTrigger();
 let moveIsoCameraCommand = new sandbox.MoveCameraCommand(isoViewCamera, cameraMovementSpeed);
 let moveTopCameraCommand = new sandbox.MoveCameraCommand(topViewCamera, cameraMovementSpeed);
 inputController.addTrigger(moveTrigger, [moveIsoCameraCommand, moveTopCameraCommand]);
+
+let mousClickTrigger = new sandbox.MouseClickCommandTrigger(topView);
+let mouseClickCommand = new sandbox.MouseClickCommand();
+inputController.addTrigger(mousClickTrigger, mouseClickCommand);
+
 engine.addController(inputController);
 
 engine.addController(new sandbox.FpsCounter(mainMessagePool));
