@@ -260,7 +260,7 @@ export class MouseClickCommandTrigger extends input.CommandTrigger {
             let rotatedP0 = {};
             cameraRotation.apply(p0, rotatedP0);
 
-            let d = math.Vector.dorProduct(rotatedP0, rotatedNormal);
+            let d = math.Vector.dotProduct(rotatedP0, rotatedNormal);
 
             if(rotatedNormal.z != 0) {
                 clickPoint.z = (d - rotatedNormal.x * clickPoint.x - rotatedNormal.y * clickPoint.y) / rotatedNormal.z;
