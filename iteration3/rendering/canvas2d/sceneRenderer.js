@@ -140,6 +140,7 @@ export class CanvasView extends renderingSystem.View {
         let viewportX = 0;
         let viewportY = 0;
         let deviceTransformation = new transformations.MatrixTransformation(new math.Matrix3D(1, 0, 0, 0,  0, -1, 0, 0,  0, 0, -1, 0,  viewportWidth / 2 + viewportX, viewportHeight / 2 + viewportY, 0, 1))
+        let deviceIvertedTransformation = new transformations.MatrixTransformation(new math.Matrix3D(1, 0, 0, 0,  0, -1, 0, 0,  0, 0, -1, 0,  (viewportWidth / 2 + viewportX) * -1, (viewportHeight / 2 + viewportY) * -1, 0, 1))
         let viewport = new renderingSystem.Viewport(viewportWidth, viewportHeight, viewportX, viewportY, deviceTransformation);
 
         super(viewport, camera);

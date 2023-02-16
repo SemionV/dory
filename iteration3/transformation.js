@@ -117,7 +117,7 @@ export class CombinedTransformation extends Transformation {
         let firstTransformation = this.firstTransformation ? this.firstTransformation.invert() : null;
         let secondTransformation = this.secondTransformation ? this.secondTransformation.invert() : null;
 
-        return new CombinedTransformation(firstTransformation, secondTransformation);
+        return new CombinedTransformation(secondTransformation, firstTransformation);
     }
 }
 

@@ -1,3 +1,5 @@
+import { Point3D } from "./primitives.js"
+
 /*See http://glmatrix.net/*/
 export class Matrix3D extends Array{
     constructor(...parts){
@@ -30,10 +32,10 @@ export class Matrix3D extends Array{
     }
 
     transform(point, result = new Point3D()){
-        const px = point.x ?? 0;        
-        const py = point.y ?? 0;        
-        const pz = point.z ?? 0;        
-        const pw = point.w ?? 0;        
+        const px = point.x !== undefined ? point.x : 0;
+        const py = point.y !== undefined ? point.y : 0;
+        const pz = point.z !== undefined ? point.z : 0;
+        const pw = point.w !== undefined ? point.w : 1;        
 
         let x = (px * this[0]) + (py * this[4]) + (pz * this[8]) + (pw * this[12]);
         let y = (px * this[1]) + (py * this[5]) + (pz * this[9]) + (pw * this[13]);
@@ -193,5 +195,11 @@ export class Angle {
 
     static toRadian(degree){
         return degree * Angle.radDegree;
+    }
+}
+
+export class Vector {
+    static dorProduct(vector1, vector2) {
+        return vector1.x*vector2.x + vector1.y*vector2.y + vector1.z*vector2.z;
     }
 }

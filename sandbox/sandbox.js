@@ -246,7 +246,34 @@ export class MouseClickCommandTrigger extends input.CommandTrigger {
         if(deviceEvent instanceof input.MouseDownEvent 
             && deviceEvent.button == input.MousedButtons.mainButton
             && this.view.canvasNode == deviceEvent.htmlNode) {
-            return {x: deviceEvent.x, y: deviceEvent.y};
+
+            let normal = {x: 0, y: 0, z: 1};
+            let p0 = {x: 0, y: 0, z: 0};
+
+            let deviceTransformationInverted = this.view.viewport.transformation.invert();
+            let clickPoint = {x: deviceEvent.x, y: deviceEvent.y, z: 0, w: 1};
+            deviceTransformationInverted.apply(clickPoint, clickPoint);
+
+            let cameraRotation = this.view.camera.projection;
+            let rotatedNormal = {};
+            cameraRotation.apply(normal, rotatedNormal);
+            let rotatedP0 = {};
+            cameraRotation.apply(p0, rotatedP0);
+
+            let d = math.Vector.dorProduct(rotatedP0, rotatedNormal);
+
+            if(rotatedNormal.z != 0) {
+                clickPoint.z = (d - rotatedNormal.x * clickPoint.x - rotatedNormal.y * clickPoint.y) / rotatedNormal.z;
+            }
+
+            let cameraRotationInvert = cameraRotation.invert();
+            let cameraMove = this.view.camera.transformation;
+
+            let worldSpacePoint = {};
+            cameraRotationInvert.apply(clickPoint, worldSpacePoint);
+            cameraMove.apply(worldSpacePoint, worldSpacePoint);
+
+            return worldSpacePoint;
         }
     }
 }

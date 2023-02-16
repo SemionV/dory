@@ -30,7 +30,6 @@ let topProjection = new transformations.CombinedTransformation(zRotation, xRotat
 
 let topViewCamera = new renderingSystem.Camera(2, 
     new transformations.MatrixTransformation(),
-    /*new transformations.IdentityTransformation()*/
     topProjection,
     new primitives.Point3D(),
     new primitives.Point2D(0, 1));
