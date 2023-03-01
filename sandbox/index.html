@@ -3,13 +3,29 @@
 <head>
     <title>dory sandbox</title>
     <script src="index.js" type="module"></script>
+    <style>
+        .hud-button {
+            background-color:black;
+            color:white;
+            cursor:pointer; 
+            padding: 4px;
+        }
+    </style>
 </head>
 <body>
 <div>
     <div style="float: left; width: 770px">
         <canvas id="canvas" width="768" height="400" style="border: solid 1px gray"></canvas>
         <br/>
-        <canvas id="canvasTopProjection" width="768" height="400" style="border: solid 1px gray"></canvas>
+        <div style="position:relative;">
+            <canvas id="canvasTopProjection" width="768" height="400" style="border: solid 1px gray"></canvas>
+            <div style="position:absolute;top:5%;left:2%;">
+                <div class="hud-button">HUD ELEMENT</div>
+                <div class="hud-button" style="margin-top: 5px;">HUD ELEMENT</div>
+                <div class="hud-button" style="margin-top: 5px;">HUD ELEMENT</div>
+                <div class="hud-button" style="margin-top: 5px;">HUD ELEMENT</div>
+            </div>
+        </div>
     </div>
     <div style="margin-left: 770px">
         <input id="componentsCountInput" type="number" value="100000" style="width: 100%"/>
