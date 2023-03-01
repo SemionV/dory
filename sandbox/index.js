@@ -32,7 +32,7 @@ let topViewCamera = new renderingSystem.Camera(2,
     new transformations.MatrixTransformation(),
     topProjection,
     new primitives.Point3D(),
-    new primitives.Point2D(0, 1));
+    new primitives.Point2D(1, 0).rotateUnit(45));
 
 let isoView = new canvasRendering.CanvasView(canvas, isoViewCamera);
 let topView = new canvasRendering.CanvasView(canvasTop, topViewCamera);
