@@ -278,6 +278,38 @@ export class MouseClickCommandTrigger extends input.CommandTrigger {
     }
 }
 
+export class MouseClickIsoCommandTrigger extends input.CommandTrigger {
+    constructor(view) {
+        super();
+        this.view = view;
+    }
+
+    checkTrigger(deviceEvent, context) {
+        if(deviceEvent instanceof input.MouseDownEvent 
+            && deviceEvent.button == input.MousedButtons.mainButton
+            && this.view.canvasNode == deviceEvent.htmlNode) {
+
+            let deviceTransformationInverted = this.view.viewport.transformation.invert();
+            let clickPoint = {x: deviceEvent.x, y: deviceEvent.y, z: 0, w: 1};
+            deviceTransformationInverted.apply(clickPoint, clickPoint);
+
+            let cameraMove = this.view.camera.transformation;
+
+            let halfX = clickPoint.x / 2;
+
+            let worldSpacePoint = {
+                x: halfX + clickPoint.y,
+                y: clickPoint.y - halfX
+            };
+            
+            cameraMove.apply(worldSpacePoint, worldSpacePoint);
+
+            return worldSpacePoint;
+        }
+    }
+}
+
+
 export class MouseClickCommand extends input.Command {
     execute(click, context) {    
         console.log(click);

@@ -54,8 +54,10 @@ let sceneContext = {
 let inputSystem = new input.InputSystem(mainMessagePool);
 let keyboardController = new input.BrowserKeyboardListener(document.body);
 inputSystem.addDeviceListener(keyboardController);
-let mouseController = new input.BrowserMouseListener(canvasTop);
-inputSystem.addDeviceListener(mouseController);
+let mouseListener = new input.BrowserMouseListener(canvasTop);
+let mouseIsoListener = new input.BrowserMouseListener(canvas);
+inputSystem.addDeviceListener(mouseListener);
+inputSystem.addDeviceListener(mouseIsoListener);
 
 let engine = new Engine(inputSystem);
 
@@ -68,9 +70,13 @@ let moveIsoCameraCommand = new sandbox.MoveCameraCommand(isoViewCamera, cameraMo
 let moveTopCameraCommand = new sandbox.MoveCameraCommand(topViewCamera, cameraMovementSpeed);
 inputController.addTrigger(moveTrigger, [moveIsoCameraCommand, moveTopCameraCommand]);
 
-let mousClickTrigger = new sandbox.MouseClickCommandTrigger(topView);
 let mouseClickCommand = new sandbox.MouseClickCommand();
-inputController.addTrigger(mousClickTrigger, mouseClickCommand);
+
+let mouseClickTrigger = new sandbox.MouseClickCommandTrigger(topView);
+inputController.addTrigger(mouseClickTrigger, mouseClickCommand);
+
+let mouseIsoClickTrigger = new sandbox.MouseClickIsoCommandTrigger(isoView);
+inputController.addTrigger(mouseIsoClickTrigger, mouseClickCommand);
 
 engine.addController(inputController);
 
