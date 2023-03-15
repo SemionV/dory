@@ -309,6 +309,35 @@ export class MouseClickIsoCommandTrigger extends input.CommandTrigger {
     }
 }
 
+export class MouseClickTopBottomCommandTrigger extends input.CommandTrigger {
+    constructor(view) {
+        super();
+        this.view = view;
+    }
+
+    checkTrigger(deviceEvent, context) {
+        if(deviceEvent instanceof input.MouseDownEvent 
+            && deviceEvent.button == input.MousedButtons.mainButton
+            && this.view.canvasNode == deviceEvent.htmlNode) {
+
+            let deviceTransformationInverted = this.view.viewport.transformation.invert();
+            let clickPoint = {x: deviceEvent.x, y: deviceEvent.y, z: 0, w: 1};
+            deviceTransformationInverted.apply(clickPoint, clickPoint);
+
+            let cameraMove = this.view.camera.transformation;
+
+            let worldSpacePoint = {
+                x: clickPoint.x,
+                y: clickPoint.y
+            };
+            
+            cameraMove.apply(worldSpacePoint, worldSpacePoint);
+
+            return worldSpacePoint;
+        }
+    }
+}
+
 
 export class MouseClickCommand extends input.Command {
     execute(click, context) {    

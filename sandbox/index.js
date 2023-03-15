@@ -18,6 +18,9 @@ let canvasContext = canvas.getContext('2d');
 let canvasTop = document.getElementById('canvasTopProjection');
 let canvasContextTop = canvasTop.getContext('2d');
 
+let canvasTopBottom = document.getElementById('canvasTopBottomView');
+let canvasContextTopBottom = canvasTopBottom.getContext('2d');
+
 let isoViewCamera = new renderingSystem.Camera(1, 
     new transformations.MatrixTransformation(),
     new transformations.IsometricProjection(),
@@ -34,8 +37,15 @@ let topViewCamera = new renderingSystem.Camera(2,
     new primitives.Point3D(),
     new primitives.Point2D(1, 0).rotateUnit(45));
 
+let topBottomViewCamera = new renderingSystem.Camera(3, 
+    new transformations.MatrixTransformation(),
+    new transformations.IdentityTransformation(),
+    new primitives.Point3D(),
+    new primitives.Point2D(0, 1));
+
 let isoView = new canvasRendering.CanvasView(canvas, isoViewCamera);
 let topView = new canvasRendering.CanvasView(canvasTop, topViewCamera);
+let topBottomView = new canvasRendering.CanvasView(canvasTopBottom, topBottomViewCamera);
 
 let worldLayer = new scene.Layer(new transformations.IdentityTransformation);
 worldLayer.addPoint({label: "1", x: -50, y: -50, z: 0, r: 255, g: 0, b: 0});
@@ -54,10 +64,13 @@ let sceneContext = {
 let inputSystem = new input.InputSystem(mainMessagePool);
 let keyboardController = new input.BrowserKeyboardListener(document.body);
 inputSystem.addDeviceListener(keyboardController);
+
 let mouseListener = new input.BrowserMouseListener(canvasTop);
 let mouseIsoListener = new input.BrowserMouseListener(canvas);
+let mouseTopBottomListener = new input.BrowserMouseListener(canvasTopBottom);
 inputSystem.addDeviceListener(mouseListener);
 inputSystem.addDeviceListener(mouseIsoListener);
+inputSystem.addDeviceListener(mouseTopBottomListener);
 
 let engine = new Engine(inputSystem);
 
@@ -68,7 +81,8 @@ let inputController = new controllers.InputController(mainMessagePool);
 let moveTrigger = new sandbox.MoveCommandTrigger();
 let moveIsoCameraCommand = new sandbox.MoveCameraCommand(isoViewCamera, cameraMovementSpeed);
 let moveTopCameraCommand = new sandbox.MoveCameraCommand(topViewCamera, cameraMovementSpeed);
-inputController.addTrigger(moveTrigger, [moveIsoCameraCommand, moveTopCameraCommand]);
+let moveTopBottomCameraCommand = new sandbox.MoveCameraCommand(topBottomViewCamera, cameraMovementSpeed);
+inputController.addTrigger(moveTrigger, [moveIsoCameraCommand, moveTopCameraCommand, moveTopBottomCameraCommand]);
 
 let mouseClickCommand = new sandbox.MouseClickCommand();
 
@@ -78,15 +92,20 @@ inputController.addTrigger(mouseClickTrigger, mouseClickCommand);
 let mouseIsoClickTrigger = new sandbox.MouseClickIsoCommandTrigger(isoView);
 inputController.addTrigger(mouseIsoClickTrigger, mouseClickCommand);
 
+let mouseTopBottomClickTrigger = new sandbox.MouseClickTopBottomCommandTrigger(topBottomView);
+inputController.addTrigger(mouseTopBottomClickTrigger, mouseClickCommand);
+
 engine.addController(inputController);
 
 engine.addController(new sandbox.FpsCounter(mainMessagePool));
 
 engine.addController(new sandbox.CameraController(isoViewCamera, mainMessagePool));
 engine.addController(new sandbox.CameraController(topViewCamera, mainMessagePool));
+engine.addController(new sandbox.CameraController(topBottomViewCamera, mainMessagePool));
 
 engine.addController(new canvasRendering.CanvasSceneRenderer(canvasContext, isoView, isoDebugMessagePool));
 engine.addController(new canvasRendering.CanvasSceneRenderer(canvasContextTop, topView, topDebugMessagePool));
+engine.addController(new canvasRendering.CanvasSceneRenderer(canvasContextTopBottom, topBottomView, null));
 
 engine.addController(new sandbox.FpsOutput(mainMessagePool, document.getElementById("framesPerSecond")));
 engine.addController(new sandbox.DebugOutput(mainMessagePool, isoDebugMessagePool, document.getElementById("isoDebug")));

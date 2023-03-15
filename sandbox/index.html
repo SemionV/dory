@@ -10,28 +10,47 @@
             cursor:pointer; 
             padding: 4px;
         }
+
+        .hud-input {
+
+        }
+
+        .input-classic
+        {
+            width: 100%;
+            padding: 5px;
+            margin: 0;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -o-box-sizing: border-box;
+            -ms-box-sizing: border-box;
+            box-sizing: border-box;        
+        }
     </style>
 </head>
 <body>
 <div>
-    <div style="float: left; width: 770px">
+    <div style="float: left; width: 770px; height: 402px">
         <canvas id="canvas" width="768" height="400" style="border: solid 1px gray"></canvas>
-        <br/>
-        <div style="position:relative;">
-            <canvas id="canvasTopProjection" width="768" height="400" style="border: solid 1px gray"></canvas>
-            <div style="position:absolute;top:5%;left:2%;">
-                <div class="hud-button">HUD ELEMENT</div>
-                <div class="hud-button" style="margin-top: 5px;">HUD ELEMENT</div>
-                <div class="hud-button" style="margin-top: 5px;">HUD ELEMENT</div>
-                <div class="hud-button" style="margin-top: 5px;">HUD ELEMENT</div>
-            </div>
+    </div>
+    <div style="position:relative; margin-left: 770px; height: 402px">
+        <canvas id="canvasTopProjection" width="768" height="400" style="border: solid 1px gray"></canvas>
+    </div>
+    <div style="float: left; width: 770px">
+        <canvas id="canvasTopBottomView" width="768" height="400" style="border: solid 1px gray"></canvas>
+    </div>
+    <div style="position:relative; margin-left: 770px; height: 402px">
+        <canvas id="canvasEmpty" width="768" height="400" style="border: solid 1px gray"></canvas>
+        <div style="position:absolute;top:5%;left:2%;width: 130px">
+            <div class="hud-button">HUD ELEMENT</div>
+            <div class="hud-button" style="margin-top: 5px;">HUD ELEMENT</div>
+            <div class="hud-button" style="margin-top: 5px;">HUD ELEMENT</div>
+            <div class="hud-button" style="margin-top: 5px;">HUD ELEMENT</div>
+            <div class="hud-button" style="margin-top: 5px;">HUD ELEMENT</div>
+            <div style="margin-top: 5px;"><input class="input-classic" id="componentsCountInput" type="number" value="16"/></div>
         </div>
     </div>
-    <div style="margin-left: 770px">
-        <input id="componentsCountInput" type="number" value="100000" style="width: 100%"/>
-    </div>
     <div style="clear:both"></div>
-    <br/>
     <div id="framesPerSecond"></div>
     <table width="100%">
         <tr>
